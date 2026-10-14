@@ -41,13 +41,37 @@ html.lenis, html.lenis body {
 
 /* Hide scrollbar for clean horizontal carousel */
 .no-scrollbar::-webkit-scrollbar,
-.hide-scrollbar::-webkit-scrollbar {
+.hide-scrollbar::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar {
   display: none;
 }
 .no-scrollbar,
-.hide-scrollbar {
+.hide-scrollbar,
+.scrollbar-none {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Touch target helpers */
+.touch-safe {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Prevent horizontal overflow on inner pages */
+.page-wrapper {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Reduced-motion: disable all transitions globally */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Glassmorphism utils */

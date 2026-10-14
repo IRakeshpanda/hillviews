@@ -154,18 +154,18 @@ export default function GalleryPage({ onOpenBooking }) {
   };
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-white text-neutral-900 pt-24 pb-0">
+    <div ref={containerRef} className="min-h-screen bg-white text-neutral-900 pt-24 pb-0 overflow-x-hidden">
       
       {/* 2. Editorial Page Header */}
-      <section ref={headerRef} className="px-6 md:px-12 lg:px-20 max-w-7xl mx-auto pt-16 pb-12 text-center">
-        <span className="text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-6">
+      <section ref={headerRef} className="px-5 sm:px-6 md:px-12 lg:px-20 max-w-7xl mx-auto pt-10 sm:pt-16 pb-8 sm:pb-12 text-center">
+        <span className="text-xs uppercase tracking-widest text-neutral-400 font-semibold block mb-4 sm:mb-6">
           DISCOVER THE SPACES • {GALLERY_ITEMS.length} CURATED MOMENTS
         </span>
-        <h1 className="text-5xl md:text-7xl font-serif-editorial font-medium tracking-tight text-neutral-900 mb-6 overflow-hidden">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif-editorial font-medium tracking-tight text-neutral-900 mb-4 sm:mb-6 overflow-hidden">
           <span className="block gallery-title-line">Moments at</span>
           <span className="block gallery-title-line">Hill View.</span>
         </h1>
-        <p className="gallery-subtitle text-lg md:text-xl text-neutral-500 font-light max-w-2xl mx-auto leading-relaxed">
+        <p className="gallery-subtitle text-base sm:text-lg md:text-xl text-neutral-500 font-light max-w-2xl mx-auto leading-relaxed">
           An unfiltered architectural look into cottage life, Swaledale countryside, and handcrafted stone interiors.
         </p>
       </section>
@@ -174,19 +174,19 @@ export default function GalleryPage({ onOpenBooking }) {
       <div className="sticky top-24 z-40 px-4 md:px-6 mb-12 flex justify-center pointer-events-none">
         <div className="backdrop-blur-xl bg-white/85 border border-neutral-200/80 rounded-full px-4 py-3 flex flex-wrap md:flex-nowrap items-center justify-between gap-4 shadow-xl shadow-black/5 pointer-events-auto w-full max-w-5xl">
           
-          <div className="flex items-center gap-1 overflow-x-auto hide-scrollbar pb-1 md:pb-0">
+          <div className="flex items-center gap-1 overflow-x-auto scrollbar-none pb-1 md:pb-0">
             {CATEGORIES.map(cat => (
               <button
                 key={cat}
                 onClick={() => handleCategoryChange(cat)}
                 disabled={viewMode === 'lookbook'}
-                className={`whitespace-nowrap px-4 py-2 rounded-full text-xs font-medium uppercase tracking-wider transition-all duration-300 ${
+                className={`whitespace-nowrap px-3 sm:px-4 py-2 rounded-full text-xs font-medium uppercase tracking-wider transition-all duration-300 min-h-[40px] ${
                   activeCategory === cat 
                     ? 'bg-neutral-900 text-white shadow-md' 
                     : 'bg-transparent text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900'
                 } ${viewMode === 'lookbook' ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                {cat === "All Spaces" ? `All Spaces (${GALLERY_ITEMS.length})` : cat}
+                {cat === "All Spaces" ? `All (${GALLERY_ITEMS.length})` : cat}
               </button>
             ))}
           </div>
@@ -212,10 +212,10 @@ export default function GalleryPage({ onOpenBooking }) {
       </div>
 
       {/* 4. Dual-View Gallery Container */}
-      <div ref={galleryWrapperRef} className="w-full relative pb-24">
+      <div ref={galleryWrapperRef} className="w-full relative pb-16 sm:pb-24">
         
         {viewMode === 'masonry' && (
-          <div className="px-6 md:px-12 lg:px-20 max-w-[1600px] mx-auto columns-1 md:columns-2 lg:columns-3 gap-6 md:gap-8 space-y-6 md:space-y-8">
+          <div className="px-4 sm:px-6 md:px-12 lg:px-20 max-w-[1600px] mx-auto columns-1 sm:columns-2 lg:columns-3 gap-4 sm:gap-6 md:gap-8 space-y-4 sm:space-y-6 md:space-y-8">
             {filteredItems.map((item, index) => (
               <div 
                 key={item.id}
@@ -296,86 +296,74 @@ export default function GalleryPage({ onOpenBooking }) {
 
       {/* 5. Fullscreen Editorial Lightbox Modal */}
       {lightboxIndex !== null && (
-        <div className="fixed inset-0 z-[100] bg-white/95 backdrop-blur-2xl flex flex-col items-center justify-center animate-fadeIn">
-          <button 
-            onClick={() => setLightboxIndex(null)}
-            className="absolute top-8 right-8 p-3 bg-neutral-100 hover:bg-neutral-200 text-neutral-900 rounded-full transition-colors z-10"
-          >
-            <X className="w-5 h-5" />
-          </button>
-
-          <button 
-            onClick={() => setLightboxIndex(prev => prev > 0 ? prev - 1 : filteredItems.length - 1)}
-            className="absolute left-4 md:left-12 top-1/2 -translate-y-1/2 p-3 bg-white/80 hover:bg-white text-neutral-900 rounded-full shadow-lg transition-all"
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
-
-          <button 
-            onClick={() => setLightboxIndex(prev => prev < filteredItems.length - 1 ? prev + 1 : 0)}
-            className="absolute right-4 md:right-12 top-1/2 -translate-y-1/2 p-3 bg-white/80 hover:bg-white text-neutral-900 rounded-full shadow-lg transition-all"
-          >
-            <ChevronRight className="w-6 h-6" />
-          </button>
-
-          <div className="relative w-full max-w-6xl max-h-[80vh] flex flex-col md:flex-row items-center gap-8 px-12 md:px-24">
-            <div className="flex-1 w-full h-full flex items-center justify-center">
-              <img 
-                src={filteredItems[lightboxIndex].src} 
-                alt={filteredItems[lightboxIndex].title}
-                className="max-w-full max-h-[75vh] object-contain rounded-lg shadow-2xl animate-scaleIn"
-              />
+        <div className="fixed inset-0 z-[100] flex flex-col bg-white/98 backdrop-blur-2xl animate-fadeIn">
+          {/* Mobile: Bottom-sheet style; Desktop: centered modal */}
+          <div className="flex items-center justify-between px-5 sm:px-8 pt-6 pb-4 border-b border-neutral-100">
+            <div>
+              <span className="text-xs uppercase tracking-widest text-neutral-400 block">{filteredItems[lightboxIndex].category}</span>
+              <h3 className="text-lg sm:text-2xl font-serif-editorial text-neutral-900">{filteredItems[lightboxIndex].title}</h3>
             </div>
-            
-            <div className="w-full md:w-80 shrink-0 space-y-6 text-center md:text-left animate-slideUp">
-              <div>
-                <span className="text-xs uppercase tracking-widest text-neutral-400 font-medium mb-2 block">
-                  {filteredItems[lightboxIndex].category}
-                </span>
-                <h3 className="text-3xl font-serif-editorial text-neutral-900">
-                  {filteredItems[lightboxIndex].title}
-                </h3>
-              </div>
-              <p className="text-sm text-neutral-500 font-light leading-relaxed">
-                {filteredItems[lightboxIndex].tag}. Enjoy a meticulously designed space crafted for relaxation and connection in the heart of Swaledale.
-              </p>
-              <div className="pt-6 border-t border-neutral-200">
-                <span className="text-[10px] text-neutral-400 uppercase tracking-widest">
-                  Image {lightboxIndex + 1} of {filteredItems.length}
-                </span>
-              </div>
-            </div>
+            <button 
+              onClick={() => setLightboxIndex(null)}
+              className="p-3 bg-neutral-100 hover:bg-neutral-200 text-neutral-900 rounded-full transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          <div className="flex-1 relative overflow-hidden">
+            <img 
+              src={filteredItems[lightboxIndex].src} 
+              alt={filteredItems[lightboxIndex].title}
+              className="w-full h-full object-contain animate-scaleIn"
+            />
+          </div>
+
+          <div className="flex items-center justify-between px-5 sm:px-8 py-4 border-t border-neutral-100">
+            <button 
+              onClick={() => setLightboxIndex(prev => prev > 0 ? prev - 1 : filteredItems.length - 1)}
+              className="p-3 bg-neutral-100 hover:bg-neutral-200 text-neutral-900 rounded-full transition-all min-h-[44px] min-w-[44px] flex items-center justify-center"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <span className="text-xs text-neutral-400 uppercase tracking-widest">{lightboxIndex + 1} of {filteredItems.length}</span>
+            <button 
+              onClick={() => setLightboxIndex(prev => prev < filteredItems.length - 1 ? prev + 1 : 0)}
+              className="p-3 bg-neutral-100 hover:bg-neutral-200 text-neutral-900 rounded-full transition-all min-h-[44px] min-w-[44px] flex items-center justify-center"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
           </div>
         </div>
       )}
 
       {/* 6. Direct Booking Call-to-Action Strip */}
-      <section className="border-t border-neutral-200/60 bg-neutral-50 py-24 px-6 relative overflow-hidden">
+      <section className="border-t border-neutral-200/60 bg-neutral-50 py-16 sm:py-24 px-5 sm:px-6 relative overflow-hidden">
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-4xl md:text-5xl font-serif-editorial text-neutral-900 mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif-editorial text-neutral-900 mb-3 sm:mb-4">
             Experience Hill View in Person.
           </h2>
-          <p className="text-neutral-500 mb-12">
+          <p className="text-neutral-500 mb-8 sm:mb-12 text-sm sm:text-base">
             Check availability and book direct with instant confirmation.
           </p>
           
-          <div className="bg-white rounded-full p-2 md:p-3 shadow-xl border border-neutral-200 max-w-3xl mx-auto flex flex-col md:flex-row items-center gap-4">
-             <div className="flex-1 flex items-center justify-between w-full px-4 py-3 border-b md:border-b-0 md:border-r border-neutral-100">
+          <div className="bg-white rounded-3xl sm:rounded-full p-3 shadow-xl border border-neutral-200 max-w-3xl mx-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+             <div className="flex-1 flex items-center justify-between px-4 py-3 sm:border-r border-neutral-100 min-h-[48px]">
                 <div className="text-left">
                   <span className="block text-[10px] uppercase tracking-widest text-neutral-400">Arrival</span>
                   <span className="text-sm font-medium text-neutral-900">Select Date</span>
                 </div>
                 <Calendar className="w-4 h-4 text-neutral-400" />
              </div>
-             <div className="flex-1 flex items-center justify-between w-full px-4 py-3 border-b md:border-b-0 border-neutral-100">
+             <div className="flex-1 flex items-center justify-between px-4 py-3 min-h-[48px]">
                 <div className="text-left">
                   <span className="block text-[10px] uppercase tracking-widest text-neutral-400">Departure</span>
                   <span className="text-sm font-medium text-neutral-900">Select Date</span>
                 </div>
                 <Calendar className="w-4 h-4 text-neutral-400" />
              </div>
-             <div className="shrink-0 w-full md:w-auto px-2">
-               <button onClick={onOpenBooking} className="w-full md:w-auto px-8 py-4 bg-neutral-900 text-white rounded-full text-xs uppercase tracking-widest font-semibold hover:bg-neutral-800 transition-colors">
+             <div className="shrink-0 w-full sm:w-auto px-2">
+               <button onClick={onOpenBooking} className="w-full sm:w-auto px-8 py-4 bg-neutral-900 text-white rounded-full text-xs uppercase tracking-widest font-semibold hover:bg-neutral-800 transition-colors min-h-[48px]">
                  Check Dates
                </button>
              </div>
