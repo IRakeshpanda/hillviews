@@ -58,6 +58,26 @@ html.lenis, html.lenis body {
   min-width: 44px;
 }
 
+/* Mobile hero card clip — ensures GSAP x-translated cards are clipped */
+.hero-mobile-clip {
+  overflow: hidden;
+  position: relative;
+  isolation: isolate;
+}
+
+/* Mobile drawer: ensure backdrop-filter works on iOS Safari */
+@supports not (backdrop-filter: blur(1px)) {
+  .mobile-drawer-backdrop {
+    background: rgba(255, 255, 255, 0.98);
+  }
+}
+
+/* Prevent overscroll bounce during pinned sections on iOS */
+.gsap-pinned {
+  -webkit-overflow-scrolling: auto;
+  overscroll-behavior: none;
+}
+
 /* Prevent horizontal overflow on inner pages */
 .page-wrapper {
   overflow-x: hidden;

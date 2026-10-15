@@ -9,6 +9,7 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 export default function HeroSection({ onOpenBooking, arrivalDate, departureDate, guests }) {
   const containerRef     = useRef(null);
+  // Desktop refs
   const heroOverlayRef   = useRef(null);
   const centerCardRef    = useRef(null);
   const leftColRef       = useRef(null);
@@ -16,11 +17,11 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
   const mosaicWrapperRef = useRef(null);
   const subtitleRef      = useRef(null);
 
-  // Mobile-specific refs
-  const mobileHeroRef    = useRef(null);
-  const mobileLeftRef    = useRef(null);
-  const mobileRightRef   = useRef(null);
-  const mobileSubRef     = useRef(null);
+  // Mobile refs
+  const mobileLeftCardRef  = useRef(null);
+  const mobileRightCardRef = useRef(null);
+  const mobileSubRef       = useRef(null);
+  const mobileTrackRef     = useRef(null);
 
   useGSAP(() => {
     const mm = gsap.matchMedia();
@@ -42,139 +43,120 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
         }
       });
 
-      tl.to(heroOverlayRef.current, {
-        opacity: 0, y: -30, pointerEvents: 'none', duration: 0.35, ease: 'power2.out'
-      }, 0);
-
-      tl.to(mosaicWrapperRef.current, {
-        gap: '20px', padding: '40px 24px', duration: 0.6, ease: 'power2.inOut'
-      }, 0.1);
-
-      tl.to(centerCardRef.current, {
-        width: '38%', borderRadius: '24px', duration: 0.6, ease: 'power2.inOut'
-      }, 0.1);
-
-      tl.to(leftColRef.current, {
-        width: '28%', xPercent: 0, opacity: 1, duration: 0.65, ease: 'power2.inOut'
-      }, 0.15);
-
-      tl.to(rightColRef.current, {
-        width: '28%', xPercent: 0, opacity: 1, duration: 0.65, ease: 'power2.inOut'
-      }, 0.15);
-
-      tl.to(subtitleRef.current, {
-        opacity: 1, y: 0, duration: 0.4, ease: 'power2.out'
-      }, 0.55);
+      tl.to(heroOverlayRef.current, { opacity: 0, y: -30, pointerEvents: 'none', duration: 0.35, ease: 'power2.out' }, 0);
+      tl.to(mosaicWrapperRef.current, { gap: '20px', padding: '40px 24px', duration: 0.6, ease: 'power2.inOut' }, 0.1);
+      tl.to(centerCardRef.current, { width: '38%', borderRadius: '24px', duration: 0.6, ease: 'power2.inOut' }, 0.1);
+      tl.to(leftColRef.current,  { width: '28%', xPercent: 0, opacity: 1, duration: 0.65, ease: 'power2.inOut' }, 0.15);
+      tl.to(rightColRef.current, { width: '28%', xPercent: 0, opacity: 1, duration: 0.65, ease: 'power2.inOut' }, 0.15);
+      tl.to(subtitleRef.current, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 0.55);
     });
 
-    // ── MOBILE / TABLET <1024px: Sequential side-card inward slide ────────
+    // ── MOBILE / TABLET <1024px: Sequential viewport-width slide-in ───────
     mm.add('(max-width: 1023px)', () => {
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+      const leftCard  = mobileLeftCardRef.current;
+      const rightCard = mobileRightCardRef.current;
+      const subtitle  = mobileSubRef.current;
+
+      if (!leftCard || !rightCard) return;
+
       if (prefersReducedMotion) {
-        // Just ensure everything is visible
-        gsap.set([mobileLeftRef.current, mobileRightRef.current, mobileSubRef.current], { clearProps: 'all' });
+        gsap.set([leftCard, rightCard], { x: 0, opacity: 1 });
+        if (subtitle) gsap.set(subtitle, { opacity: 1, y: 0 });
         return;
       }
 
-      // Hero text entrance
-      gsap.from(heroOverlayRef.current, {
-        opacity: 0, y: 24, duration: 0.9, ease: 'power3.out', delay: 0.1, clearProps: 'all',
+      // Set initial off-screen state
+      gsap.set(leftCard, { x: '-100vw', opacity: 0 });
+      gsap.set(rightCard, { x: '100vw', opacity: 0 });
+      if (subtitle) gsap.set(subtitle, { opacity: 0, y: 20 });
+
+      const track = mobileTrackRef.current;
+
+      // Left card slides in from screen left on scroll
+      gsap.to(leftCard, {
+        x: 0, opacity: 1, duration: 0.9, ease: 'power2.out',
+        scrollTrigger: {
+          trigger: track,
+          start: 'top 85%',
+          toggleActions: 'play none none reverse',
+          invalidateOnRefresh: true,
+        }
       });
 
-      // Left card slides in from left when user scrolls past hero image
-      gsap.fromTo(mobileLeftRef.current,
-        { xPercent: -110, opacity: 0 },
-        {
-          xPercent: 0, opacity: 1, ease: 'power2.out',
+      // Right card slides in from screen right (slightly after left)
+      gsap.to(rightCard, {
+        x: 0, opacity: 1, duration: 0.9, ease: 'power2.out',
+        scrollTrigger: {
+          trigger: track,
+          start: 'top 75%',
+          toggleActions: 'play none none reverse',
+          invalidateOnRefresh: true,
+        }
+      });
+
+      // Subtitle fades up after cards
+      if (subtitle) {
+        gsap.to(subtitle, {
+          opacity: 1, y: 0, duration: 0.65, ease: 'power2.out',
           scrollTrigger: {
-            trigger: mobileHeroRef.current,
-            start: 'bottom 90%',
-            end: 'bottom 40%',
-            scrub: 1.2,
+            trigger: subtitle,
+            start: 'top 92%',
+            toggleActions: 'play none none reverse',
             invalidateOnRefresh: true,
           }
-        }
-      );
+        });
+      }
 
-      // Right card slides in from right, slightly delayed
-      gsap.fromTo(mobileRightRef.current,
-        { xPercent: 110, opacity: 0 },
-        {
-          xPercent: 0, opacity: 1, ease: 'power2.out',
-          scrollTrigger: {
-            trigger: mobileHeroRef.current,
-            start: 'bottom 80%',
-            end: 'bottom 30%',
-            scrub: 1.2,
-            invalidateOnRefresh: true,
-          }
-        }
-      );
-
-      // Subtitle fades in after both cards
-      gsap.fromTo(mobileSubRef.current,
-        { opacity: 0, y: 16 },
-        {
-          opacity: 1, y: 0, duration: 0.7, ease: 'power2.out',
-          scrollTrigger: {
-            trigger: mobileRightRef.current,
-            start: 'bottom 80%',
-            toggleActions: 'play none none none',
-            once: true,
-          }
-        }
-      );
+      ScrollTrigger.refresh();
     });
 
     return () => mm.revert();
   }, { scope: containerRef });
 
   return (
-    <section ref={containerRef} className="relative w-full bg-white text-neutral-900 overflow-x-hidden">
+    <section ref={containerRef} className="relative w-full bg-white text-neutral-900">
 
-      {/* ── MOBILE / TABLET Hero (<lg) ─────────────────────────────────────── */}
-      <div className="lg:hidden flex flex-col" id="hero-mobile">
-
-        {/* Full-height hero image with text overlay */}
-        <div ref={mobileHeroRef} className="relative min-h-[100svh] flex flex-col">
+      {/* ══ MOBILE / TABLET Hero (<lg) ══════════════════════════════════════ */}
+      <section
+        id="hero-mobile-section"
+        className="lg:hidden relative w-full bg-white"
+      >
+        {/* 1. Hero Main Image & Title — full viewport */}
+        <div className="hero-main-container relative w-full h-[85vh] rounded-b-3xl overflow-hidden bg-neutral-900">
           <img
             src={cottageImages.livingRoom}
-            alt="Hill View living room with wood-burning stove"
-            className="absolute inset-0 w-full h-full object-cover object-center"
+            alt="Hill View Hero"
+            className="w-full h-full object-cover brightness-90"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6 text-white">
 
-          {/* Mobile Hero Text + Booking Bar */}
-          <div
-            ref={heroOverlayRef}
-            className="absolute inset-0 flex flex-col items-center justify-end px-5 pb-10 pt-24 text-center z-10"
-          >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] font-semibold uppercase tracking-widest mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[10px] font-semibold uppercase tracking-widest mb-3 self-start">
               <Sparkles className="w-3 h-3 text-white/90" />
               <span>Low Row • Swaledale</span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl font-serif-editorial font-medium tracking-tight text-white drop-shadow-md leading-[1.1] mb-3">
+            <h1 className="text-3xl sm:text-4xl font-serif-editorial font-medium leading-tight text-white drop-shadow-md">
               Spacious Yorkshire Dales Stone Cottage
             </h1>
-            <p className="text-base sm:text-lg font-serif-editorial italic text-white/90 font-light mb-8">
-              Book direct with us and save!
+            <p className="text-sm text-neutral-300 mt-2 font-serif-editorial italic">
+              Book direct with us and save.
             </p>
 
             {/* Mobile Booking Bar */}
-            <div className="w-full max-w-md bg-white/10 backdrop-blur-xl rounded-2xl p-4 border border-white/20 shadow-2xl">
-              <div className="grid grid-cols-2 gap-3 mb-3">
+            <div className="mt-5 bg-white/10 backdrop-blur-xl rounded-2xl p-3.5 border border-white/20 shadow-2xl">
+              <div className="grid grid-cols-2 gap-2.5 mb-2.5">
                 <button
                   onClick={onOpenBooking}
-                  className="flex flex-col items-start px-4 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-left min-h-[48px] transition-all active:scale-[0.98]"
+                  className="flex flex-col items-start px-3.5 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-left min-h-[48px] transition-all active:scale-[0.98]"
                 >
                   <span className="text-[10px] font-bold uppercase tracking-widest text-white/70 block">Arrival</span>
                   <span className="text-sm font-medium text-white">{arrivalDate || '24 Sep 2026'}</span>
                 </button>
                 <button
                   onClick={onOpenBooking}
-                  className="flex flex-col items-start px-4 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-left min-h-[48px] transition-all active:scale-[0.98]"
+                  className="flex flex-col items-start px-3.5 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-left min-h-[48px] transition-all active:scale-[0.98]"
                 >
                   <span className="text-[10px] font-bold uppercase tracking-widest text-white/70 block">Departure</span>
                   <span className="text-sm font-medium text-white">{departureDate || '28 Sep 2026'}</span>
@@ -182,7 +164,7 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
               </div>
               <button
                 onClick={onOpenBooking}
-                className="w-full py-4 rounded-xl bg-white text-neutral-900 font-semibold text-sm uppercase tracking-wider flex items-center justify-center gap-2 active:scale-[0.98] transition-all min-h-[48px]"
+                className="w-full py-3.5 rounded-xl bg-white text-neutral-900 font-semibold text-sm uppercase tracking-wider flex items-center justify-center gap-2 active:scale-[0.98] transition-all min-h-[48px]"
               >
                 <Search className="w-4 h-4" />
                 <span>Check Availability</span>
@@ -191,57 +173,59 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
           </div>
         </div>
 
-        {/* ── Mobile inward-slide card strip (animates on scroll) ── */}
-        <div className="flex flex-col gap-0 bg-white overflow-hidden">
-
-          {/* Left card — slides in from left */}
+        {/* 2. Sliding Cards Track — overflow-hidden clips off-screen cards */}
+        <div
+          ref={mobileTrackRef}
+          className="hero-sliding-track relative w-full overflow-hidden px-4 py-8 space-y-4 bg-white"
+          style={{ isolation: 'isolate' }}
+        >
+          {/* Left card — initially x: -100vw, slides in from left */}
           <div
-            ref={mobileLeftRef}
-            className="relative w-full aspect-[16/9] will-change-transform"
-            style={{ transform: 'translateX(-110%)', opacity: 0 }}
+            ref={mobileLeftCardRef}
+            className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden shadow-lg border border-neutral-200 bg-neutral-100 will-change-transform"
+            style={{ transform: 'translateX(-100vw)', opacity: 0 }}
           >
             <img
               src={cottageImages.hero}
-              alt="Hill View stone cottage exterior"
+              alt="Hill View Stone Cottage"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-            <span className="absolute bottom-3 left-3 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur-md px-3 py-1 rounded-full bg-black/50 border border-white/20">
-              Low Row Exterior
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+            <span className="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-medium">
+              Stone Cottage Exterior
             </span>
           </div>
 
-          {/* Right card — slides in from right */}
+          {/* Right card — initially x: 100vw, slides in from right */}
           <div
-            ref={mobileRightRef}
-            className="relative w-full aspect-[16/9] will-change-transform"
-            style={{ transform: 'translateX(110%)', opacity: 0 }}
+            ref={mobileRightCardRef}
+            className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden shadow-lg border border-neutral-200 bg-neutral-100 will-change-transform"
+            style={{ transform: 'translateX(100vw)', opacity: 0 }}
           >
             <img
               src={cottageImages.terrace}
-              alt="Swaledale terrace views"
+              alt="Swaledale Terrace"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-            <span className="absolute bottom-3 left-3 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur-md px-3 py-1 rounded-full bg-black/50 border border-white/20">
-              Swaledale Terrace
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+            <span className="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-medium">
+              Swaledale Terrace Views
             </span>
           </div>
 
-          {/* Subtitle reveal */}
-          <div
+          {/* Subtitle — fades up after both cards */}
+          <p
             ref={mobileSubRef}
-            className="px-5 py-8 text-center"
-            style={{ opacity: 0, transform: 'translateY(16px)' }}
+            className="text-center text-sm text-neutral-500 pt-2 px-4 font-medium leading-relaxed"
+            style={{ opacity: 0, transform: 'translateY(20px)' }}
           >
-            <p className="text-lg sm:text-xl font-serif-editorial italic text-neutral-600 leading-relaxed">
-              A spacious Yorkshire Dales stone cottage.<br />Book direct with us and save.
-            </p>
-          </div>
+            A spacious Yorkshire Dales stone cottage.{' '}
+            <span className="text-neutral-900 font-semibold">Book direct with us and save.</span>
+          </p>
         </div>
-      </div>
+      </section>
 
-      {/* ── DESKTOP Hero (≥lg): Pinned 5-card mosaic ──────────────────────── */}
+      {/* ══ DESKTOP Hero (≥lg): Pinned 5-card mosaic ════════════════════════ */}
       <div className="hidden lg:block">
         <div className="h-screen w-full overflow-hidden flex flex-col justify-between items-center relative">
           <div

@@ -37,14 +37,18 @@ function AppContent() {
 
   // Synchronize Lenis smooth scroll with GSAP ScrollTrigger
   useEffect(() => {
+    // On mobile/touch, use native scroll — let GSAP ScrollTrigger handle pinning natively
+    const isTouchDevice = () => window.matchMedia('(max-width: 1023px)').matches || ('ontouchstart' in window);
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
-      smoothWheel: true,
+      smoothWheel: !isTouchDevice(),   // disable smooth wheel on mobile
       wheelMultiplier: 1.0,
-      touchMultiplier: 2.0,
+      touchMultiplier: isTouchDevice() ? 1.5 : 2.0,
+      infinite: false,
     });
 
     lenis.on('scroll', ScrollTrigger.update);
