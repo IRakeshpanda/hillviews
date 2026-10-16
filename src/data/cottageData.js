@@ -1,15 +1,15 @@
 export const cottageImages = {
-  hero: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=2400&q=85", // Yorkshire Stone Cottage exterior
-  livingRoom: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85", // Wood stove
-  terrace: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=85", // Swaledale view
-  diningRoom: "https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=1600&q=85", // Beamed dining
-  kitchen: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1600&q=85", // Farmhouse kitchen
-  masterBedroom: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=1600&q=85", // Master room
-  beamedDouble: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=1600&q=85", // Beamed double
-  cosyDouble: "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=1600&q=85", // Garden double
-  twinRoom: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=1600&q=85", // Twin room
-  bathroom: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1600&q=85", // Rainfall shower
-  panoramicDales: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=2400&q=85" // Panoramic Dales
+  hero: "/images/YorkshireDales/Gardens & Dales Views/Yorkshire Dales Hill View out side.jpg",
+  livingRoom: "/images/YorkshireDales/Living Room/Hill View 2026 indoor bonfire and lamp.jpg",
+  terrace: "/images/YorkshireDales/Gardens & Dales Views/Hill View 2026 outdoor chill view.jpg",
+  diningRoom: "/images/YorkshireDales/Kitchen & Dining/Hill View 2026 food dine elegant view.jpg",
+  kitchen: "/images/YorkshireDales/Kitchen & Dining/Yorkshire Dales Kitchen.jpg",
+  masterBedroom: "/images/YorkshireDales/Bedrooms & Suite/Hill View 2026 double bed front view.jpg",
+  beamedDouble: "/images/YorkshireDales/Bedrooms & Suite/Hill View 2026 double bed bed lamp.jpg",
+  cosyDouble: "/images/YorkshireDales/Bedrooms & Suite/Hill View 2026 bed and window.jpg",
+  twinRoom: "/images/YorkshireDales/Bedrooms & Suite/Hill View 2026 2 single beds.jpg",
+  bathroom: "/images/YorkshireDales/Bathrooms/Yorkshire Dales wash basin.jpg",
+  panoramicDales: "/images/YorkshireDales/Gardens & Dales Views/Hill View 2026 outdoor chill.jpg"
 };
 
 export const cottageFeatures = [

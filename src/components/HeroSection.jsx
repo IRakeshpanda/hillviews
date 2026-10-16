@@ -35,9 +35,10 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
         scrollTrigger: {
           trigger: containerRef.current,
           start: 'top top',
-          end: '+=180%',
-          scrub: 1,
+          end: '+=260%',
+          scrub: 1.2,
           pin: true,
+          pinSpacing: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
         }
@@ -216,11 +217,11 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
           {/* Subtitle — fades up after both cards */}
           <p
             ref={mobileSubRef}
-            className="text-center text-sm text-neutral-500 pt-2 px-4 font-medium leading-relaxed"
+            className="mx-auto mt-2 w-full max-w-md text-center text-sm sm:text-base text-neutral-600 px-4 font-medium leading-relaxed tracking-[0.02em]"
             style={{ opacity: 0, transform: 'translateY(20px)' }}
           >
-            A spacious Yorkshire Dales stone cottage.{' '}
-            <span className="text-neutral-900 font-semibold">Book direct with us and save.</span>
+            <span className="block text-neutral-700">A spacious Yorkshire Dales stone cottage.</span>
+            <span className="mt-1 block text-neutral-900 font-semibold tracking-[0.04em] uppercase text-[11px] sm:text-[12px]">Book direct with us and save.</span>
           </p>
         </div>
       </section>
@@ -262,50 +263,52 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
 
               <div
                 ref={heroOverlayRef}
-                className="absolute inset-0 flex flex-col items-center justify-between px-6 pt-40 pb-16 max-w-4xl mx-auto text-center z-10"
+                className="absolute inset-0 z-10 flex items-center justify-center px-6 py-12"
               >
-                <div className="space-y-4">
-                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-medium uppercase tracking-widest shadow-lg">
-                    <Sparkles className="w-3.5 h-3.5 text-white/90" />
-                    <span>Low Row • Swaledale</span>
+                <div className="w-full max-w-5xl text-center flex flex-col items-center justify-center">
+                  <div className="space-y-4">
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-medium uppercase tracking-widest shadow-lg">
+                      <Sparkles className="w-3.5 h-3.5 text-white/90" />
+                      <span>Low Row • Swaledale</span>
+                    </div>
+                    <h1 className="text-5xl lg:text-6xl xl:text-7xl font-serif-editorial font-medium tracking-tight text-white drop-shadow-md leading-[1.08]">
+                      Spacious Yorkshire Dales Stone Cottage
+                    </h1>
+                    <p className="text-xl lg:text-2xl font-serif-editorial italic text-white/90 font-light drop-shadow">
+                      Book direct with us and save!
+                    </p>
                   </div>
-                  <h1 className="text-5xl lg:text-6xl xl:text-7xl font-serif-editorial font-medium tracking-tight text-white drop-shadow-md leading-[1.08]">
-                    Spacious Yorkshire Dales Stone Cottage
-                  </h1>
-                  <p className="text-xl lg:text-2xl font-serif-editorial italic text-white/90 font-light drop-shadow">
-                    Book direct with us and save!
-                  </p>
-                </div>
 
-                {/* Desktop Booking Bar */}
-                <div className="w-full max-w-3xl glass-panel rounded-3xl p-4 md:p-6 shadow-2xl border border-white/20 backdrop-blur-xl">
-                  <form onSubmit={(e) => { e.preventDefault(); onOpenBooking(); }} className="flex items-end gap-4">
-                    <div className="flex-1 text-left">
-                      <label className="block text-[10px] font-semibold uppercase tracking-widest text-white/70 mb-2">Arrival</label>
-                      <div onClick={onOpenBooking} className="flex items-center justify-between w-full px-4 py-3 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-sm text-white cursor-pointer transition-all group min-h-[44px]">
-                        <span className="font-medium">{arrivalDate || '24 Sep 2026'}</span>
-                        <CalendarIcon className="w-4 h-4 text-white/80 group-hover:scale-110 transition-transform" />
+                  {/* Desktop Booking Bar */}
+                  <div className="mt-8 w-full max-w-4xl glass-panel rounded-3xl p-4 md:p-6 shadow-2xl border border-white/20 backdrop-blur-xl">
+                    <form onSubmit={(e) => { e.preventDefault(); onOpenBooking(); }} className="flex flex-col gap-3 md:flex-row md:items-end md:gap-4">
+                      <div className="flex-1 text-left">
+                        <label className="block text-[10px] font-semibold uppercase tracking-widest text-white/70 mb-2">Arrival</label>
+                        <div onClick={onOpenBooking} className="flex items-center justify-between w-full px-4 py-3 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-sm text-white cursor-pointer transition-all group min-h-[44px]">
+                          <span className="font-medium">{arrivalDate || '24 Sep 2026'}</span>
+                          <CalendarIcon className="w-4 h-4 text-white/80 group-hover:scale-110 transition-transform" />
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex-1 text-left">
-                      <label className="block text-[10px] font-semibold uppercase tracking-widest text-white/70 mb-2">Departure</label>
-                      <div onClick={onOpenBooking} className="flex items-center justify-between w-full px-4 py-3 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-sm text-white cursor-pointer transition-all group min-h-[44px]">
-                        <span className="font-medium">{departureDate || '28 Sep 2026'}</span>
-                        <CalendarIcon className="w-4 h-4 text-white/80 group-hover:scale-110 transition-transform" />
+                      <div className="flex-1 text-left">
+                        <label className="block text-[10px] font-semibold uppercase tracking-widest text-white/70 mb-2">Departure</label>
+                        <div onClick={onOpenBooking} className="flex items-center justify-between w-full px-4 py-3 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-sm text-white cursor-pointer transition-all group min-h-[44px]">
+                          <span className="font-medium">{departureDate || '28 Sep 2026'}</span>
+                          <CalendarIcon className="w-4 h-4 text-white/80 group-hover:scale-110 transition-transform" />
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex-1 text-left">
-                      <label className="block text-[10px] font-semibold uppercase tracking-widest text-white/70 mb-2">Guests</label>
-                      <div onClick={onOpenBooking} className="flex items-center justify-between w-full px-4 py-3 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-sm text-white cursor-pointer transition-all group min-h-[44px]">
-                        <span className="font-medium">{guests} {guests === 1 ? 'Guest' : 'Guests'}</span>
-                        <ChevronDown className="w-4 h-4 text-white/80 group-hover:translate-y-0.5 transition-transform" />
+                      <div className="flex-1 text-left">
+                        <label className="block text-[10px] font-semibold uppercase tracking-widest text-white/70 mb-2">Guests</label>
+                        <div onClick={onOpenBooking} className="flex items-center justify-between w-full px-4 py-3 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-sm text-white cursor-pointer transition-all group min-h-[44px]">
+                          <span className="font-medium">{guests} {guests === 1 ? 'Guest' : 'Guests'}</span>
+                          <ChevronDown className="w-4 h-4 text-white/80 group-hover:translate-y-0.5 transition-transform" />
+                        </div>
                       </div>
-                    </div>
-                    <button type="submit" className="px-8 py-3.5 rounded-full bg-white hover:bg-neutral-200 text-neutral-900 font-semibold text-xs uppercase tracking-widest transition-all duration-300 shadow-lg flex items-center justify-center gap-2 active:scale-95 min-h-[44px]">
-                      <Search className="w-4 h-4" />
-                      <span>Search</span>
-                    </button>
-                  </form>
+                      <button type="submit" className="md:self-end px-8 py-3.5 rounded-full bg-white hover:bg-neutral-200 text-neutral-900 font-semibold text-xs uppercase tracking-widest transition-all duration-300 shadow-lg flex items-center justify-center gap-2 active:scale-95 min-h-[44px]">
+                        <Search className="w-4 h-4" />
+                        <span>Search</span>
+                      </button>
+                    </form>
+                  </div>
                 </div>
               </div>
             </div>

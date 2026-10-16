@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { Menu, X, Phone, Mail, MessageCircle, Home, Layers, Image as ImageIcon, BedDouble, MapPin, FileText } from 'lucide-react';
+import logoImage from '../../images/Hill View Logo.png';
 
 const NAV_LINKS = [
   { to: '/cottage',    label: 'The Cottage', icon: Home,       num: '01' },
@@ -89,14 +90,8 @@ export default function Navbar({ onOpenBooking }) {
         <div className="flex items-center justify-between">
 
           {/* Brand */}
-          <Link to="/" onClick={closeDrawer} className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center group-hover:bg-neutral-900 transition-all duration-300">
-              <span className="font-serif-editorial font-bold text-neutral-900 group-hover:text-white text-sm tracking-tight transition-colors">HV</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="font-semibold text-xs tracking-widest text-neutral-900 uppercase">HILL VIEW</span>
-              <span className="text-[10px] text-neutral-500 tracking-wider font-light uppercase hidden sm:inline">Swaledale • Yorkshire</span>
-            </div>
+          <Link to="/" onClick={closeDrawer} className="flex items-center group">
+            <img src={logoImage} alt="Hill View logo" className="h-10 w-auto object-contain" />
           </Link>
 
           {/* Desktop nav */}
@@ -161,12 +156,7 @@ export default function Navbar({ onOpenBooking }) {
       >
         {/* Drawer Top Bar */}
         <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-neutral-100 flex-shrink-0">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-md bg-neutral-900 flex items-center justify-center">
-              <span className="font-serif-editorial font-bold text-white text-xs">HV</span>
-            </div>
-            <span className="font-semibold text-xs tracking-widest text-neutral-900 uppercase">HILL VIEW</span>
-          </div>
+          <img src={logoImage} alt="Hill View logo" className="h-8 w-auto object-contain" />
           <button
             onClick={closeDrawer}
             className="p-2 rounded-full bg-neutral-100 hover:bg-neutral-200 transition-colors min-h-[40px] min-w-[40px] flex items-center justify-center"
