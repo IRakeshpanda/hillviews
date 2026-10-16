@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { Menu, X, Phone, Mail, MessageCircle, Home, Layers, Image as ImageIcon, BedDouble, MapPin, FileText } from 'lucide-react';
-import logoImage from '../../images/Hill View Logo.png';
+
+const logoImage = '/images/logo.png';
 
 const NAV_LINKS = [
   { to: '/cottage',    label: 'The Cottage', icon: Home,       num: '01' },

@@ -9,33 +9,29 @@ import { cottageImages } from '../data/cottageData';
 gsap.registerPlugin(ScrollTrigger, Flip, useGSAP);
 
 const GALLERY_ITEMS = [
-  // 1. Living Room
-  { id: 1, title: "Fireside Hearth & Stove", category: "Living & Beams", aspect: "aspect-[16/10]", src: "/images/YorkshireDales/Living Room/Hill View 2026 indoor bonfire and lamp.jpg", tag: "Ground Floor" },
-  { id: 2, title: "Beamed Living Snug", category: "Living & Beams", aspect: "aspect-[4/3]", src: "/images/YorkshireDales/Living Room/Hill View 2026 Yorkshire Dales and Cousin.jpg", tag: "Main Lounge" },
-  { id: 3, title: "Wood Stove Detail", category: "Living & Beams", aspect: "aspect-square", src: "/images/YorkshireDales/Living Room/Hill View 2026 bonfire on focus.jpg", tag: "Fireside" },
-  { id: 4, title: "Reading Corner & Library", category: "Living & Beams", aspect: "aspect-[3/4]", src: "/images/YorkshireDales/Living Room/Hill View 2026 living room books.jpg", tag: "Quiet Snug" },
+  // Living
+  { id: 1, title: "Fireside Hearth & Stove", category: "Living & Beams", aspect: "aspect-[16/10]", src: "/images/living/hill-view-2026-indoor-bonfire-and-lamp.jpg", tag: "Ground Floor" },
+  { id: 2, title: "Beamed Living Snug", category: "Living & Beams", aspect: "aspect-[4/3]", src: "/images/living/hill-view-2026-yorkshire-dales-and-cousin.jpg", tag: "Main Lounge" },
+  { id: 3, title: "Wood Stove Detail", category: "Living & Beams", aspect: "aspect-square", src: "/images/living/hill-view-2026-bonfire-on-focus.jpg", tag: "Fireside" },
+  { id: 4, title: "Reading Corner", category: "Living & Beams", aspect: "aspect-[3/4]", src: "/images/living/hill-view-2026-living-room-books.jpg", tag: "Quiet Snug" },
 
-  // 2. Bedrooms & Suite
-  { id: 5, title: "Master Bedroom Suite", category: "Bedrooms & Suites", aspect: "aspect-[16/10]", src: "/images/YorkshireDales/Bedrooms & Suite/Hill View 2026 double bed front view.jpg", tag: "Sleeps 2 -  Valley Light" },
-  { id: 6, title: "Beamed Double Room", category: "Bedrooms & Suites", aspect: "aspect-[4/3]", src: "/images/YorkshireDales/Bedrooms & Suite/Hill View 2026 bed and bed lamp.jpg", tag: "Sleeps 2" },
-  { id: 7, title: "Twin Single Bedroom", category: "Bedrooms & Suites", aspect: "aspect-[16/10]", src: "/images/YorkshireDales/Bedrooms & Suite/Hill View 2026 2 single beds.jpg", tag: "Sleeps 2" },
-  { id: 8, title: "Dales View Window Seat", category: "Bedrooms & Suites", aspect: "aspect-[3/4]", src: "/images/YorkshireDales/Bedrooms & Suite/Hill View 2026 hill view from inside the window.jpg", tag: "Valley Views" },
-  { id: 9, title: "Character Bedstead & Lamp", category: "Bedrooms & Suites", aspect: "aspect-[4/5]", src: "/images/YorkshireDales/Bedrooms & Suite/Hill View 2026 red bed lamp.jpg", tag: "First Floor" },
+  // Bedrooms
+  { id: 5, title: "Master Bedroom Suite", category: "Bedrooms & Suites", aspect: "aspect-[16/10]", src: "/images/bedrooms/hill-view-2026-double-bed-front-view.jpg", tag: "Sleeps 2 - Valley Light" },
+  { id: 6, title: "Beamed Double Room", category: "Bedrooms & Suites", aspect: "aspect-[4/3]", src: "/images/bedrooms/hill-view-2026-double-bed-bed-lamp.jpg", tag: "Sleeps 2" },
+  { id: 7, title: "Twin Single Bedroom", category: "Bedrooms & Suites", aspect: "aspect-[16/10]", src: "/images/bedrooms/hill-view-2026-2-single-beds.jpg", tag: "Sleeps 2" },
+  { id: 8, title: "Dales View Window Seat", category: "Bedrooms & Suites", aspect: "aspect-[3/4]", src: "/images/bedrooms/hill-view-2026-hill-view-from-inside-the-window.jpg", tag: "Valley Views" },
 
-  // 3. Kitchen & Dining
-  { id: 10, title: "Equipped Chef's Kitchen", category: "Kitchen & Dining", aspect: "aspect-[16/10]", src: "/images/YorkshireDales/Kitchen & Dining/Yorkshire Dales Kitchen.jpg", tag: "Full Kitchen" },
-  { id: 11, title: "Country Dining Table", category: "Kitchen & Dining", aspect: "aspect-[4/3]", src: "/images/YorkshireDales/Kitchen & Dining/Hill View 2026 food dine elegant view.jpg", tag: "Seats 8" },
-  { id: 12, title: "Sunny Breakfast Room", category: "Kitchen & Dining", aspect: "aspect-square", src: "/images/YorkshireDales/Kitchen & Dining/Hill View 2026 sunflower on dine.jpg", tag: "Dining Space" },
+  // Kitchen
+  { id: 9, title: "Equipped Chef's Kitchen", category: "Kitchen & Dining", aspect: "aspect-[16/10]", src: "/images/kitchen/yorkshire-dales-kitchen.jpg", tag: "Full Kitchen" },
+  { id: 10, title: "Country Dining Table", category: "Kitchen & Dining", aspect: "aspect-[4/3]", src: "/images/kitchen/hill-view-2026-food-dine-elegant-view.jpg", tag: "Seats 8" },
 
-  // 4. Bathrooms
-  { id: 13, title: "Modern Dales Wash Basin", category: "Bathrooms", aspect: "aspect-square", src: "/images/YorkshireDales/Bathrooms/Yorkshire Dales wash basin.jpg", tag: "Main Bathroom" },
+  // Bathrooms
+  { id: 11, title: "Modern Dales Wash Basin", category: "Bathrooms", aspect: "aspect-square", src: "/images/bathrooms/yorkshire-dales-wash-basin.jpg", tag: "Main Bathroom" },
 
-  // 5. Gardens & Dales Views
-  { id: 14, title: "Stone Cottage Exterior", category: "Gardens & Dales Views", aspect: "aspect-[16/10]", src: "/images/YorkshireDales/Gardens & Dales Views/Yorkshire Dales Hill View out side.jpg", tag: "Low Row" },
-  { id: 15, title: "Private Outdoor Seating", category: "Gardens & Dales Views", aspect: "aspect-[16/9]", src: "/images/YorkshireDales/Gardens & Dales Views/Hill View 2026 outdoor chill view.jpg", tag: "Valley Terrace" },
-  { id: 16, title: "Swaledale Valley Fells", category: "Gardens & Dales Views", aspect: "aspect-[16/10]", src: "/images/YorkshireDales/Gardens & Dales Views/Hill View 2026 view of the hills.jpg", tag: "Countryside" },
-  { id: 17, title: "Stone Gate & Entrance", category: "Gardens & Dales Views", aspect: "aspect-[4/3]", src: "/images/YorkshireDales/Gardens & Dales Views/Hill View 2026 Gate and Door.jpg", tag: "Arrival" },
-  { id: 18, title: "Backyard & Rolling Hills", category: "Gardens & Dales Views", aspect: "aspect-[16/10]", src: "/images/YorkshireDales/Gardens & Dales Views/Hill View 2026 view of the backyard and hills.jpg", tag: "Rear Gardens" }
+  // Gardens
+  { id: 12, title: "Stone Cottage Exterior", category: "Gardens & Dales Views", aspect: "aspect-[16/10]", src: "/images/gardens/yorkshire-dales-hill-view-out-side.jpg", tag: "Low Row" },
+  { id: 13, title: "Private Outdoor Seating", category: "Gardens & Dales Views", aspect: "aspect-[16/9]", src: "/images/gardens/hill-view-2026-outdoor-chill-view.jpg", tag: "Valley Terrace" },
+  { id: 14, title: "Swaledale Valley Fells", category: "Gardens & Dales Views", aspect: "aspect-[16/10]", src: "/images/gardens/hill-view-2026-view-of-the-hills.jpg", tag: "Countryside" }
 ];
 
 const CATEGORIES = [

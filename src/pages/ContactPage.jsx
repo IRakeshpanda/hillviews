@@ -374,7 +374,7 @@ export default function ContactPage({ onOpenBooking }) {
         {/* Visual Plate */}
         <div className="relative w-full h-[50vh] md:h-[60vh] rounded-3xl overflow-hidden mb-16 arrival-anim shadow-2xl">
           <img 
-            src="/images/YorkshireDales/Gardens & Dales Views/Hill View 2026 front gate wide view.jpg" 
+            src="/images/gardens/hill-view-2026-front-gate-wide-view.jpg" 
             alt="Hill View Stone Cottage Approach" 
             className="w-full h-full object-cover"
           />
