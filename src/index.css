@@ -4,6 +4,13 @@
   :root {
     --font-serif: 'Cormorant Garamond', Georgia, serif;
     --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --hv-charcoal: #1C1B1A;
+    --hv-gold: #C9A227;
+    --hv-amber: #D9964A;
+    --hv-navy: #1F3560;
+    --hv-brass: #B8923A;
+    --hv-taupe: #8C7E7C;
+    --hv-cream: #F5F1EC;
   }
 }
 
@@ -112,6 +119,94 @@ html.lenis, html.lenis body {
 .dark .glass-pill {
   background: rgba(15, 17, 21, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hv-hero-overlay {
+  background: linear-gradient(to bottom, rgba(28,27,26,0.40) 0%, rgba(28,27,26,0.50) 50%, rgba(28,27,26,0.65) 100%);
+}
+
+.hv-hero-headline {
+  color: var(--hv-cream);
+  text-shadow: 0 2px 20px rgba(28,27,26,0.45);
+}
+
+.hv-hero-tagline {
+  color: var(--hv-gold);
+  text-shadow: 0 2px 20px rgba(28,27,26,0.45);
+}
+
+.hv-hero-badge {
+  color: var(--hv-gold);
+  border: 1px solid rgba(201,162,39,0.5);
+  background: rgba(28,27,26,0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.hv-booking-panel {
+  background: rgba(28,27,26,0.92);
+  border: 1px solid rgba(201,162,39,0.2);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+}
+
+.hv-booking-label {
+  color: var(--hv-brass);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.hv-booking-input {
+  background: rgba(245,241,236,0.08);
+  border: 1px solid rgba(245,241,236,0.18);
+  color: var(--hv-cream);
+  transition: border-color 200ms ease, box-shadow 200ms ease, background-color 200ms ease;
+}
+
+.hv-booking-input:hover {
+  background: rgba(245,241,236,0.10);
+}
+
+.hv-booking-input:focus-visible {
+  border-color: var(--hv-gold);
+  box-shadow: 0 0 0 3px rgba(201,162,39,0.25);
+  outline: none;
+}
+
+.hv-search-button {
+  background: var(--hv-gold);
+  color: var(--hv-charcoal);
+  transition: background 200ms ease, transform 200ms ease;
+}
+
+.hv-search-button:hover {
+  background: var(--hv-amber);
+}
+
+.hv-search-button:active {
+  transform: scale(0.98);
+}
+
+.hv-nav-pill {
+  background: rgba(245,241,236,0.92);
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+.hv-nav-link {
+  color: var(--hv-charcoal);
+}
+
+.hv-nav-link:hover {
+  color: var(--hv-brass);
+}
+
+.hv-book-now {
+  background: var(--hv-navy);
+  color: var(--hv-cream);
+  transition: background 200ms ease, color 200ms ease;
+}
+
+.hv-book-now:hover {
+  background: var(--hv-charcoal);
 }
 
 /* Animations */
