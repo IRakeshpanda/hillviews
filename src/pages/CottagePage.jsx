@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import CottageBookingEngine from '../components/CottageBookingEngine';
 import { cottageImages } from '../data/cottageData';
 
 export default function CottagePage() {
@@ -32,6 +33,17 @@ export default function CottagePage() {
             Discover our collection of thoughtfully restored retreats in the heart of the Yorkshire Dales.
           </p>
         </header>
+
+        <div className="mb-12 grid grid-cols-1 xl:grid-cols-[1.1fr_0.9fr] gap-8 items-start animate-fadeIn">
+          <div className="rounded-3xl border border-neutral-200/80 bg-white p-8 shadow-sm">
+            <span className="text-[10px] uppercase tracking-[0.24em] text-neutral-400 font-semibold">Live availability</span>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-neutral-900">Book your Yorkshire Dales escape</h2>
+            <p className="mt-3 text-base leading-relaxed text-neutral-600">
+              Choose your dates, view real-time availability, and reserve direct with secure confirmation from the cottage calendar.
+            </p>
+          </div>
+          <CottageBookingEngine />
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fadeIn">
           
