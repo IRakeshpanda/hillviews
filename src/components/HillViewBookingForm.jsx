@@ -70,7 +70,7 @@ const readResponseJsonSafely = async (response) => {
 
 const getRequestFailureMessage = (response, payload) => {
   if (response?.status === 404) {
-    return 'The booking endpoint is not available in this local preview. Please run the app in the configured server environment that serves /api/smoobu/booking.';
+    return payload?.error || payload?.message || 'The booking endpoint was not found.';
   }
 
   return payload?.error || payload?.message || 'Booking request failed.';

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { buildSmoobuHeaders } from '../../../../lib/smoobuHmac';
 
-const SMOOBU_API_KEY = process.env.SMOOBU_API_KEY || process.env.textSMOOBU_API_KEY || '';
+const SMOOBU_API_KEY = process.env.SMOOBU_API_KEY || '';
 const SMOOBU_API_SECRET = process.env.SMOOBU_API_SECRET || '';
 const HILL_VIEW_APARTMENT_ID = process.env.SMOOBU_HILL_VIEW_APARTMENT_ID || '';
 
