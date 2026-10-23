@@ -102,31 +102,57 @@ export default function HillViewBookingForm() {
   useEffect(() => {
     if (!arrivalDate || !departureDate || arrivalDate >= departureDate) {
       setBookedDates([]);
+      setFieldErrors((previous) => ({ ...previous, availability: '' }));
       return;
     }
 
     let isCurrent = true;
     setIsCheckingAvailability(true);
+    setFieldErrors((previous) => ({ ...previous, availability: '' }));
 
     const fetchAvailability = async () => {
       try {
-        const params = new URLSearchParams({
-          startDate: arrivalDate,
-          endDate: departureDate,
+        const response = await fetch('/api/smoobu/availability', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            arrivalDate,
+            departureDate,
+            guests: Number(adults || 2),
+          }),
         });
 
-        const response = await fetch(`/api/smoobu/availability?${params.toString()}`);
+        const data = await readResponseJsonSafely(response);
+
         if (!response.ok) {
-          throw new Error('Availability unavailable');
+          if (isCurrent) {
+            setFieldErrors((previous) => ({
+              ...previous,
+              availability: data?.message || 'Unable to verify availability right now. Please try again.',
+            }));
+          }
+          return;
         }
 
-        const data = await readResponseJsonSafely(response);
-        if (isCurrent && Array.isArray(data.bookedDates)) {
-          setBookedDates(data.bookedDates);
+        if (isCurrent) {
+          if (data?.available === false) {
+            setFieldErrors((previous) => ({
+              ...previous,
+              availability: data?.message || 'The selected dates are not available.',
+            }));
+            setBookedDates([]);
+          } else {
+            setFieldErrors((previous) => ({ ...previous, availability: '' }));
+            setBookedDates([]);
+          }
         }
       } catch (error) {
         console.warn('Unable to sync availability.', error);
         if (isCurrent) {
+          setFieldErrors((previous) => ({
+            ...previous,
+            availability: 'We could not verify availability right now. Please try again.',
+          }));
           setBookedDates([]);
         }
       } finally {
@@ -141,9 +167,9 @@ export default function HillViewBookingForm() {
     return () => {
       isCurrent = false;
     };
-  }, [arrivalDate, departureDate]);
+  }, [arrivalDate, departureDate, adults]);
 
-  const rangeIsUnavailable = hasAvailabilityOverlap(arrivalDate, departureDate, bookedDates);
+  const rangeIsUnavailable = hasAvailabilityOverlap(arrivalDate, departureDate, bookedDates) || !!fieldErrors.availability;
 
   const validateForm = () => {
     const nextErrors = {};
@@ -161,18 +187,22 @@ export default function HillViewBookingForm() {
     if (Number(adults) < 1) nextErrors.adults = 'Please choose at least one adult.';
     if (children < 0) nextErrors.children = 'Children cannot be negative.';
 
-    if (arrivalDate && departureDate && rangeIsUnavailable) {
-      nextErrors.availability = 'The selected dates overlap with a booked period. Please choose another range.';
-    }
-
-    setFieldErrors(nextErrors);
-    return Object.keys(nextErrors).length === 0;
+    setFieldErrors((previous) => ({ ...previous, ...nextErrors }));
+    return Object.keys(nextErrors).length === 0 && !fieldErrors.availability;
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!validateForm()) {
+      setStatusType('error');
+      setStatusMessage(fieldErrors.availability || 'The selected dates are unavailable. Please choose another range.');
+      return;
+    }
+
+    if (fieldErrors.availability || rangeIsUnavailable) {
+      setStatusType('error');
+      setStatusMessage(fieldErrors.availability || 'The selected dates are unavailable. Please choose another range.');
       return;
     }
 

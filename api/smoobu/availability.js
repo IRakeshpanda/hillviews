@@ -1,59 +1,100 @@
+import { getSmoobuHeaders } from '../_lib/smoobu.js';
+
 export default async function handler(req, res) {
-  if (req.method !== 'GET') {
-    res.setHeader('Allow', 'GET');
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed.' });
   }
 
-  const apiKey = process.env.SMOOBU_API_KEY || process.env.textSMOOBU_API_KEY || '';
-  const apartmentId = process.env.SMOOBU_HILL_VIEW_APARTMENT_ID || '';
+  const apiKey = process.env.SMOOBU_API_KEY || '';
+  const apiSecret = process.env.SMOOBU_API_SECRET || '';
+  const customerId = Number(process.env.SMOOBU_CUSTOMER_ID || '0');
+  const apartmentId = Number(process.env.SMOOBU_HILL_VIEW_APARTMENT_ID || '0');
 
-  if (!apiKey || !apartmentId) {
+  if (!apiKey || !customerId || !apartmentId) {
     return res.status(500).json({
-      bookedDates: [],
-      error: 'Smoobu availability is not configured. Set SMOOBU_API_KEY and SMOOBU_HILL_VIEW_APARTMENT_ID in Vercel.'
+      available: false,
+      message: 'Smoobu availability is not configured. Set SMOOBU_API_KEY, SMOOBU_CUSTOMER_ID, and SMOOBU_HILL_VIEW_APARTMENT_ID in Vercel.'
     });
   }
 
-  const { startDate, endDate } = req.query || {};
-  if (!startDate || !endDate) {
-    return res.status(400).json({ error: 'Missing startDate or endDate query params.' });
+  const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
+  const arrivalDate = String(body.arrivalDate || '').trim();
+  const departureDate = String(body.departureDate || '').trim();
+  const guests = Number(body.guests || body.adults || 2);
+
+  if (!arrivalDate || !departureDate) {
+    return res.status(400).json({ available: false, message: 'Arrival and departure dates are required.' });
   }
+
+  const start = new Date(`${arrivalDate}T00:00:00Z`);
+  const end = new Date(`${departureDate}T00:00:00Z`);
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || start >= end) {
+    return res.status(400).json({ available: false, message: 'Departure date must be after arrival date.' });
+  }
+
+  const payload = {
+    arrivalDate,
+    departureDate,
+    apartments: [apartmentId],
+    customerId,
+    guests,
+  };
+
+  const rawBody = JSON.stringify(payload);
+  const headers = getSmoobuHeaders({
+    method: 'POST',
+    path: '/booking/checkApartmentAvailability',
+    body: rawBody,
+    apiKey,
+    apiSecret,
+  });
 
   try {
-    const availabilityUrl = new URL('https://login.smoobu.com/api/rates');
-    availabilityUrl.searchParams.set('apartments[]', apartmentId);
-    availabilityUrl.searchParams.set('start_date', String(startDate));
-    availabilityUrl.searchParams.set('end_date', String(endDate));
-
-    const response = await fetch(availabilityUrl, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Api-Key': apiKey,
-      },
+    const response = await fetch('https://login.smoobu.com/booking/checkApartmentAvailability', {
+      method: 'POST',
+      headers,
+      body: rawBody,
     });
 
+    const responseText = await response.text();
+    let data = {};
+    try {
+      data = responseText ? JSON.parse(responseText) : {};
+    } catch {
+      data = { raw: responseText };
+    }
+
+    console.log('Smoobu availability status:', response.status);
+    console.log('Smoobu availability response:', responseText.slice(0, 1200));
+
     if (!response.ok) {
-      const detail = await response.text();
-      console.error('Smoobu availability call failed', { status: response.status, detail });
-      return res.status(502).json({
-        bookedDates: [],
-        error: 'Unable to fetch live availability from Smoobu.'
+      const errorMessage = data?.message || data?.error || 'Unable to verify availability for the selected dates.';
+      return res.status(response.status || 500).json({
+        available: false,
+        message: errorMessage,
       });
     }
 
-    const data = await response.json();
-    const apartmentData = data?.data?.[apartmentId] ?? data?.[apartmentId] ?? {};
-    const bookedDates = Object.entries(apartmentData)
-      .filter(([, details]) => details?.available === 0 || details?.available === false)
-      .map(([date]) => date);
+    const apartmentKey = String(apartmentId);
+    const availableApartments = Array.isArray(data?.availableApartments)
+      ? data.availableApartments.map((value) => String(value))
+      : [];
+    const available = availableApartments.includes(apartmentKey);
+    const priceInfo = data?.prices?.[apartmentKey] || data?.prices?.[Number(apartmentId)] || {};
+    const errorMessage = data?.errorMessages?.[apartmentKey]?.message || data?.errorMessages?.[Number(apartmentId)]?.message || '';
 
-    return res.status(200).json({ bookedDates, notice: 'Live availability synced for Hill View Stone Cottage.' });
+    return res.status(200).json({
+      available,
+      price: priceInfo?.price ?? null,
+      currency: priceInfo?.currency ?? null,
+      message: available ? '' : (errorMessage || data?.message || 'The selected dates are not available.'),
+    });
   } catch (error) {
     console.error('Smoobu availability API error:', error);
     return res.status(500).json({
-      bookedDates: [],
-      error: 'Failed to fetch live availability.'
+      available: false,
+      message: 'We could not verify availability right now. Please try again.',
     });
   }
 }
