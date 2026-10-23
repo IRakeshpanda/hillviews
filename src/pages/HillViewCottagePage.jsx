@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import CottageBookingEngine from '../components/CottageBookingEngine';
+import HillViewBookingForm from '../components/HillViewBookingForm';
 import { cottageImages } from '../data/cottageData';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -301,7 +301,7 @@ export default function HillViewCottagePage() {
 
             {/* RIGHT STREAM: STICKY BOOKING ENGINE */}
             <aside className="lg:col-span-4 hidden lg:block sticky top-28 space-y-4 sticky-card z-10">
-              <CottageBookingEngine />
+              <HillViewBookingForm />
             </aside>
 
           </div>
