@@ -1,12 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
+import { DayPicker } from 'react-day-picker';
+import 'react-day-picker/dist/style.css';
 
 const NIGHT_RATE = 185;
 const CLEANING_FEE = 45;
 
-const formatDate = (date) => {
-  const normalized = new Date(date);
-  normalized.setMinutes(normalized.getMinutes() - normalized.getTimezoneOffset());
-  return normalized.toISOString().slice(0, 10);
+const toLocalDateString = (date) => {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
+    return '';
+  }
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 };
 
 const parseLocalDate = (value) => {
@@ -27,24 +34,20 @@ const calculateNights = (arrivalDate, departureDate) => {
   return Math.max(0, Math.round(diffMs / (1000 * 60 * 60 * 24)));
 };
 
-const addDays = (value, days) => {
-  const date = parseLocalDate(value);
-  if (!date) return value;
-  date.setDate(date.getDate() + days);
-  return formatDate(date);
-};
-
-const hasAvailabilityOverlap = (startDate, endDate, bookedDates) => {
+const containsBlockedNight = (startDate, endDate, blockedDates) => {
   if (!startDate || !endDate) return false;
-  const start = parseLocalDate(startDate);
-  const end = parseLocalDate(endDate);
 
-  if (!start || !end || start >= end) return false;
+  const start = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+  const end = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || start >= end) {
+    return false;
+  }
 
   let cursor = new Date(start);
   while (cursor < end) {
-    const iso = formatDate(cursor);
-    if (bookedDates.includes(iso)) {
+    const iso = toLocalDateString(cursor);
+    if (blockedDates.includes(iso)) {
       return true;
     }
     cursor.setDate(cursor.getDate() + 1);
@@ -68,17 +71,10 @@ const readResponseJsonSafely = async (response) => {
   }
 };
 
-const getRequestFailureMessage = (response, payload) => {
-  if (response?.status === 404) {
-    return payload?.error || payload?.message || 'The booking endpoint was not found.';
-  }
-
-  return payload?.error || payload?.message || 'Booking request failed.';
-};
-
 export default function HillViewBookingForm() {
-  const today = useMemo(() => formatDate(new Date()), []);
-
+  const today = useMemo(() => new Date(), []);
+  const [visibleMonths, setVisibleMonths] = useState(1);
+  const [range, setRange] = useState({ from: undefined, to: undefined });
   const [arrivalDate, setArrivalDate] = useState('');
   const [departureDate, setDepartureDate] = useState('');
   const [adults, setAdults] = useState(2);
@@ -88,97 +84,79 @@ export default function HillViewBookingForm() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [notes, setNotes] = useState('');
-  const [bookedDates, setBookedDates] = useState([]);
-  const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
+  const [blockedDates, setBlockedDates] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [statusType, setStatusType] = useState('idle');
   const [fieldErrors, setFieldErrors] = useState({});
 
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(min-width: 768px)');
+    const updateVisibleMonths = () => setVisibleMonths(mediaQuery.matches ? 2 : 1);
+
+    updateVisibleMonths();
+    mediaQuery.addEventListener('change', updateVisibleMonths);
+
+    return () => mediaQuery.removeEventListener('change', updateVisibleMonths);
+  }, []);
+
+  const loadBlockedDates = async () => {
+    try {
+      const response = await fetch('/api/smoobu/blocked-dates', { cache: 'no-store' });
+      if (!response.ok) {
+        console.warn('Unable to load booked dates for Hill View.');
+        return;
+      }
+
+      const data = await response.json();
+      setBlockedDates(Array.isArray(data?.blocked) ? data.blocked : []);
+    } catch (error) {
+      console.warn('Could not refresh blocked dates.', error);
+      setBlockedDates([]);
+    }
+  };
+
+  useEffect(() => {
+    loadBlockedDates();
+  }, []);
+
+  const blockedDateObjects = useMemo(
+    () =>
+      blockedDates
+        .map((value) => {
+          const parsed = parseLocalDate(value);
+          return parsed ? new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate()) : null;
+        })
+        .filter(Boolean),
+    [blockedDates],
+  );
+
   const nights = calculateNights(arrivalDate, departureDate);
   const subtotal = nights * NIGHT_RATE;
   const total = subtotal + CLEANING_FEE;
-
-  useEffect(() => {
-    if (!arrivalDate || !departureDate || arrivalDate >= departureDate) {
-      setBookedDates([]);
-      setFieldErrors((previous) => ({ ...previous, availability: '' }));
-      return;
-    }
-
-    let isCurrent = true;
-    setIsCheckingAvailability(true);
-    setFieldErrors((previous) => ({ ...previous, availability: '' }));
-
-    const fetchAvailability = async () => {
-      try {
-        const response = await fetch('/api/smoobu/availability', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            arrivalDate,
-            departureDate,
-            guests: Number(adults || 2),
-          }),
-        });
-
-        const data = await readResponseJsonSafely(response);
-
-        if (!response.ok) {
-          if (isCurrent) {
-            setFieldErrors((previous) => ({
-              ...previous,
-              availability: data?.message || 'Unable to verify availability right now. Please try again.',
-            }));
-          }
-          return;
-        }
-
-        if (isCurrent) {
-          if (data?.available === false) {
-            setFieldErrors((previous) => ({
-              ...previous,
-              availability: data?.message || 'The selected dates are not available.',
-            }));
-            setBookedDates([]);
-          } else {
-            setFieldErrors((previous) => ({ ...previous, availability: '' }));
-            setBookedDates([]);
-          }
-        }
-      } catch (error) {
-        console.warn('Unable to sync availability.', error);
-        if (isCurrent) {
-          setFieldErrors((previous) => ({
-            ...previous,
-            availability: 'We could not verify availability right now. Please try again.',
-          }));
-          setBookedDates([]);
-        }
-      } finally {
-        if (isCurrent) {
-          setIsCheckingAvailability(false);
-        }
-      }
-    };
-
-    fetchAvailability();
-
-    return () => {
-      isCurrent = false;
-    };
-  }, [arrivalDate, departureDate, adults]);
-
-  const rangeIsUnavailable = hasAvailabilityOverlap(arrivalDate, departureDate, bookedDates) || !!fieldErrors.availability;
+  const rangeContainsBookedNight = Boolean(range.from && range.to && containsBlockedNight(range.from, range.to, blockedDates));
+  const isSubmitDisabled = isSubmitting || !arrivalDate || !departureDate || rangeContainsBookedNight;
 
   const validateForm = () => {
     const nextErrors = {};
 
     if (!arrivalDate) nextErrors.arrivalDate = 'Check-in date is required.';
     if (!departureDate) nextErrors.departureDate = 'Check-out date is required.';
-    if (arrivalDate && departureDate && arrivalDate >= departureDate) {
-      nextErrors.departureDate = 'Check-out must be after check-in.';
+
+    if (arrivalDate && departureDate) {
+      const checkIn = parseLocalDate(arrivalDate);
+      const checkOut = parseLocalDate(departureDate);
+      const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+      if (checkIn && checkIn < todayStart) {
+        nextErrors.arrivalDate = 'Past dates are not available.';
+      }
+
+      if (checkIn && checkOut && checkOut <= checkIn) {
+        nextErrors.departureDate = 'Check-out must be after check-in.';
+      }
     }
+
     if (!firstName.trim()) nextErrors.firstName = 'First name is required.';
     if (!lastName.trim()) nextErrors.lastName = 'Last name is required.';
     if (!email.trim()) nextErrors.email = 'Email is required.';
@@ -186,9 +164,41 @@ export default function HillViewBookingForm() {
     if (!phone.trim()) nextErrors.phone = 'Phone number is required.';
     if (Number(adults) < 1) nextErrors.adults = 'Please choose at least one adult.';
     if (children < 0) nextErrors.children = 'Children cannot be negative.';
+    if (rangeContainsBookedNight) nextErrors.availability = 'Those dates include a booked night — please pick another range.';
 
     setFieldErrors((previous) => ({ ...previous, ...nextErrors }));
-    return Object.keys(nextErrors).length === 0 && !fieldErrors.availability;
+    return Object.keys(nextErrors).length === 0;
+  };
+
+  const handleCalendarSelect = (selectedRange) => {
+    if (!selectedRange) {
+      setRange({ from: undefined, to: undefined });
+      setArrivalDate('');
+      setDepartureDate('');
+      setStatusType('idle');
+      setStatusMessage('');
+      return;
+    }
+
+    if (selectedRange.from && selectedRange.to) {
+      const overlapsBookedNight = containsBlockedNight(selectedRange.from, selectedRange.to, blockedDates);
+      if (overlapsBookedNight) {
+        setRange({ from: selectedRange.from, to: undefined });
+        setArrivalDate(toLocalDateString(selectedRange.from));
+        setDepartureDate('');
+        setStatusType('error');
+        setStatusMessage('Those dates include a booked night — please pick another range.');
+        setFieldErrors((previous) => ({ ...previous, availability: 'Those dates include a booked night — please pick another range.' }));
+        return;
+      }
+    }
+
+    setRange(selectedRange);
+    setArrivalDate(selectedRange.from ? toLocalDateString(selectedRange.from) : '');
+    setDepartureDate(selectedRange.to ? toLocalDateString(selectedRange.to) : '');
+    setStatusType('idle');
+    setStatusMessage('');
+    setFieldErrors((previous) => ({ ...previous, arrivalDate: '', departureDate: '', availability: '' }));
   };
 
   const handleSubmit = async (event) => {
@@ -196,13 +206,7 @@ export default function HillViewBookingForm() {
 
     if (!validateForm()) {
       setStatusType('error');
-      setStatusMessage(fieldErrors.availability || 'The selected dates are unavailable. Please choose another range.');
-      return;
-    }
-
-    if (fieldErrors.availability || rangeIsUnavailable) {
-      setStatusType('error');
-      setStatusMessage(fieldErrors.availability || 'The selected dates are unavailable. Please choose another range.');
+      setStatusMessage('Please review the highlighted booking details and try again.');
       return;
     }
 
@@ -213,9 +217,7 @@ export default function HillViewBookingForm() {
     try {
       const response = await fetch('/api/smoobu/booking', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           arrivalDate,
           departureDate,
@@ -231,50 +233,38 @@ export default function HillViewBookingForm() {
 
       const data = await readResponseJsonSafely(response);
 
+      if (response.status === 409) {
+        setRange({ from: undefined, to: undefined });
+        setArrivalDate('');
+        setDepartureDate('');
+        setStatusType('error');
+        setStatusMessage(data?.error || 'Those dates were just taken. Please pick another range.');
+        setFieldErrors((previous) => ({ ...previous, availability: data?.error || 'Those dates were just taken. Please pick another range.' }));
+        await loadBlockedDates();
+        return;
+      }
+
       if (!response.ok) {
-        throw new Error(getRequestFailureMessage(response, data));
+        throw new Error(data?.error || 'We could not complete your booking request. Please try again.');
       }
 
       setStatusType('success');
       setStatusMessage(
-        data?.reference
-          ? `Booking request submitted successfully. Reference: ${data.reference}`
-          : 'Booking request submitted successfully. We will be in touch shortly.'
+        data?.reference || data?.bookingId
+          ? `Booking confirmed. Reference: ${data.reference || data.bookingId}`
+          : 'Booking confirmed. We will be in touch shortly.'
       );
 
+      setRange({ from: undefined, to: undefined });
       setArrivalDate('');
       setDepartureDate('');
-      setAdults(2);
-      setChildren(0);
-      setFirstName('');
-      setLastName('');
-      setEmail('');
-      setPhone('');
-      setNotes('');
-      setFieldErrors({});
+      await loadBlockedDates();
     } catch (error) {
       console.error('Booking request failed:', error);
       setStatusType('error');
       setStatusMessage(error.message || 'We could not complete your booking request. Please try again.');
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  const handleArrivalChange = (value) => {
-    setArrivalDate(value);
-    if (departureDate && value >= departureDate) {
-      setDepartureDate('');
-    }
-    if (fieldErrors.arrivalDate || fieldErrors.departureDate || fieldErrors.availability) {
-      setFieldErrors((previous) => ({ ...previous, arrivalDate: '', departureDate: '', availability: '' }));
-    }
-  };
-
-  const handleDepartureChange = (value) => {
-    setDepartureDate(value);
-    if (fieldErrors.departureDate || fieldErrors.availability) {
-      setFieldErrors((previous) => ({ ...previous, departureDate: '', availability: '' }));
     }
   };
 
@@ -296,16 +286,83 @@ export default function HillViewBookingForm() {
         </div>
       </div>
 
+      <div className="mb-5">
+        <div className="mb-3 flex items-center justify-between">
+          <label className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold block">Availability</label>
+          <div className="flex items-center gap-3 text-[10px] text-neutral-500">
+            <span className="inline-flex items-center gap-1.5">
+              <span className="inline-block h-3 w-3 rounded-sm border border-neutral-300 bg-rose-600" />
+              Booked
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="inline-block h-3 w-3 rounded-sm border border-neutral-300 bg-white" />
+              Available
+            </span>
+          </div>
+        </div>
+
+        <div className="rounded-3xl border border-neutral-200 bg-neutral-50 p-2 sm:p-3">
+          <DayPicker
+            mode="range"
+            selected={range}
+            onSelect={handleCalendarSelect}
+            min={1}
+            disabled={[{ before: today }, ...blockedDateObjects]}
+            excludeDisabled
+            modifiers={{ booked: blockedDateObjects }}
+            modifiersClassNames={{ booked: 'booked-day' }}
+            numberOfMonths={visibleMonths}
+            fromMonth={new Date(today.getFullYear(), today.getMonth(), 1)}
+            className="mx-auto"
+            classNames={{
+              months: 'flex flex-col md:flex-row md:gap-5',
+              month: 'flex-1',
+              caption: 'flex justify-center items-center relative mb-3',
+              caption_label: 'text-sm font-semibold text-neutral-900',
+              nav: 'absolute inset-0 flex items-center justify-between pointer-events-none',
+              nav_button: 'pointer-events-auto inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-neutral-700 shadow-sm border border-neutral-200 hover:bg-neutral-100',
+              table: 'w-full border-collapse',
+              head_cell: 'text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold',
+              cell: 'p-0',
+              day: 'h-9 w-9 rounded-full text-sm text-neutral-700 hover:bg-neutral-200 focus:outline-none',
+              day_selected: 'bg-neutral-900 text-white rounded-full',
+              day_today: 'font-semibold text-neutral-900',
+              day_outside: 'text-neutral-300',
+              day_disabled: 'text-neutral-300 cursor-not-allowed',
+            }}
+          />
+        </div>
+      </div>
+
+      <style>{`
+        .rdp .booked-day,
+        .rdp .booked-day:hover,
+        .rdp .booked-day:focus {
+          background-color: #dc2626 !important;
+          color: #fff !important;
+          text-decoration: line-through !important;
+          cursor: not-allowed !important;
+          pointer-events: none !important;
+          opacity: 1 !important;
+        }
+      `}</style>
+
+      {fieldErrors.availability && (
+        <div className="mb-4 rounded-2xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700">
+          {fieldErrors.availability}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} noValidate className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold block mb-1">Check-in</label>
             <input
-              type="date"
-              min={today}
+              type="text"
               value={arrivalDate}
-              onChange={(event) => handleArrivalChange(event.target.value)}
-              className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-3 py-2.5 text-sm text-neutral-900 outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900"
+              readOnly
+              className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-3 py-2.5 text-sm text-neutral-900 outline-none"
+              placeholder="Select date"
             />
             {fieldErrors.arrivalDate && <p className="mt-1 text-[10px] text-rose-600">{fieldErrors.arrivalDate}</p>}
           </div>
@@ -313,11 +370,11 @@ export default function HillViewBookingForm() {
           <div>
             <label className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold block mb-1">Check-out</label>
             <input
-              type="date"
-              min={addDays(arrivalDate || today, 1)}
+              type="text"
               value={departureDate}
-              onChange={(event) => handleDepartureChange(event.target.value)}
-              className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-3 py-2.5 text-sm text-neutral-900 outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900"
+              readOnly
+              className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-3 py-2.5 text-sm text-neutral-900 outline-none"
+              placeholder="Select date"
             />
             {fieldErrors.departureDate && <p className="mt-1 text-[10px] text-rose-600">{fieldErrors.departureDate}</p>}
           </div>
@@ -419,48 +476,44 @@ export default function HillViewBookingForm() {
             <textarea
               value={notes}
               onChange={(event) => setNotes(event.target.value)}
-              rows={4}
-              className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-3 py-2.5 text-sm text-neutral-900 outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900"
-              placeholder="Optional message for the host"
+              rows="3"
+              className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-3 py-2.5 text-sm text-neutral-900 outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 resize-none"
+              placeholder="Tell us about your stay, arrival plans, or any special requests."
             />
           </div>
         </div>
 
-        <div className="rounded-2xl bg-neutral-50 border border-neutral-200 p-4 space-y-2 text-xs text-neutral-600">
-          <div className="flex items-center justify-between">
-            <span>{nights || 0} nights</span>
-            <span>£{subtotal || 0}</span>
+        <div className="rounded-3xl border border-neutral-200 bg-neutral-50 px-3 py-4">
+          <div className="flex items-center justify-between text-sm text-neutral-600">
+            <span>Stay</span>
+            <span>{nights || 0} night{nights === 1 ? '' : 's'}</span>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mt-2 text-sm text-neutral-600">
+            <span>Rate</span>
+            <span>£{NIGHT_RATE.toLocaleString()} / night</span>
+          </div>
+          <div className="flex items-center justify-between mt-2 text-sm text-neutral-600">
             <span>Cleaning fee</span>
             <span>£{CLEANING_FEE}</span>
           </div>
-          <div className="flex items-center justify-between font-semibold text-neutral-900 border-t border-neutral-200 pt-2">
+          <div className="border-t border-neutral-200 pt-3 mt-3 flex items-center justify-between font-bold text-neutral-900">
             <span>Total</span>
-            <span className="text-base">£{total || CLEANING_FEE}</span>
+            <span>£{total.toLocaleString()}</span>
           </div>
         </div>
 
-        {fieldErrors.availability && (
-          <p className="text-[11px] font-medium text-rose-600">{fieldErrors.availability}</p>
-        )}
-
-        {isCheckingAvailability && (
-          <p className="text-[11px] text-neutral-500">Checking live availability…</p>
-        )}
-
         {statusMessage && (
-          <div className={`rounded-2xl border px-3 py-2 text-[11px] ${statusType === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-rose-200 bg-rose-50 text-rose-700'}`}>
+          <div className={`rounded-2xl border px-3 py-2 text-sm ${statusType === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-rose-200 bg-rose-50 text-rose-700'}`}>
             {statusMessage}
           </div>
         )}
 
         <button
           type="submit"
-          disabled={isSubmitting || isCheckingAvailability || rangeIsUnavailable}
-          className="w-full py-3.5 rounded-full bg-neutral-900 hover:bg-black text-white font-semibold text-sm transition-all shadow-md disabled:cursor-not-allowed disabled:opacity-50"
+          disabled={isSubmitDisabled}
+          className="w-full rounded-full bg-neutral-900 px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:bg-neutral-300"
         >
-          {isSubmitting ? 'Requesting booking…' : 'Request Booking'}
+          {isSubmitting ? 'Submitting booking…' : 'Request booking'}
         </button>
       </form>
     </div>

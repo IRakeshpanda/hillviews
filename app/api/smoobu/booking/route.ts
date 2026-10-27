@@ -1,3 +1,6 @@
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 import { NextResponse } from 'next/server';
 import { buildSmoobuHeaders } from '../../../../lib/smoobuHmac';
 
@@ -5,24 +8,56 @@ const SMOOBU_API_KEY = process.env.SMOOBU_API_KEY || '';
 const SMOOBU_API_SECRET = process.env.SMOOBU_API_SECRET || '';
 const HILL_VIEW_APARTMENT_ID = process.env.SMOOBU_HILL_VIEW_APARTMENT_ID || '';
 
-function isDateRangeUnavailable(bookedDates: string[], startDate: string, endDate: string): boolean {
-  const start = new Date(`${startDate}T00:00:00Z`);
-  const end = new Date(`${endDate}T00:00:00Z`);
+function parseLocalDate(value: string): Date | null {
+  if (!value) return null;
+  const [year, month, day] = value.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
 
-  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || start >= end) {
-    return true;
+function toLocalDateString(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function dateRangeContainsBookedNight(startDate: string, endDate: string, bookedDates: string[]): boolean {
+  const start = parseLocalDate(startDate);
+  const end = parseLocalDate(endDate);
+
+  if (!start || !end || start >= end) {
+    return false;
   }
 
-  const cursor = new Date(start);
+  let cursor = new Date(start);
   while (cursor < end) {
-    const isoDate = cursor.toISOString().slice(0, 10);
-    if (bookedDates.includes(isoDate)) {
+    if (bookedDates.includes(toLocalDateString(cursor))) {
       return true;
     }
-    cursor.setUTCDate(cursor.getUTCDate() + 1);
+    cursor.setDate(cursor.getDate() + 1);
   }
 
   return false;
+}
+
+function apartmentIsAvailable(responseBody: any): boolean {
+  const availableApartments = Array.isArray(responseBody?.availableApartments)
+    ? responseBody.availableApartments.map((value: string | number) => String(value))
+    : [];
+
+  if (availableApartments.length > 0) {
+    return availableApartments.includes(String(HILL_VIEW_APARTMENT_ID));
+  }
+
+  const apartmentEntry = responseBody?.data?.[String(HILL_VIEW_APARTMENT_ID)] ?? responseBody?.[String(HILL_VIEW_APARTMENT_ID)];
+  if (apartmentEntry && typeof apartmentEntry === 'object') {
+    const value = apartmentEntry.available;
+    if (value === false || value === 0 || value === '0') return false;
+    if (value === true || value === 1 || value === '1') return true;
+  }
+
+  return true;
 }
 
 export async function POST(request: Request) {
@@ -71,45 +106,59 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Smoobu booking is not configured on this server.' }, { status: 500 });
     }
 
-    const start = new Date(`${arrivalDate}T00:00:00Z`);
-    const end = new Date(`${departureDate}T00:00:00Z`);
-    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || start >= end) {
-      return NextResponse.json({ error: 'Check-in must be before check-out.' }, { status: 400 });
+    const start = parseLocalDate(arrivalDate);
+    const end = parseLocalDate(departureDate);
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    if (!start || !end || end <= start) {
+      return NextResponse.json({ error: 'Check-out must be after check-in.' }, { status: 400 });
     }
 
-    const ratesUrl = new URL('https://login.smoobu.com/api/rates');
-    ratesUrl.searchParams.set('apartments[]', HILL_VIEW_APARTMENT_ID);
-    ratesUrl.searchParams.set('start_date', arrivalDate);
-    ratesUrl.searchParams.set('end_date', departureDate);
+    if (start < today) {
+      return NextResponse.json({ error: 'Past dates are not available.' }, { status: 400 });
+    }
 
-    const availabilityResponse = await fetch(ratesUrl, {
-      method: 'GET',
+    const availabilityPayload = {
+      arrivalDate,
+      departureDate,
+      apartments: [Number(HILL_VIEW_APARTMENT_ID)],
+    };
+    const availabilityBody = JSON.stringify(availabilityPayload);
+    const availabilityResponse = await fetch('https://login.smoobu.com/booking/checkApartmentAvailability', {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...buildSmoobuHeaders('GET', `${ratesUrl.pathname}${ratesUrl.search}`, '', SMOOBU_API_KEY, SMOOBU_API_SECRET),
+        ...buildSmoobuHeaders('POST', '/booking/checkApartmentAvailability', availabilityBody, SMOOBU_API_KEY, SMOOBU_API_SECRET),
       },
+      body: availabilityBody,
     });
 
-    if (!availabilityResponse.ok) {
-      const detail = await availabilityResponse.text();
-      console.error('Smoobu availability check failed before booking creation', { status: availabilityResponse.status, detail });
-      return NextResponse.json({ error: 'We could not verify availability for the selected dates. Please try another date range.' }, { status: 502 });
+    const availabilityText = await availabilityResponse.text();
+    let availabilityData: any = {};
+    try {
+      availabilityData = availabilityText ? JSON.parse(availabilityText) : {};
+    } catch {
+      availabilityData = { raw: availabilityText };
     }
 
-    const availabilityData = await availabilityResponse.json();
-    const apartmentData = availabilityData?.data?.[HILL_VIEW_APARTMENT_ID] ?? availabilityData?.[HILL_VIEW_APARTMENT_ID] ?? {};
-    const bookedDates = Object.entries(apartmentData)
-      .filter(([, details]: [string, any]) => details?.available === 0 || details?.available === false)
-      .map(([date]) => date);
+    if (availabilityResponse.status >= 400 || !apartmentIsAvailable(availabilityData)) {
+      console.error('Smoobu apartment availability check failed', {
+        status: availabilityResponse.status,
+        response: availabilityData,
+      });
 
-    if (isDateRangeUnavailable(bookedDates, arrivalDate, departureDate)) {
-      return NextResponse.json({ error: 'The selected stay overlaps with an unavailable date. Please choose another range.' }, { status: 409 });
+      if (!apartmentIsAvailable(availabilityData)) {
+        return NextResponse.json({ error: 'Those dates were just taken. Please pick another range.' }, { status: 409 });
+      }
+
+      return NextResponse.json({ error: 'We could not verify availability for the selected dates. Please try another date range.' }, { status: 502 });
     }
 
     const reservationBody = {
       arrivalDate,
       departureDate,
-      apartmentId: HILL_VIEW_APARTMENT_ID,
+      apartmentId: Number(HILL_VIEW_APARTMENT_ID),
       channelId: 70,
       firstName: String(firstName).trim(),
       lastName: String(lastName).trim(),
@@ -121,29 +170,23 @@ export async function POST(request: Request) {
     };
 
     const reservationUrl = 'https://login.smoobu.com/api/reservations';
-    const signedHeaders = buildSmoobuHeaders(
-      'POST',
-      '/api/reservations',
-      JSON.stringify(reservationBody),
-      SMOOBU_API_KEY,
-      SMOOBU_API_SECRET,
-    );
+    const reservationPayload = JSON.stringify(reservationBody);
 
     const reservationResponse = await fetch(reservationUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...signedHeaders,
+        ...buildSmoobuHeaders('POST', '/api/reservations', reservationPayload, SMOOBU_API_KEY, SMOOBU_API_SECRET),
       },
-      body: JSON.stringify(reservationBody),
+      body: reservationPayload,
     });
 
-    const reservationData = await reservationResponse.text();
-    let parsedReservationData;
+    const reservationText = await reservationResponse.text();
+    let parsedReservationData: any = {};
     try {
-      parsedReservationData = reservationData ? JSON.parse(reservationData) : {};
+      parsedReservationData = reservationText ? JSON.parse(reservationText) : {};
     } catch {
-      parsedReservationData = {};
+      parsedReservationData = { raw: reservationText };
     }
 
     if (!reservationResponse.ok) {
@@ -153,18 +196,21 @@ export async function POST(request: Request) {
       });
       return NextResponse.json(
         { error: parsedReservationData?.message || 'Your booking request could not be submitted. Please try again.' },
-        { status: reservationResponse.status || 500 },
+        { status: 500 },
       );
     }
 
+    const bookingId = parsedReservationData?.id || parsedReservationData?.reservationId || parsedReservationData?.bookingId || null;
     return NextResponse.json({
       success: true,
       message: 'Your booking request has been received.',
+      bookingId,
+      reference: bookingId,
       booking: parsedReservationData,
-      reference: parsedReservationData?.id || parsedReservationData?.reservationId || parsedReservationData?.bookingId || null,
     });
   } catch (error) {
     console.error('Unexpected booking submission error:', error);
     return NextResponse.json({ error: 'Something went wrong while sending your booking request.' }, { status: 500 });
   }
 }
+
