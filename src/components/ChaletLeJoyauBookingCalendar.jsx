@@ -99,7 +99,7 @@ export default function ChaletLeJoyauBookingCalendar({ range, onSelect, blockedD
           modifiersClassNames={{ booked: 'booked-day' }}
           numberOfMonths={visibleMonths}
           fromMonth={new Date(today.getFullYear(), today.getMonth(), 1)}
-          className="mx-auto"
+          className="mx-auto w-full"
           classNames={{
             months: 'flex flex-col md:flex-row md:gap-5',
             month: 'flex-1',
