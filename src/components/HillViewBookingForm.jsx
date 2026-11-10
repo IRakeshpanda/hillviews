@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
+const weekdayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
 const NIGHT_RATE = 185;
 const CLEANING_FEE = 45;
 
@@ -89,6 +91,9 @@ export default function HillViewBookingForm() {
   const [phone, setPhone] = useState('');
   const [notes, setNotes] = useState('');
   const [bookedDates, setBookedDates] = useState([]);
+  const [calendarMonth, setCalendarMonth] = useState(() => new Date());
+  const [calendarDays, setCalendarDays] = useState({});
+  const [availabilityError, setAvailabilityError] = useState('');
   const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
@@ -98,6 +103,54 @@ export default function HillViewBookingForm() {
   const nights = calculateNights(arrivalDate, departureDate);
   const subtotal = nights * NIGHT_RATE;
   const total = subtotal + CLEANING_FEE;
+
+  const monthLabel = useMemo(() => {
+    return new Intl.DateTimeFormat('en-GB', { month: 'long', year: 'numeric' }).format(calendarMonth);
+  }, [calendarMonth]);
+
+  useEffect(() => {
+    let active = true;
+    setAvailabilityError('');
+    setIsCheckingAvailability(true);
+
+    const startOfMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), 1);
+    const endOfMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 2, 0);
+    const from = formatDate(startOfMonth);
+    const to = formatDate(endOfMonth);
+
+    const fetchCalendarData = async () => {
+      try {
+        const response = await fetch(`/api/availability?from=${from}&to=${to}`);
+        if (!response.ok) {
+          throw new Error('Availability unavailable');
+        }
+
+        const payload = await response.json();
+        if (!payload || typeof payload.days !== 'object' || Array.isArray(payload.days)) {
+          throw new Error('Availability unavailable');
+        }
+
+        if (active) {
+          setCalendarDays(payload.days);
+          setAvailabilityError('');
+        }
+      } catch (error) {
+        if (active) {
+          setCalendarDays({});
+          setAvailabilityError("Couldn't load availability. Try again");
+        }
+      } finally {
+        if (active) {
+          setIsCheckingAvailability(false);
+        }
+      }
+    };
+
+    fetchCalendarData();
+    return () => {
+      active = false;
+    };
+  }, [calendarMonth]);
 
   useEffect(() => {
     if (!arrivalDate || !departureDate || arrivalDate >= departureDate) {
@@ -278,6 +331,64 @@ export default function HillViewBookingForm() {
     }
   };
 
+  const getCalendarCellState = (dateKey) => {
+    const todayKey = formatDate(new Date());
+    if (dateKey < todayKey) {
+      return 'past';
+    }
+
+    const info = calendarDays[dateKey];
+    if (!info || typeof info !== 'object') {
+      return 'nodata';
+    }
+
+    if (info.available === false) {
+      return 'booked';
+    }
+
+    return 'available';
+  };
+
+  const selectDate = (dateKey) => {
+    if (dateKey < formatDate(new Date())) return;
+
+    const dayInfo = calendarDays[dateKey];
+    if (!dayInfo || typeof dayInfo !== 'object' || dayInfo.available === false) return;
+
+    if (!arrivalDate || arrivalDate === departureDate || (arrivalDate && departureDate && arrivalDate < departureDate)) {
+      if (!arrivalDate || dateKey < arrivalDate) {
+        setArrivalDate(dateKey);
+        setDepartureDate('');
+        return;
+      }
+
+      if (dateKey > arrivalDate) {
+        setDepartureDate(dateKey);
+      }
+      return;
+    }
+
+    if (!departureDate && dateKey > arrivalDate) {
+      setDepartureDate(dateKey);
+    }
+  };
+
+  const monthDates = useMemo(() => {
+    const first = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), 1);
+    const startOffset = first.getDay();
+    const totalCells = 42;
+    const cells = [];
+
+    for (let index = 0; index < totalCells; index += 1) {
+      const date = new Date(first);
+      date.setDate(first.getDate() + index - startOffset);
+      const key = formatDate(date);
+      cells.push({ key, date, inMonth: date.getMonth() === calendarMonth.getMonth() });
+    }
+
+    return cells;
+  }, [calendarMonth]);
+
   return (
     <div className="p-6 sm:p-8 rounded-3xl bg-white border border-neutral-200 shadow-[0_18px_50px_rgba(17,17,17,0.08)]">
       <div className="flex items-baseline justify-between mb-6 pb-4 border-b border-neutral-100">
@@ -297,12 +408,76 @@ export default function HillViewBookingForm() {
       </div>
 
       <form onSubmit={handleSubmit} noValidate className="space-y-4">
+        <div className="mb-4 rounded-2xl border border-neutral-200 bg-neutral-50 p-3">
+          <div className="mb-3 flex items-center justify-between">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold">Availability</p>
+            <div className="flex items-center gap-2 text-[10px] text-neutral-500">
+              <button type="button" onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1, 1))} className="h-8 w-8 rounded-full border border-neutral-200 bg-white text-neutral-700">‹</button>
+              <span className="min-w-[120px] text-center font-medium text-neutral-700">{monthLabel}</span>
+              <button type="button" onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 1))} className="h-8 w-8 rounded-full border border-neutral-200 bg-white text-neutral-700">›</button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-semibold uppercase tracking-[0.14em] text-neutral-400 mb-2">
+            {weekdayLabels.map((day) => (
+              <span key={day}>{day}</span>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-7 gap-1">
+            {monthDates.map(({ key, date, inMonth }) => {
+              const state = getCalendarCellState(key);
+              const isSelected = key === arrivalDate || key === departureDate;
+              const isInRange = arrivalDate && departureDate && key > arrivalDate && key < departureDate;
+              const info = calendarDays[key];
+
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  aria-label={`${new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).format(date)}, ${state}`}
+                  onClick={() => selectDate(key)}
+                  disabled={state === 'past' || state === 'nodata' || !inMonth}
+                  className={[
+                    'relative h-11 rounded-xl text-xs font-medium border transition-colors',
+                    !inMonth ? 'opacity-30' : '',
+                    state === 'past' ? 'bg-neutral-200 text-neutral-400 cursor-not-allowed border-neutral-200' : '',
+                    state === 'nodata' ? 'bg-neutral-100 text-neutral-400 cursor-not-allowed border-neutral-200' : '',
+                    state === 'booked' ? 'bg-red-500 text-white border-red-500 cursor-not-allowed' : '',
+                    state === 'available' ? 'bg-white text-neutral-900 border-neutral-200 hover:border-neutral-900' : '',
+                    isSelected ? 'ring-2 ring-neutral-900 ring-inset' : '',
+                    isInRange ? 'bg-neutral-100 border-neutral-300' : '',
+                  ].join(' ')}
+                >
+                  <span className="relative z-10">{date.getDate()}</span>
+                  {state === 'available' && info?.price != null && (
+                    <span className="absolute bottom-1 left-1 right-1 text-[8px] text-neutral-500">£{Number(info.price).toFixed(0)}</span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {availabilityError && (
+            <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] text-amber-800">
+              {availabilityError} <button type="button" onClick={() => setCalendarMonth(new Date())} className="ml-1 underline font-semibold">Retry</button>
+            </div>
+          )}
+
+          <div className="mt-3 flex items-center gap-3 text-[10px] text-neutral-500">
+            <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-white border border-neutral-300" />Available</span>
+            <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-red-500" />Booked</span>
+            <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-neutral-200" />Unavailable</span>
+          </div>
+        </div>
+
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold block mb-1">Check-in</label>
             <input
               type="date"
               min={today}
+              readOnly
               value={arrivalDate}
               onChange={(event) => handleArrivalChange(event.target.value)}
               className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-3 py-2.5 text-sm text-neutral-900 outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900"
@@ -315,6 +490,7 @@ export default function HillViewBookingForm() {
             <input
               type="date"
               min={addDays(arrivalDate || today, 1)}
+              readOnly
               value={departureDate}
               onChange={(event) => handleDepartureChange(event.target.value)}
               className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-3 py-2.5 text-sm text-neutral-900 outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900"
