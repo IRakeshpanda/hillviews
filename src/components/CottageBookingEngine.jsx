@@ -38,7 +38,29 @@ const getNightCount = (arrival, departure) => {
 
 const isBookedDate = (dateValue, bookedDates = []) => Boolean(dateValue && bookedDates.includes(dateValue));
 
-export default function CottageBookingEngine() {
+const getPropertyBookingUrl = (propertyKey, explicitUrl) => {
+  if (explicitUrl) {
+    return explicitUrl;
+  }
+
+  const apartmentId = propertyKey === 'chalet-le-joyau'
+    ? import.meta.env.VITE_SMOOBU_CHALET_LE_JOJAU_APARTMENT_ID
+    : import.meta.env.VITE_SMOOBU_HILL_VIEW_APARTMENT_ID;
+
+  if (!apartmentId) {
+    return 'https://booking.smoobu.com';
+  }
+
+  return `https://booking.smoobu.com/${apartmentId}`;
+};
+
+export default function CottageBookingEngine({
+  property = 'hill-view',
+  propertyName = 'Hill View Stone Cottage',
+  bookingUrl,
+  buttonLabel = 'Reserve Hill View Cottage',
+  maxGuests = 6,
+}) {
   const [arrivalDate, setArrivalDate] = useState('');
   const [departureDate, setDepartureDate] = useState('');
   const [guests, setGuests] = useState(2);
@@ -52,6 +74,7 @@ export default function CottageBookingEngine() {
   const [modalMessage, setModalMessage] = useState('');
 
   const today = useMemo(() => formatDate(new Date()), []);
+  const resolvedBookingUrl = useMemo(() => getPropertyBookingUrl(property, bookingUrl), [bookingUrl, property]);
 
   useEffect(() => {
     let isMounted = true;
@@ -60,14 +83,20 @@ export default function CottageBookingEngine() {
       const future = new Date();
       future.setFullYear(future.getFullYear() + 1);
       const futureStr = formatDate(future);
+      const availabilityUrl = new URL('/api/smoobu/availability', window.location.origin);
+      availabilityUrl.searchParams.set('startDate', today);
+      availabilityUrl.searchParams.set('endDate', futureStr);
+      if (property) {
+        availabilityUrl.searchParams.set('property', property);
+      }
 
       try {
-        const liveResponse = await fetch(`/api/smoobu/availability?startDate=${today}&endDate=${futureStr}`);
+        const liveResponse = await fetch(availabilityUrl.toString());
         if (liveResponse.ok) {
           const liveData = await liveResponse.json();
           if (isMounted && Array.isArray(liveData.bookedDates)) {
             setBookedDates(liveData.bookedDates);
-            setCalendarNotice(liveData.notice || 'Live Smoobu availability synced.');
+            setCalendarNotice(liveData.notice || `Live Smoobu availability synced for ${propertyName}.`);
             return;
           }
         }
@@ -145,8 +174,11 @@ export default function CottageBookingEngine() {
     setIsSubmitting(true);
 
     try {
-      const bookingUrl = `https://booking.smoobu.com/1692217?from=${arrivalDate}&to=${departureDate}&adults=${guests}`;
-      window.open(bookingUrl, '_blank', 'noopener,noreferrer');
+      const bookingLink = new URL(resolvedBookingUrl);
+      bookingLink.searchParams.set('from', arrivalDate);
+      bookingLink.searchParams.set('to', departureDate);
+      bookingLink.searchParams.set('adults', String(guests));
+      window.open(bookingLink.toString(), '_blank', 'noopener,noreferrer');
       setModalMessage(`Reservation received! Thank you, ${guestName.trim()}. Your stay from ${arrivalDate} to ${departureDate} has been registered. A confirmation email with check-in instructions is on its way.`);
       setModalState('success');
     } catch (error) {
@@ -208,7 +240,7 @@ export default function CottageBookingEngine() {
             <span className="w-2 h-2 rounded-full bg-rose-500 inline-block"></span>
             Unavailable dates are blocked in red
           </span>
-          <span>Max 6 guests</span>
+          <span>Max {maxGuests} guests</span>
         </div>
 
         <div className="p-3 rounded-2xl bg-neutral-50 border border-neutral-200">
@@ -218,7 +250,7 @@ export default function CottageBookingEngine() {
             onChange={(event) => setGuests(Number(event.target.value))}
             className="w-full bg-transparent text-xs font-semibold text-neutral-900 outline-none cursor-pointer"
           >
-            {[1, 2, 3, 4, 5, 6].map((num) => (
+            {Array.from({ length: maxGuests }, (_, index) => index + 1).map((num) => (
               <option key={num} value={num}>
                 {num} {num === 1 ? 'Guest' : 'Guests'}
               </option>
@@ -272,7 +304,7 @@ export default function CottageBookingEngine() {
           disabled={isSubmitting}
           className="w-full py-4 rounded-full bg-neutral-900 hover:bg-black text-white font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 disabled:opacity-50"
         >
-          {isSubmitting ? 'Syncing with Smoobu…' : 'Reserve Hill View Cottage'}
+          {isSubmitting ? 'Syncing with Smoobu…' : buttonLabel}
         </button>
       </form>
 

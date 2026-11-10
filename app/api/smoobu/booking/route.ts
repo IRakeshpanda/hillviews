@@ -3,7 +3,10 @@ import { buildSmoobuHeaders } from '../../../../lib/smoobuHmac';
 
 const SMOOBU_API_KEY = process.env.SMOOBU_API_KEY || '';
 const SMOOBU_API_SECRET = process.env.SMOOBU_API_SECRET || '';
-const HILL_VIEW_APARTMENT_ID = process.env.SMOOBU_HILL_VIEW_APARTMENT_ID || '';
+const PROPERTY_APARTMENT_IDS = {
+  'hill-view': process.env.SMOOBU_HILL_VIEW_APARTMENT_ID || '',
+  'chalet-le-joyau': process.env.SMOOBU_CHALET_LE_JOJAU_APARTMENT_ID || '',
+};
 
 function isDateRangeUnavailable(bookedDates: string[], startDate: string, endDate: string): boolean {
   const start = new Date(`${startDate}T00:00:00Z`);
@@ -38,6 +41,8 @@ export async function POST(request: Request) {
       adults,
       children,
       notice,
+      property,
+      apartmentId,
     } = body || {};
 
     const requiredFields = {
@@ -67,8 +72,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'At least one adult is required.' }, { status: 400 });
     }
 
-    if (!SMOOBU_API_KEY || !SMOOBU_API_SECRET || !HILL_VIEW_APARTMENT_ID) {
-      return NextResponse.json({ error: 'Smoobu booking is not configured on this server.' }, { status: 500 });
+    const propertyKey = String(property || 'hill-view').trim() || 'hill-view';
+    const apartmentIdValue = String(apartmentId || PROPERTY_APARTMENT_IDS[propertyKey as keyof typeof PROPERTY_APARTMENT_IDS] || PROPERTY_APARTMENT_IDS['hill-view'] || '').trim();
+
+    if (!SMOOBU_API_KEY || !SMOOBU_API_SECRET || !apartmentIdValue) {
+      return NextResponse.json({ error: `Smoobu booking is not configured on this server for ${propertyKey === 'chalet-le-joyau' ? 'Chalet le Joyau' : 'Hill View Stone Cottage'}.` }, { status: 500 });
     }
 
     const start = new Date(`${arrivalDate}T00:00:00Z`);
@@ -78,7 +86,7 @@ export async function POST(request: Request) {
     }
 
     const ratesUrl = new URL('https://login.smoobu.com/api/rates');
-    ratesUrl.searchParams.set('apartments[]', HILL_VIEW_APARTMENT_ID);
+    ratesUrl.searchParams.set('apartments[]', apartmentIdValue);
     ratesUrl.searchParams.set('start_date', arrivalDate);
     ratesUrl.searchParams.set('end_date', departureDate);
 
@@ -97,7 +105,7 @@ export async function POST(request: Request) {
     }
 
     const availabilityData = await availabilityResponse.json();
-    const apartmentData = availabilityData?.data?.[HILL_VIEW_APARTMENT_ID] ?? availabilityData?.[HILL_VIEW_APARTMENT_ID] ?? {};
+    const apartmentData = availabilityData?.data?.[apartmentIdValue] ?? availabilityData?.[apartmentIdValue] ?? {};
     const bookedDates = Object.entries(apartmentData)
       .filter(([, details]: [string, any]) => details?.available === 0 || details?.available === false)
       .map(([date]) => date);
@@ -109,7 +117,7 @@ export async function POST(request: Request) {
     const reservationBody = {
       arrivalDate,
       departureDate,
-      apartmentId: HILL_VIEW_APARTMENT_ID,
+      apartmentId: apartmentIdValue,
       channelId: 70,
       firstName: String(firstName).trim(),
       lastName: String(lastName).trim(),

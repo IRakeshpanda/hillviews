@@ -10,6 +10,7 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 export default function HillViewCottagePage() {
   const containerRef = useRef(null);
+  const hillViewBookingUrl = `https://booking.smoobu.com/${import.meta.env.VITE_SMOOBU_HILL_VIEW_APARTMENT_ID || ''}`;
 
   useGSAP(() => {
     // Header animations
@@ -316,7 +317,7 @@ export default function HillViewCottagePage() {
           <p className="text-[10px] uppercase tracking-wider text-emerald-600 font-semibold mt-0.5">Direct Rate</p>
         </div>
         <a 
-          href="https://booking.smoobu.com/client-slug" 
+          href={hillViewBookingUrl || 'https://booking.smoobu.com'}
           target="_blank"
           rel="noopener noreferrer"
           className="py-3.5 px-6 rounded-full bg-neutral-900 active:bg-neutral-800 text-white font-semibold text-sm flex items-center gap-2 shadow-md"

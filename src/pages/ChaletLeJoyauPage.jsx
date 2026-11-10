@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { cottageImages } from '../data/cottageData';
+import CottageBookingEngine from '../components/CottageBookingEngine';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -300,52 +301,13 @@ export default function ChaletLeJoyauPage() {
 
             {/* RIGHT STREAM: STICKY SMOOBU BOOKING CARD (4 COLS) */}
             <aside className="lg:col-span-4 hidden lg:block sticky top-28 space-y-4 sticky-card z-10">
-              <div className="p-8 rounded-3xl bg-white border-2 border-neutral-900/10 shadow-2xl space-y-6">
-                
-                <div className="flex items-baseline justify-between">
-                  <div>
-                    <span className="text-xs uppercase tracking-widest text-neutral-400 font-semibold">FROM</span>
-                    <p className="text-3xl font-bold text-neutral-900">£185 <span className="text-sm font-normal text-neutral-500">/ night</span></p>
-                  </div>
-                  <span className="text-xs font-mono font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                    Direct Rate
-                  </span>
-                </div>
-
-                {/* Quick Date Selector */}
-                <div className="space-y-3 pt-2">
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="p-3 rounded-2xl bg-neutral-50 border border-neutral-200 text-xs">
-                      <span className="text-[10px] uppercase font-bold text-neutral-400 block">CHECK-IN</span>
-                      <span className="font-medium text-neutral-800">Select Date</span>
-                    </div>
-                    <div className="p-3 rounded-2xl bg-neutral-50 border border-neutral-200 text-xs">
-                      <span className="text-[10px] uppercase font-bold text-neutral-400 block">CHECK-OUT</span>
-                      <span className="font-medium text-neutral-800">Select Date</span>
-                    </div>
-                  </div>
-                  <div className="p-3 rounded-2xl bg-neutral-50 border border-neutral-200 text-xs">
-                    <span className="text-[10px] uppercase font-bold text-neutral-400 block">GUESTS</span>
-                    <span className="font-medium text-neutral-800">Up to 6 Guests</span>
-                  </div>
-                </div>
-
-                {/* CTA to Smoobu */}
-                <a 
-                  href="https://booking.smoobu.com/client-slug" 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full py-4 px-6 rounded-full bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-xl"
-                >
-                  <span>Check Availability</span>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                </a>
-
-                <div className="space-y-2 text-center text-xs text-neutral-500 pt-2 border-t border-neutral-100">
-                  <p>🔒 Instant confirmation & secure Stripe/PayPal checkout.</p>
-                  <p>🛡️ Fully refundable cancellation up to 6 weeks out.</p>
-                </div>
-
+              <div id="booking-form" className="rounded-3xl bg-white border-2 border-neutral-900/10 shadow-2xl overflow-hidden">
+                <CottageBookingEngine
+                  property="chalet-le-joyau"
+                  propertyName="Chalet le Joyau"
+                  buttonLabel="Reserve Chalet le Joyau"
+                  maxGuests={6}
+                />
               </div>
             </aside>
 
@@ -361,9 +323,7 @@ export default function ChaletLeJoyauPage() {
           <p className="text-[10px] uppercase tracking-wider text-emerald-600 font-semibold mt-0.5">Direct Rate</p>
         </div>
         <a 
-          href="https://booking.smoobu.com/client-slug" 
-          target="_blank"
-          rel="noopener noreferrer"
+          href="#booking-form" 
           className="py-3.5 px-6 rounded-full bg-neutral-900 active:bg-neutral-800 text-white font-semibold text-sm flex items-center gap-2 shadow-md"
         >
           <span>Availability</span>

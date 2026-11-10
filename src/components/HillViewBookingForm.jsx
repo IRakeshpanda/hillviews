@@ -217,6 +217,7 @@ export default function HillViewBookingForm() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          property: 'hill-view',
           arrivalDate,
           departureDate,
           adults: Number(adults),
