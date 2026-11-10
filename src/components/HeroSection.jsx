@@ -218,7 +218,7 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
           >
             <img src={cottageImages.diningRoom} alt="Dining Room" className="w-full h-full object-cover" />
             <span className="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-medium">
-              Equipped Kitchen & Dining
+              Dining room with wood burner
             </span>
           </div>
 

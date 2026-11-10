@@ -191,7 +191,7 @@ export default function RoomsShowcase({ onOpenBooking }) {
             </h2>
           </div>
           <p className="text-sm text-neutral-500 font-light max-w-md">
-            Four spacious bedrooms sleeping up to 8 guests, plus modern bathrooms and relaxing lounge quarters.
+            Four spacious bedrooms sleeping up to 6 guests, plus modern bathrooms and relaxing lounge quarters.
           </p>
         </div>
 

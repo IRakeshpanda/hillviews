@@ -10,16 +10,15 @@ gsap.registerPlugin(ScrollTrigger, Flip, useGSAP);
 
 const GALLERY_ITEMS = [
   // Living
-  { id: 1, title: "Fireside Hearth & Stove", category: "Living & Beams", aspect: "aspect-[16/10]", src: "/images/living/hill-view-2026-indoor-bonfire-and-lamp.jpg", tag: "Ground Floor" },
+  { id: 1, title: "cozy living", category: "Living & Beams", aspect: "aspect-[16/10]", src: "/images/living/hill-view-2026-indoor-bonfire-and-lamp.jpg", tag: "Ground Floor" },
   { id: 2, title: "Beamed Living Snug", category: "Living & Beams", aspect: "aspect-[4/3]", src: "/images/living/hill-view-2026-yorkshire-dales-and-cousin.jpg", tag: "Main Lounge" },
   { id: 3, title: "Wood Stove Detail", category: "Living & Beams", aspect: "aspect-square", src: "/images/living/hill-view-2026-bonfire-on-focus.jpg", tag: "Fireside" },
   { id: 4, title: "Reading Corner", category: "Living & Beams", aspect: "aspect-[3/4]", src: "/images/living/hill-view-2026-living-room-books.jpg", tag: "Quiet Snug" },
 
   // Bedrooms
-  { id: 5, title: "Master Bedroom Suite", category: "Bedrooms & Suites", aspect: "aspect-[16/10]", src: "/images/bedrooms/hill-view-2026-double-bed-front-view.jpg", tag: "Sleeps 2 - Valley Light" },
-  { id: 6, title: "Beamed Double Room", category: "Bedrooms & Suites", aspect: "aspect-[4/3]", src: "/images/bedrooms/hill-view-2026-double-bed-bed-lamp.jpg", tag: "Sleeps 2" },
-  { id: 7, title: "Twin Single Bedroom", category: "Bedrooms & Suites", aspect: "aspect-[16/10]", src: "/images/bedrooms/hill-view-2026-2-single-beds.jpg", tag: "Sleeps 2" },
-  { id: 8, title: "Dales View Window Seat", category: "Bedrooms & Suites", aspect: "aspect-[3/4]", src: "/images/bedrooms/hill-view-2026-hill-view-from-inside-the-window.jpg", tag: "Valley Views" },
+  { id: 5, title: "Master Bedroom Suite", category: "Bedrooms", aspect: "aspect-[16/10]", src: "/images/bedrooms/hill-view-2026-double-bed-front-view.jpg", tag: "Sleeps 2 - Valley Light" },
+  { id: 6, title: "Beamed Double Room", category: "Bedrooms", aspect: "aspect-[4/3]", src: "/images/bedrooms/hill-view-2026-double-bed-bed-lamp.jpg", tag: "Sleeps 2" },
+  { id: 7, title: "Twin Single Bedroom", category: "Bedrooms", aspect: "aspect-[16/10]", src: "/images/bedrooms/hill-view-2026-2-single-beds.jpg", tag: "Sleeps 2" },
 
   // Kitchen
   { id: 9, title: "Equipped Chef's Kitchen", category: "Kitchen & Dining", aspect: "aspect-[16/10]", src: "/images/kitchen/yorkshire-dales-kitchen.jpg", tag: "Full Kitchen" },
@@ -37,7 +36,7 @@ const GALLERY_ITEMS = [
 const CATEGORIES = [
   "All Spaces",
   "Living & Beams",
-  "Bedrooms & Suites",
+  "Bedrooms",
   "Kitchen & Dining",
   "Bathrooms",
   "Gardens & Dales Views"
@@ -156,6 +155,13 @@ export default function GalleryPage({ onOpenBooking }) {
   }, [lightboxIndex]);
 
   const filteredItems = GALLERY_ITEMS.filter(item => activeCategory === "All Spaces" || item.category === activeCategory);
+  const imageAspectRatios = {
+    'aspect-[16/10]': '16 / 10',
+    'aspect-[4/3]': '4 / 3',
+    'aspect-square': '1 / 1',
+    'aspect-[3/4]': '3 / 4',
+    'aspect-[16/9]': '16 / 9'
+  };
 
   const toggleViewMode = (mode) => {
     if (mode === viewMode) return;
@@ -183,26 +189,28 @@ export default function GalleryPage({ onOpenBooking }) {
 
       {/* 3. Floating Control Bar */}
       <div className="sticky top-24 z-40 px-4 md:px-6 mb-12 flex justify-center pointer-events-none">
-        <div className="backdrop-blur-xl bg-white/85 border border-neutral-200/80 rounded-full px-4 py-3 flex flex-wrap md:flex-nowrap items-center justify-between gap-4 shadow-xl shadow-black/5 pointer-events-auto w-full max-w-5xl">
+        <div className="backdrop-blur-xl bg-white/85 border border-neutral-200/80 rounded-full px-3 py-2 sm:px-4 sm:py-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between shadow-xl shadow-black/5 pointer-events-auto w-full max-w-5xl">
           
-          <div className="flex items-center gap-1 overflow-x-auto scrollbar-none pb-1 md:pb-0">
-            {CATEGORIES.map(cat => (
-              <button
-                key={cat}
-                onClick={() => handleCategoryChange(cat)}
-                disabled={viewMode === 'lookbook'}
-                className={`whitespace-nowrap px-3 sm:px-4 py-2 rounded-full text-xs font-medium uppercase tracking-wider transition-all duration-300 min-h-[40px] ${
-                  activeCategory === cat 
-                    ? 'bg-neutral-900 text-white shadow-md' 
-                    : 'bg-transparent text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900'
-                } ${viewMode === 'lookbook' ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                {cat === "All Spaces" ? `All (${GALLERY_ITEMS.length})` : cat}
-              </button>
-            ))}
+          <div className="w-full min-w-0 sm:flex-1 sm:min-w-0">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:flex-nowrap sm:justify-start sm:overflow-x-auto sm:pb-0">
+              {CATEGORIES.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => handleCategoryChange(cat)}
+                  disabled={viewMode === 'lookbook'}
+                  className={`flex-shrink-0 whitespace-nowrap px-3 py-2 rounded-full text-[10px] sm:text-xs font-medium uppercase tracking-wider transition-all duration-300 min-h-[40px] ${
+                    activeCategory === cat 
+                      ? 'bg-neutral-900 text-white shadow-md' 
+                      : 'bg-transparent text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900'
+                  } ${viewMode === 'lookbook' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  {cat === "All Spaces" ? `All (${GALLERY_ITEMS.length})` : cat}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <div className="flex items-center gap-2 border-l border-neutral-200 pl-4 shrink-0">
+          <div className="hidden sm:flex items-center justify-end gap-2 sm:border-l sm:border-neutral-200 sm:pl-4 shrink-0">
             <button 
               onClick={() => toggleViewMode('masonry')}
               className={`p-2 rounded-full transition-colors ${viewMode === 'masonry' ? 'bg-neutral-100 text-neutral-900' : 'text-neutral-400 hover:text-neutral-900'}`}
@@ -231,15 +239,20 @@ export default function GalleryPage({ onOpenBooking }) {
               <div 
                 key={item.id}
                 data-flip-id={`img-${item.id}`}
-                className="gallery-item relative rounded-2xl overflow-hidden bg-neutral-100 border border-neutral-200/60 shadow-sm group cursor-pointer break-inside-avoid"
+                className="gallery-item relative block rounded-2xl overflow-hidden bg-neutral-100 border border-neutral-200/60 shadow-sm group cursor-pointer break-inside-avoid"
                 onClick={() => setLightboxIndex(index)}
               >
-                <div className={`relative w-full ${item.aspect} overflow-hidden`}>
+                <div
+                  className={`relative block w-full ${item.aspect} overflow-hidden bg-neutral-100`}
+                  style={{ aspectRatio: imageAspectRatios[item.aspect] || '4 / 3' }}
+                >
                   <img
                     src={item.src}
                     alt={item.title}
-                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                    loading="lazy"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    loading={index < 4 ? 'eager' : 'lazy'}
+                    decoding="async"
+                    fetchPriority={index < 4 ? 'high' : 'low'}
                   />
                   <div className="absolute top-4 left-4">
                     <span className="backdrop-blur-md bg-white/90 border border-black/5 text-neutral-900 px-3 py-1.5 rounded-full text-[10px] font-semibold uppercase tracking-wider shadow-sm">
@@ -270,12 +283,17 @@ export default function GalleryPage({ onOpenBooking }) {
             <div ref={horizontalTrackRef} className="flex items-center h-full gap-12 px-[10vw] pb-24 will-change-transform">
               {filteredItems.map((item, index) => (
                 <div key={item.id} className="relative h-[70vh] flex-shrink-0 flex items-center gap-8 group" onClick={() => setLightboxIndex(index)}>
-                  <div className={`relative h-full ${item.aspect} overflow-hidden rounded-xl shadow-2xl border border-neutral-200/50 cursor-pointer`}>
+                  <div
+                    className={`relative h-full ${item.aspect} overflow-hidden rounded-xl shadow-2xl border border-neutral-200/50 cursor-pointer`}
+                    style={{ aspectRatio: imageAspectRatios[item.aspect] || '4 / 3' }}
+                  >
                     <img
                       src={item.src}
                       alt={item.title}
-                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                      loading="lazy"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                      loading={index < 4 ? 'eager' : 'lazy'}
+                      decoding="async"
+                      fetchPriority={index < 4 ? 'high' : 'low'}
                     />
                     <div className="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
                       <Maximize2 className="w-5 h-5 text-neutral-900" />

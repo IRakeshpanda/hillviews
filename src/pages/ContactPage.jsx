@@ -150,23 +150,23 @@ export default function ContactPage({ onOpenBooking }) {
               </h3>
               
               <div className="space-y-8">
-                <a href="mailto:robert_smith@agy.com" className="flex items-start gap-4 group">
+                <a href="mailto:robert_smith@sky.com" className="flex items-start gap-4 group">
                   <div className="w-10 h-10 rounded-full bg-neutral-50 border border-neutral-200 flex items-center justify-center shrink-0 group-hover:bg-neutral-900 group-hover:text-white transition-colors duration-300">
                     <Mail className="w-4 h-4" />
                   </div>
                   <div>
                     <p className="text-xs uppercase tracking-widest text-neutral-400 font-semibold mb-1">Email Us</p>
-                    <p className="text-lg text-neutral-900 group-hover:text-neutral-600 transition-colors">robert_smith@agy.com</p>
+                    <p className="text-lg text-neutral-900 group-hover:text-neutral-600 transition-colors">robert_smith@sky.com</p>
                   </div>
                 </a>
 
-                <a href="tel:+41795489771" className="flex items-start gap-4 group">
+                <a href="tel:+447366634617" className="flex items-start gap-4 group">
                   <div className="w-10 h-10 rounded-full bg-neutral-50 border border-neutral-200 flex items-center justify-center shrink-0 group-hover:bg-neutral-900 group-hover:text-white transition-colors duration-300">
                     <Phone className="w-4 h-4" />
                   </div>
                   <div>
                     <p className="text-xs uppercase tracking-widest text-neutral-400 font-semibold mb-1">Call Us</p>
-                    <p className="text-lg text-neutral-900 group-hover:text-neutral-600 transition-colors">+41 79 548 9771</p>
+                    <p className="text-lg text-neutral-900 group-hover:text-neutral-600 transition-colors">+44 7366 634 617</p>
                   </div>
                 </a>
               </div>

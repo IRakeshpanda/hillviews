@@ -78,11 +78,11 @@ export default function Footer({ onOpenBooking }) {
             <ul className="space-y-2.5 text-xs text-neutral-500 font-light">
               <li className="flex items-center gap-2">
                 <Mail className="w-3.5 h-3.5 text-neutral-400" />
-                <a href="mailto:robert_smith@agy.com" className="hover:text-neutral-900 transition-colors">robert_smith@agy.com</a>
+                <a href="mailto:robert_smith@sky.com" className="hover:text-neutral-900 transition-colors">robert_smith@sky.com</a>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-neutral-400" />
-                <a href="tel:+41795489771" className="hover:text-neutral-900 transition-colors">+41 79 548 9771</a>
+                <a href="tel:+447366634617" className="hover:text-neutral-900 transition-colors">+44 7366 634 617</a>
               </li>
               <li className="flex items-center gap-2">
                 <MapPin className="w-3.5 h-3.5 text-neutral-400" />

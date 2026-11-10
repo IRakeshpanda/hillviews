@@ -201,14 +201,14 @@ export default function Navbar({ onOpenBooking }) {
           {/* Contact Shortcuts */}
           <div ref={contactRef} className="mt-8 grid grid-cols-3 gap-3">
             <a
-              href="tel:+441748884494"
+              href="tel:+447366634617"
               className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-neutral-50 border border-neutral-100 hover:bg-neutral-100 transition-colors min-h-[72px] justify-center"
             >
               <Phone className="w-4 h-4 text-neutral-600" />
               <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-500">Call</span>
             </a>
             <a
-              href="https://wa.me/441748884494"
+              href="https://wa.me/447366634617"
               target="_blank"
               rel="noopener noreferrer"
               className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-neutral-50 border border-neutral-100 hover:bg-neutral-100 transition-colors min-h-[72px] justify-center"
@@ -217,7 +217,7 @@ export default function Navbar({ onOpenBooking }) {
               <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-500">WhatsApp</span>
             </a>
             <a
-              href="mailto:rob@hillviewcottage.co.uk"
+              href="mailto:robert_smith@sky.com"
               className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-neutral-50 border border-neutral-100 hover:bg-neutral-100 transition-colors min-h-[72px] justify-center"
             >
               <Mail className="w-4 h-4 text-neutral-600" />

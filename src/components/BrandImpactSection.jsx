@@ -159,7 +159,7 @@ export default function BrandImpactSection() {
             <div className="absolute top-3 left-3">
               <span className="inline-flex items-center gap-1.5 backdrop-blur-md px-3 py-1.5 text-xs font-semibold uppercase tracking-wider rounded-full bg-white/90 border border-black/5 text-neutral-900 shadow-md">
                 <Users className="w-3 h-3 text-neutral-600" />
-                Sleeps up to 8
+                Sleeps up to 6
               </span>
             </div>
           </div>
@@ -214,7 +214,7 @@ export default function BrandImpactSection() {
             <div className="absolute bottom-6 left-6">
               <span className="backdrop-blur-md px-4 py-2 text-xs font-semibold uppercase tracking-wider rounded-full bg-white/80 border border-black/5 text-neutral-900 flex items-center gap-1.5 shadow-lg">
                 <Users className="w-3.5 h-3.5 text-neutral-600" />
-                <span>Sleeps up to 8</span>
+                <span>Sleeps up to 6</span>
               </span>
             </div>
           </div>

@@ -215,7 +215,7 @@ export default function TermsPage() {
 
             <div className="p-6 rounded-3xl bg-neutral-100 border border-neutral-200/80 text-xs text-neutral-600 space-y-2">
               <p className="font-semibold text-neutral-900">Direct Contact Details:</p>
-              <p>Robert Smith -  <a href="mailto:robert_smith@sky.com" className="underline font-medium text-neutral-900">robert_smith@sky.com</a> -  <a href="tel:+41795489771" className="underline font-medium text-neutral-900">+41 79 548 9771</a></p>
+              <p>Robert Smith -  <a href="mailto:robert_smith@sky.com" className="underline font-medium text-neutral-900">robert_smith@sky.com</a> -  <a href="tel:+447366634617" className="underline font-medium text-neutral-900">+44 7366 634 617</a></p>
             </div>
           </aside>
 
@@ -480,7 +480,7 @@ export default function TermsPage() {
               <span className="text-xs font-mono font-semibold text-neutral-400 uppercase tracking-widest">19</span>
               <h2 className="text-2xl font-bold tracking-tight text-neutral-900 mt-1 mb-4">19. Questions or Complaints</h2>
               <div className="space-y-3 text-sm md:text-base leading-relaxed text-neutral-600">
-                <p><strong>19.1</strong> You can contact us by telephone on <a href="tel:+41795489771" className="font-semibold text-neutral-950 underline underline-offset-4">+41 79 548 9771</a> or email us at <a href="mailto:robert_smith@sky.com" className="font-semibold text-neutral-950 underline underline-offset-4">robert_smith@sky.com</a>.</p>
+                <p><strong>19.1</strong> You can contact us by telephone on <a href="tel:+447366634617" className="font-semibold text-neutral-950 underline underline-offset-4">+44 7366 634 617</a> or email us at <a href="mailto:robert_smith@sky.com" className="font-semibold text-neutral-950 underline underline-offset-4">robert_smith@sky.com</a>.</p>
               </div>
             </section>
 

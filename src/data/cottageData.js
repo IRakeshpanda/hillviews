@@ -110,5 +110,5 @@ export const galleryItems = [
   { title: "Double bedroom", image: cottageImages.cosyDouble },
   { title: "Modern bathroom with shower and bath", image: cottageImages.bathroom },
   { title: "Terrace with Yorkshire Dales views", image: cottageImages.terrace },
-  { title: "Cosy sitting room", image: cottageImages.beamedDouble }
+  { title: "Bedroom with 2 single beds", image: cottageImages.beamedDouble }
 ];
