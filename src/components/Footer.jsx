@@ -32,16 +32,13 @@ export default function Footer({ onOpenBooking }) {
             </h4>
             <ul className="space-y-2.5 text-xs text-neutral-500 font-light">
               <li>
-                <a href="#cottage" className="hover:text-neutral-900 transition-colors">The Cottage</a>
+                <a href="/cottage" className="hover:text-neutral-900 transition-colors">The Cottage</a>
               </li>
               <li>
-                <a href="#features" className="hover:text-neutral-900 transition-colors">Features & Amenities</a>
+                <Link to="/features" className="hover:text-neutral-900 transition-colors">Features & Amenities</Link>
               </li>
               <li>
-                <a href="#gallery" className="hover:text-neutral-900 transition-colors">Photo Gallery</a>
-              </li>
-              <li>
-                <a href="#rooms" className="hover:text-neutral-900 transition-colors">Rooms & Layout</a>
+                <Link to="/gallery" className="hover:text-neutral-900 transition-colors">Photo Gallery</Link>
               </li>
             </ul>
           </div>

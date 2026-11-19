@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import HillViewBookingForm from '../components/HillViewBookingForm';
+import SmoobuBookingEmbed from '../components/SmoobuBookingEmbed';
+import ReviewCarousel from '../components/reviews/ReviewCarousel';
 import { cottageImages } from '../data/cottageData';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 export default function HillViewCottagePage() {
   const containerRef = useRef(null);
-  const hillViewBookingUrl = `https://booking.smoobu.com/${import.meta.env.VITE_SMOOBU_HILL_VIEW_APARTMENT_ID || ''}`;
 
   useGSAP(() => {
     // Header animations
@@ -298,11 +298,22 @@ export default function HillViewCottagePage() {
                 </div>
               </section>
 
+              {/* REVIEWS OF HILL VIEW */}
+              <div className="content-section pt-10 border-t border-neutral-200/70">
+                <ReviewCarousel
+                  propertySlug="hill-view"
+                  heading="Reviews of Hill View"
+                  subline="Guest experiences from stays at Hill View."
+                />
+              </div>
+
             </div>
 
-            {/* RIGHT STREAM: STICKY BOOKING ENGINE */}
-            <aside className="lg:col-span-4 hidden lg:block sticky top-28 space-y-4 sticky-card z-10">
-              <HillViewBookingForm />
+            {/* RIGHT STREAM: STICKY SMOOBU BOOKING CARD (4 COLS) */}
+            <aside className="lg:col-span-4 lg:block lg:sticky lg:top-28 space-y-4 sticky-card z-10">
+              <div id="booking-form" className="rounded-3xl bg-white border-2 border-neutral-900/10 shadow-2xl overflow-hidden scroll-mt-28">
+                <SmoobuBookingEmbed propertySlug="hill-view" />
+              </div>
             </aside>
 
           </div>
@@ -316,10 +327,8 @@ export default function HillViewCottagePage() {
           <p className="text-xl font-bold text-neutral-900">£185 <span className="text-sm font-normal text-neutral-500">/ night</span></p>
           <p className="text-[10px] uppercase tracking-wider text-emerald-600 font-semibold mt-0.5">Direct Rate</p>
         </div>
-        <a 
-          href={hillViewBookingUrl || 'https://booking.smoobu.com'}
-          target="_blank"
-          rel="noopener noreferrer"
+        <a
+          href="#booking-form"
           className="py-3.5 px-6 rounded-full bg-neutral-900 active:bg-neutral-800 text-white font-semibold text-sm flex items-center gap-2 shadow-md"
         >
           <span>Availability</span>

@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
-import { Menu, X, Phone, Mail, MessageCircle, Home, Layers, Image as ImageIcon, BedDouble, MapPin, FileText } from 'lucide-react';
+import { Menu, X, Phone, Mail, MessageCircle, Home, Layers, Image as ImageIcon, MapPin, FileText } from 'lucide-react';
 
 const logoImage = '/images/logo.png';
 
 const NAV_LINKS = [
   { to: '/cottage',    label: 'The Cottage', icon: Home,       num: '01' },
-  { to: '/#features', label: 'Features',    icon: Layers,      num: '02' },
-  { to: '/gallery',   label: 'Gallery',     icon: ImageIcon,   num: '03' },
-  { to: '/#rooms',    label: 'Rooms',       icon: BedDouble,   num: '04' },
-  { to: '/contact',   label: 'Contact',     icon: MapPin,      num: '05' },
-  { to: '/terms',     label: 'Terms',       icon: FileText,    num: '06' },
+  { to: '/features',   label: 'Features',    icon: Layers,     num: '02' },
+  { to: '/gallery',    label: 'Gallery',     icon: ImageIcon,  num: '03' },
+  { to: '/contact',    label: 'Contact',     icon: MapPin,     num: '04' },
+  { to: '/terms',      label: 'Terms',       icon: FileText,   num: '05' },
 ];
 
 export default function Navbar({ onOpenBooking }) {

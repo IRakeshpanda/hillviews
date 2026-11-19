@@ -209,6 +209,207 @@ html.lenis, html.lenis body {
   background: var(--hv-charcoal);
 }
 
+/* Approved-review React Bits carousel */
+.review-carousel-section {
+  margin-top: 4rem;
+  padding-top: 3rem;
+  border-top: 1px solid rgba(229, 229, 229, 0.8);
+}
+
+.review-carousel-section__header {
+  max-width: 42rem;
+  margin-bottom: 1.5rem;
+}
+
+.review-carousel-section__heading {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1;
+  font-weight: 600;
+  color: #171717;
+}
+
+.review-carousel-section__subline {
+  margin-top: 0.75rem;
+  color: #737373;
+  line-height: 1.6;
+}
+
+.review-carousel-card__sample {
+  display: inline-flex;
+  margin-top: 10px;
+  padding: 5px 9px;
+  border: 1px solid #d4d4d4;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #737373;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.review-carousel-wrap {
+  width: 100%;
+  max-width: 100%;
+}
+
+.review-carousel-controls-top {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.review-carousel-toggle {
+  min-height: 44px;
+  padding: 10px 18px;
+  border: 1px solid #e5e5e5;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #171717;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.review-carousel-toggle:hover {
+  border-color: #171717;
+}
+
+.review-carousel-toggle:focus-visible,
+.approved-review-carousel:focus-visible {
+  outline: 2px solid #171717;
+  outline-offset: 4px;
+}
+
+.approved-review-carousel {
+  --carousel-tile: linear-gradient(180deg, #fbfbfa 0%, #f5f5f4 100%) !important;
+  --carousel-tile-edge: rgba(23, 23, 23, 0.10) !important;
+  --carousel-tile-highlight: rgba(255, 255, 255, 1) !important;
+  --carousel-tile-shadow: 0 14px 40px -24px rgba(23, 23, 23, 0.32) !important;
+  --carousel-ink: #171717 !important;
+  --carousel-muted: rgba(23, 23, 23, 0.62) !important;
+  --carousel-faint: rgba(23, 23, 23, 0.16) !important;
+  --carousel-soft: rgba(23, 23, 23, 0.34) !important;
+  margin-inline: auto;
+}
+
+.review-carousel-card {
+  box-sizing: border-box;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(22px, 5vw, 44px);
+  color: #171717;
+  background: linear-gradient(180deg, #fbfbfa 0%, #f5f5f4 100%);
+}
+
+.review-carousel-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.review-carousel-card__property {
+  color: #737373;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.review-carousel-card__rating {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+  color: #525252;
+}
+
+.review-carousel-card__star {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.5;
+  color: #a3a3a3;
+}
+
+.review-carousel-card__star--filled {
+  fill: #c9a227;
+  color: #c9a227;
+}
+
+.review-carousel-card__quote {
+  margin: auto 0;
+  font-family: var(--font-serif);
+  font-size: clamp(21px, 3vw, 32px);
+  line-height: 1.28;
+  text-wrap: balance;
+}
+
+.review-carousel-card__name {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  color: #525252;
+}
+
+.review-carousel-card__profile {
+  display: inline-grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  flex: none;
+  border: 1px solid #d4d4d4;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.review-carousel-card__profile--man {
+  color: #35506f;
+  background: #edf3f7;
+}
+
+.review-carousel-card__profile--woman {
+  color: #7a4f69;
+  background: #f8eff4;
+}
+
+.review-carousel-card__profile-icon {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.8;
+}
+
+@media (max-width: 640px) {
+  .approved-review-carousel {
+    --carousel-scale: 0.86;
+  }
+
+  .review-carousel-card {
+    padding: 22px;
+  }
+
+  .review-carousel-card__quote {
+    font-size: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel-slide,
+  .carousel-card,
+  .carousel-arrow,
+  .carousel-bar-fill {
+    transition: none !important;
+  }
+}
+
 /* Animations */
 @keyframes fadeIn {
   from { opacity: 0; }

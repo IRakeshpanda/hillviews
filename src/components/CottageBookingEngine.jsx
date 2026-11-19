@@ -43,15 +43,7 @@ const getPropertyBookingUrl = (propertyKey, explicitUrl) => {
     return explicitUrl;
   }
 
-  const apartmentId = propertyKey === 'chalet-le-joyau'
-    ? import.meta.env.VITE_SMOOBU_CHALET_LE_JOJAU_APARTMENT_ID
-    : import.meta.env.VITE_SMOOBU_HILL_VIEW_APARTMENT_ID;
-
-  if (!apartmentId) {
-    return 'https://booking.smoobu.com';
-  }
-
-  return `https://booking.smoobu.com/${apartmentId}`;
+  return 'https://booking.smoobu.com';
 };
 
 export default function CottageBookingEngine({

@@ -16,14 +16,22 @@ import TermsPage from './pages/TermsPage';
 import CottagePage from './pages/CottagePage';
 import ChaletLeJoyauPage from './pages/ChaletLeJoyauPage';
 import HillViewCottagePage from './pages/HillViewCottagePage';
+import FeaturesPage from './pages/FeaturesPage';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   useEffect(() => {
+    if (hash) {
+      const id = decodeURIComponent(hash.slice(1));
+      const timer = window.setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ block: 'start' });
+      }, 0);
+      return () => window.clearTimeout(timer);
+    }
     window.scrollTo(0, 0);
-  }, [pathname]);
+  }, [pathname, hash]);
   return null;
 }
 
@@ -117,6 +125,10 @@ function AppContent() {
         <Route 
           path="/hill-view-cottage" 
           element={<HillViewCottagePage />} 
+        />
+        <Route 
+          path="/features" 
+          element={<FeaturesPage />} 
         />
       </Routes>
 

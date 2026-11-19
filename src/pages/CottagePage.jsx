@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import CottageBookingEngine from '../components/CottageBookingEngine';
 import { cottageImages } from '../data/cottageData';
+import ReviewCarousel from '../components/reviews/ReviewCarousel';
 
 export default function CottagePage() {
   const containerRef = useRef(null);
@@ -129,6 +130,13 @@ export default function CottagePage() {
           </div>
           
         </div>
+
+        <ReviewCarousel
+          shuffle
+          combined
+          heading="Stories from Our Guests"
+          subline="Discover guest experiences from Hill View and Chalet Le Joyau."
+        />
 
       </div>
     </main>

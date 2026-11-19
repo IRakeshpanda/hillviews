@@ -4,7 +4,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { cottageImages } from '../data/cottageData';
-import CottageBookingEngine from '../components/CottageBookingEngine';
+import SmoobuBookingEmbed from '../components/SmoobuBookingEmbed';
+import ReviewCarousel from '../components/reviews/ReviewCarousel';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -297,17 +298,21 @@ export default function ChaletLeJoyauPage() {
                 </div>
               </section>
 
+              {/* REVIEWS OF CHALET LE JOYAU */}
+              <div className="content-section pt-10 border-t border-neutral-200/70">
+                <ReviewCarousel
+                  propertySlug="chalet-le-joyau"
+                  heading="Reviews of Chalet Le Joyau"
+                  subline="Guest experiences from stays at Chalet Le Joyau."
+                />
+              </div>
+
             </div>
 
             {/* RIGHT STREAM: STICKY SMOOBU BOOKING CARD (4 COLS) */}
-            <aside className="lg:col-span-4 hidden lg:block sticky top-28 space-y-4 sticky-card z-10">
-              <div id="booking-form" className="rounded-3xl bg-white border-2 border-neutral-900/10 shadow-2xl overflow-hidden">
-                <CottageBookingEngine
-                  property="chalet-le-joyau"
-                  propertyName="Chalet le Joyau"
-                  buttonLabel="Reserve Chalet le Joyau"
-                  maxGuests={6}
-                />
+            <aside className="lg:col-span-4 lg:block lg:sticky lg:top-28 space-y-4 sticky-card z-10">
+              <div id="booking-form" className="rounded-3xl bg-white border-2 border-neutral-900/10 shadow-2xl overflow-hidden scroll-mt-28">
+                <SmoobuBookingEmbed propertySlug="chalet-le-joyau" />
               </div>
             </aside>
 

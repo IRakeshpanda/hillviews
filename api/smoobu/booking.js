@@ -1,20 +1,10 @@
 import { getSmoobuHeaders } from '../_lib/smoobu.js';
+import { resolveSmoobuConfig, smoobuErrorMessage } from '../_lib/properties.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed.' });
-  }
-
-  const apiKey = process.env.SMOOBU_API_KEY || '';
-  const apiSecret = process.env.SMOOBU_API_SECRET || '';
-  const customerId = Number(process.env.SMOOBU_CUSTOMER_ID || '0');
-  const apartmentId = Number(process.env.SMOOBU_HILL_VIEW_APARTMENT_ID || '0');
-
-  if (!apiKey || !customerId || !apartmentId) {
-    return res.status(500).json({
-      error: 'Smoobu booking is not configured. Set SMOOBU_API_KEY, SMOOBU_API_SECRET, SMOOBU_CUSTOMER_ID, and SMOOBU_HILL_VIEW_APARTMENT_ID in Vercel.'
-    });
   }
 
   try {
@@ -29,7 +19,16 @@ export default async function handler(req, res) {
       adults,
       children,
       notice,
+      property,
     } = body;
+
+    const config = resolveSmoobuConfig(property);
+    console.log('[booking] property:', property, '->', config.key, 'apartmentId:', config.apartmentId || '(empty)');
+    if (config.error) {
+      console.error('[booking] config error:', config.error);
+      return res.status(config.key ? 500 : 400).json({ error: config.error });
+    }
+    const { apiKey, apiSecret, customerId, apartmentId, name } = config;
 
     if (!arrivalDate || !departureDate || !firstName || !lastName || !email || !phone || !adults) {
       return res.status(400).json({ error: 'Please complete all required booking fields.' });
@@ -83,7 +82,7 @@ export default async function handler(req, res) {
     console.log('Smoobu availability check before booking response:', availabilityText.slice(0, 1200));
 
     if (!availabilityResponse.ok) {
-      const availabilityMessage = availabilityData?.message || 'Unable to verify availability for the selected dates.';
+      const availabilityMessage = smoobuErrorMessage(availabilityData, `Unable to verify availability for ${name}.`);
       return res.status(availabilityResponse.status || 502).json({
         error: availabilityMessage,
       });
@@ -95,7 +94,7 @@ export default async function handler(req, res) {
       : [];
     const isAvailable = availableApartments.includes(apartmentKey);
     if (!isAvailable) {
-      const availabilityMessage = availabilityData?.errorMessages?.[apartmentKey]?.message || availabilityData?.errorMessages?.[Number(apartmentId)]?.message || 'The selected dates are not available.';
+      const availabilityMessage = availabilityData?.errorMessages?.[apartmentKey]?.message || `The selected dates are not available for ${name}.`;
       return res.status(409).json({ error: availabilityMessage });
     }
 
@@ -136,12 +135,12 @@ export default async function handler(req, res) {
       parsedReservation = { raw: reservationText };
     }
 
-    console.log('Smoobu booking status:', reservationResponse.status);
+    console.log(`[booking] ${name} Smoobu status:`, reservationResponse.status);
     console.log('Smoobu booking response:', reservationText.slice(0, 1200));
 
     if (!reservationResponse.ok) {
       return res.status(reservationResponse.status || 500).json({
-        error: parsedReservation?.message || 'Your booking request could not be submitted. Please try again.',
+        error: smoobuErrorMessage(parsedReservation, 'Your booking request could not be submitted. Please try again.'),
       });
     }
 

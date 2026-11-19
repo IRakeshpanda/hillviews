@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 
-const NIGHT_RATE = 185;
-const CLEANING_FEE = 45;
+const PROPERTY_OPTIONS = [
+  { value: 'chalet-le-joyau', label: 'Chalet Le Joyau' },
+  { value: 'hill-view', label: 'Hill View' },
+];
 
 const formatDate = (date) => {
   const normalized = new Date(date);
@@ -34,23 +36,31 @@ const addDays = (value, days) => {
   return formatDate(date);
 };
 
-const hasAvailabilityOverlap = (startDate, endDate, bookedDates) => {
-  if (!startDate || !endDate) return false;
-  const start = parseLocalDate(startDate);
-  const end = parseLocalDate(endDate);
+const dateRangeOverlaps = (requestStart, requestEnd, blockedStart, blockedEnd) => {
+  if (!requestStart || !requestEnd || !blockedStart || !blockedEnd) return false;
+  const start = parseLocalDate(requestStart);
+  const end = parseLocalDate(requestEnd);
+  const blockedFrom = parseLocalDate(blockedStart);
+  const blockedTo = parseLocalDate(blockedEnd);
 
-  if (!start || !end || start >= end) return false;
+  if (!start || !end || !blockedFrom || !blockedTo) return false;
 
-  let cursor = new Date(start);
-  while (cursor < end) {
-    const iso = formatDate(cursor);
-    if (bookedDates.includes(iso)) {
-      return true;
-    }
-    cursor.setDate(cursor.getDate() + 1);
+  return start < blockedTo && end > blockedFrom;
+};
+
+const buildBlockedRangesFromResponse = (payload) => {
+  const rawRanges = payload?.blockedRanges || payload?.result?.blockedRanges || payload?.result?.bookedRanges || [];
+
+  if (!Array.isArray(rawRanges)) {
+    return [];
   }
 
-  return false;
+  return rawRanges
+    .filter((range) => range && typeof range === 'object' && range.from && range.to)
+    .map((range) => ({
+      from: String(range.from),
+      to: String(range.to),
+    }));
 };
 
 const readResponseJsonSafely = async (response) => {
@@ -63,34 +73,25 @@ const readResponseJsonSafely = async (response) => {
   try {
     return JSON.parse(text);
   } catch (error) {
-    console.warn('Non-JSON response received from API.', text);
     return { message: text };
   }
 };
 
-const getRequestFailureMessage = (response, payload) => {
-  if (response?.status === 404) {
-    return payload?.error || payload?.message || 'The booking endpoint was not found.';
-  }
-
-  return payload?.error || payload?.message || 'Booking request failed.';
-};
-
-export default function HillViewBookingForm() {
+export default function HillViewBookingForm({
+  property = 'hill-view',
+  propertyName = 'Hill View',
+  nightRate = 185,
+  cleaningFee = 45,
+}) {
+  const NIGHT_RATE = nightRate;
+  const CLEANING_FEE = cleaningFee;
   const today = useMemo(() => formatDate(new Date()), []);
 
+  const [selectedProperty, setSelectedProperty] = useState(property);
   const [arrivalDate, setArrivalDate] = useState('');
   const [departureDate, setDepartureDate] = useState('');
-  const [adults, setAdults] = useState(2);
-  const [children, setChildren] = useState(0);
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [notes, setNotes] = useState('');
-  const [bookedDates, setBookedDates] = useState([]);
+  const [blockedRanges, setBlockedRanges] = useState([]);
   const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [statusType, setStatusType] = useState('idle');
   const [fieldErrors, setFieldErrors] = useState({});
@@ -100,8 +101,12 @@ export default function HillViewBookingForm() {
   const total = subtotal + CLEANING_FEE;
 
   useEffect(() => {
+    setSelectedProperty(property);
+  }, [property]);
+
+  useEffect(() => {
     if (!arrivalDate || !departureDate || arrivalDate >= departureDate) {
-      setBookedDates([]);
+      setBlockedRanges([]);
       setFieldErrors((previous) => ({ ...previous, availability: '' }));
       return;
     }
@@ -109,16 +114,18 @@ export default function HillViewBookingForm() {
     let isCurrent = true;
     setIsCheckingAvailability(true);
     setFieldErrors((previous) => ({ ...previous, availability: '' }));
+    setStatusMessage('');
+    setStatusType('idle');
 
     const fetchAvailability = async () => {
       try {
-        const response = await fetch('/api/smoobu/availability', {
+        const response = await fetch('/api/availability', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            arrivalDate,
-            departureDate,
-            guests: Number(adults || 2),
+            propertySlug: selectedProperty,
+            checkIn: arrivalDate,
+            checkOut: departureDate,
           }),
         });
 
@@ -128,32 +135,34 @@ export default function HillViewBookingForm() {
           if (isCurrent) {
             setFieldErrors((previous) => ({
               ...previous,
-              availability: data?.message || 'Unable to verify availability right now. Please try again.',
+              availability: data?.message || data?.error || `Unable to verify availability for ${propertyName}.`,
             }));
+            setBlockedRanges([]);
           }
           return;
         }
 
         if (isCurrent) {
-          if (data?.available === false) {
+          const nextBlockedRanges = buildBlockedRangesFromResponse(data);
+          const hasOverlap = nextBlockedRanges.some((range) => dateRangeOverlaps(arrivalDate, departureDate, range.from, range.to));
+          setBlockedRanges(nextBlockedRanges);
+
+          if (hasOverlap || data?.isAvailable === false) {
             setFieldErrors((previous) => ({
               ...previous,
-              availability: data?.message || 'The selected dates are not available.',
+              availability: data?.message || 'The selected dates overlap with an unavailable date range.',
             }));
-            setBookedDates([]);
           } else {
             setFieldErrors((previous) => ({ ...previous, availability: '' }));
-            setBookedDates([]);
           }
         }
       } catch (error) {
-        console.warn('Unable to sync availability.', error);
         if (isCurrent) {
           setFieldErrors((previous) => ({
             ...previous,
             availability: 'We could not verify availability right now. Please try again.',
           }));
-          setBookedDates([]);
+          setBlockedRanges([]);
         }
       } finally {
         if (isCurrent) {
@@ -167,116 +176,46 @@ export default function HillViewBookingForm() {
     return () => {
       isCurrent = false;
     };
-  }, [arrivalDate, departureDate, adults]);
+  }, [arrivalDate, departureDate, propertyName, selectedProperty]);
 
-  const rangeIsUnavailable = hasAvailabilityOverlap(arrivalDate, departureDate, bookedDates) || !!fieldErrors.availability;
+  const rangeIsUnavailable = blockedRanges.some((range) => dateRangeOverlaps(arrivalDate, departureDate, range.from, range.to)) || !!fieldErrors.availability;
 
-  const validateForm = () => {
-    const nextErrors = {};
-
-    if (!arrivalDate) nextErrors.arrivalDate = 'Check-in date is required.';
-    if (!departureDate) nextErrors.departureDate = 'Check-out date is required.';
-    if (arrivalDate && departureDate && arrivalDate >= departureDate) {
-      nextErrors.departureDate = 'Check-out must be after check-in.';
-    }
-    if (!firstName.trim()) nextErrors.firstName = 'First name is required.';
-    if (!lastName.trim()) nextErrors.lastName = 'Last name is required.';
-    if (!email.trim()) nextErrors.email = 'Email is required.';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) nextErrors.email = 'Please enter a valid email address.';
-    if (!phone.trim()) nextErrors.phone = 'Phone number is required.';
-    if (Number(adults) < 1) nextErrors.adults = 'Please choose at least one adult.';
-    if (children < 0) nextErrors.children = 'Children cannot be negative.';
-
-    setFieldErrors((previous) => ({ ...previous, ...nextErrors }));
-    return Object.keys(nextErrors).length === 0 && !fieldErrors.availability;
-  };
-
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (!validateForm()) {
+    if (!arrivalDate || !departureDate) {
+      setFieldErrors((previous) => ({ ...previous, availability: 'Please choose valid arrival and departure dates.' }));
       setStatusType('error');
-      setStatusMessage(fieldErrors.availability || 'The selected dates are unavailable. Please choose another range.');
+      setStatusMessage('Please choose valid arrival and departure dates.');
       return;
     }
 
-    if (fieldErrors.availability || rangeIsUnavailable) {
+    if (arrivalDate >= departureDate) {
+      setFieldErrors((previous) => ({ ...previous, availability: 'Check-out must be after check-in.' }));
       setStatusType('error');
-      setStatusMessage(fieldErrors.availability || 'The selected dates are unavailable. Please choose another range.');
+      setStatusMessage('Check-out must be after check-in.');
       return;
     }
 
-    setIsSubmitting(true);
-    setStatusType('idle');
+    if (rangeIsUnavailable) {
+      setFieldErrors((previous) => ({ ...previous, availability: 'The selected dates are not available.' }));
+      setStatusType('error');
+      setStatusMessage('The selected dates are not available. Please choose another range.');
+      return;
+    }
+
+    setStatusType('success');
+    setStatusMessage('Availability confirmed for the selected property and dates.');
+  };
+
+  const handlePropertyChange = (nextProperty) => {
+    setSelectedProperty(nextProperty);
+    setArrivalDate('');
+    setDepartureDate('');
+    setBlockedRanges([]);
+    setFieldErrors((previous) => ({ ...previous, availability: '' }));
     setStatusMessage('');
-
-    try {
-      const response = await fetch('/api/smoobu/booking', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          property: 'hill-view',
-          arrivalDate,
-          departureDate,
-          adults: Number(adults),
-          children: Number(children || 0),
-          firstName: firstName.trim(),
-          lastName: lastName.trim(),
-          email: email.trim(),
-          phone: phone.trim(),
-          notice: notes.trim(),
-        }),
-      });
-
-      const data = await readResponseJsonSafely(response);
-
-      if (!response.ok) {
-        throw new Error(getRequestFailureMessage(response, data));
-      }
-
-      setStatusType('success');
-      setStatusMessage(
-        data?.reference
-          ? `Booking request submitted successfully. Reference: ${data.reference}`
-          : 'Booking request submitted successfully. We will be in touch shortly.'
-      );
-
-      setArrivalDate('');
-      setDepartureDate('');
-      setAdults(2);
-      setChildren(0);
-      setFirstName('');
-      setLastName('');
-      setEmail('');
-      setPhone('');
-      setNotes('');
-      setFieldErrors({});
-    } catch (error) {
-      console.error('Booking request failed:', error);
-      setStatusType('error');
-      setStatusMessage(error.message || 'We could not complete your booking request. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleArrivalChange = (value) => {
-    setArrivalDate(value);
-    if (departureDate && value >= departureDate) {
-      setDepartureDate('');
-    }
-    if (fieldErrors.arrivalDate || fieldErrors.departureDate || fieldErrors.availability) {
-      setFieldErrors((previous) => ({ ...previous, arrivalDate: '', departureDate: '', availability: '' }));
-    }
-  };
-
-  const handleDepartureChange = (value) => {
-    setDepartureDate(value);
-    if (fieldErrors.departureDate || fieldErrors.availability) {
-      setFieldErrors((previous) => ({ ...previous, departureDate: '', availability: '' }));
-    }
+    setStatusType('idle');
   };
 
   return (
@@ -298,6 +237,19 @@ export default function HillViewBookingForm() {
       </div>
 
       <form onSubmit={handleSubmit} noValidate className="space-y-4">
+        <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-3">
+          <label className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold block mb-1">Property</label>
+          <select
+            value={selectedProperty}
+            onChange={(event) => handlePropertyChange(event.target.value)}
+            className="w-full bg-transparent text-sm text-neutral-900 outline-none"
+          >
+            {PROPERTY_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>{option.label}</option>
+            ))}
+          </select>
+        </div>
+
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold block mb-1">Check-in</label>
@@ -305,10 +257,9 @@ export default function HillViewBookingForm() {
               type="date"
               min={today}
               value={arrivalDate}
-              onChange={(event) => handleArrivalChange(event.target.value)}
+              onChange={(event) => setArrivalDate(event.target.value)}
               className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-3 py-2.5 text-sm text-neutral-900 outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900"
             />
-            {fieldErrors.arrivalDate && <p className="mt-1 text-[10px] text-rose-600">{fieldErrors.arrivalDate}</p>}
           </div>
 
           <div>
@@ -317,112 +268,8 @@ export default function HillViewBookingForm() {
               type="date"
               min={addDays(arrivalDate || today, 1)}
               value={departureDate}
-              onChange={(event) => handleDepartureChange(event.target.value)}
+              onChange={(event) => setDepartureDate(event.target.value)}
               className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-3 py-2.5 text-sm text-neutral-900 outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900"
-            />
-            {fieldErrors.departureDate && <p className="mt-1 text-[10px] text-rose-600">{fieldErrors.departureDate}</p>}
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-3">
-          <label className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold block mb-1">Adults</label>
-          <select
-            value={adults}
-            onChange={(event) => {
-              setAdults(Number(event.target.value));
-              setFieldErrors((previous) => ({ ...previous, adults: '' }));
-            }}
-            className="w-full bg-transparent text-sm text-neutral-900 outline-none"
-          >
-            {[1, 2, 3, 4, 5, 6].map((value) => (
-              <option key={value} value={value}>{value} adult{value > 1 ? 's' : ''}</option>
-            ))}
-          </select>
-          {fieldErrors.adults && <p className="mt-1 text-[10px] text-rose-600">{fieldErrors.adults}</p>}
-        </div>
-
-        <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-3">
-          <label className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold block mb-1">Children</label>
-          <select
-            value={children}
-            onChange={(event) => {
-              setChildren(Number(event.target.value));
-              setFieldErrors((previous) => ({ ...previous, children: '' }));
-            }}
-            className="w-full bg-transparent text-sm text-neutral-900 outline-none"
-          >
-            {[0, 1, 2, 3, 4].map((value) => (
-              <option key={value} value={value}>{value} child{value === 1 ? '' : 'ren'}</option>
-            ))}
-          </select>
-          {fieldErrors.children && <p className="mt-1 text-[10px] text-rose-600">{fieldErrors.children}</p>}
-        </div>
-
-        <div className="space-y-3 pt-2 border-t border-neutral-100">
-          <div>
-            <label className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold block mb-1">First name</label>
-            <input
-              type="text"
-              value={firstName}
-              onChange={(event) => {
-                setFirstName(event.target.value);
-                setFieldErrors((previous) => ({ ...previous, firstName: '' }));
-              }}
-              className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-3 py-2.5 text-sm text-neutral-900 outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900"
-            />
-            {fieldErrors.firstName && <p className="mt-1 text-[10px] text-rose-600">{fieldErrors.firstName}</p>}
-          </div>
-
-          <div>
-            <label className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold block mb-1">Last name</label>
-            <input
-              type="text"
-              value={lastName}
-              onChange={(event) => {
-                setLastName(event.target.value);
-                setFieldErrors((previous) => ({ ...previous, lastName: '' }));
-              }}
-              className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-3 py-2.5 text-sm text-neutral-900 outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900"
-            />
-            {fieldErrors.lastName && <p className="mt-1 text-[10px] text-rose-600">{fieldErrors.lastName}</p>}
-          </div>
-
-          <div>
-            <label className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold block mb-1">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(event) => {
-                setEmail(event.target.value);
-                setFieldErrors((previous) => ({ ...previous, email: '' }));
-              }}
-              className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-3 py-2.5 text-sm text-neutral-900 outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900"
-            />
-            {fieldErrors.email && <p className="mt-1 text-[10px] text-rose-600">{fieldErrors.email}</p>}
-          </div>
-
-          <div>
-            <label className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold block mb-1">Phone</label>
-            <input
-              type="tel"
-              value={phone}
-              onChange={(event) => {
-                setPhone(event.target.value);
-                setFieldErrors((previous) => ({ ...previous, phone: '' }));
-              }}
-              className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-3 py-2.5 text-sm text-neutral-900 outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900"
-            />
-            {fieldErrors.phone && <p className="mt-1 text-[10px] text-rose-600">{fieldErrors.phone}</p>}
-          </div>
-
-          <div>
-            <label className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-bold block mb-1">Notes</label>
-            <textarea
-              value={notes}
-              onChange={(event) => setNotes(event.target.value)}
-              rows={4}
-              className="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-3 py-2.5 text-sm text-neutral-900 outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900"
-              placeholder="Optional message for the host"
             />
           </div>
         </div>
@@ -442,12 +289,12 @@ export default function HillViewBookingForm() {
           </div>
         </div>
 
-        {fieldErrors.availability && (
-          <p className="text-[11px] font-medium text-rose-600">{fieldErrors.availability}</p>
-        )}
-
         {isCheckingAvailability && (
           <p className="text-[11px] text-neutral-500">Checking live availability…</p>
+        )}
+
+        {fieldErrors.availability && (
+          <p className="text-[11px] font-medium text-rose-600">{fieldErrors.availability}</p>
         )}
 
         {statusMessage && (
@@ -458,10 +305,10 @@ export default function HillViewBookingForm() {
 
         <button
           type="submit"
-          disabled={isSubmitting || isCheckingAvailability || rangeIsUnavailable}
+          disabled={isCheckingAvailability || !arrivalDate || !departureDate || arrivalDate >= departureDate || rangeIsUnavailable}
           className="w-full py-3.5 rounded-full bg-neutral-900 hover:bg-black text-white font-semibold text-sm transition-all shadow-md disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {isSubmitting ? 'Requesting booking…' : 'Request Booking'}
+          {isCheckingAvailability ? 'Checking availability…' : 'Check availability'}
         </button>
       </form>
     </div>
