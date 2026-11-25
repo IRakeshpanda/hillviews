@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import CottageBookingEngine from '../components/CottageBookingEngine';
+import SmoobuBookingEmbed from '../components/SmoobuBookingEmbed';
 import { cottageImages } from '../data/cottageData';
 import ReviewCarousel from '../components/reviews/ReviewCarousel';
 
@@ -35,13 +35,14 @@ export default function CottagePage() {
           </p>
         </header>
 
-        <div className="mb-12 animate-fadeIn">
-          <div className="rounded-3xl border border-neutral-200/80 bg-white p-8 shadow-sm max-w-3xl">
+        <div id="booking-section" className="mb-12 animate-fadeIn">
+          <div className="rounded-3xl border border-neutral-200/80 bg-white p-6 md:p-8 shadow-sm max-w-4xl">
             <span className="text-[10px] uppercase tracking-[0.24em] text-neutral-400 font-semibold">Live availability</span>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight text-neutral-900">Book your Yorkshire Dales escape</h2>
-            <p className="mt-3 text-base leading-relaxed text-neutral-600">
+            <h2 className="mt-3 text-2xl sm:text-3xl font-bold tracking-tight text-neutral-900">Book your Yorkshire Dales escape</h2>
+            <p className="mt-2 text-sm sm:text-base leading-relaxed text-neutral-600 mb-6">
               Choose your dates, view real-time availability, and reserve direct with secure confirmation from the cottage calendar.
             </p>
+            <SmoobuBookingEmbed propertySlug="all" />
           </div>
         </div>
 
@@ -75,12 +76,13 @@ export default function CottagePage() {
               </div>
 
               <div className="flex items-center justify-between mt-auto pt-6 border-t border-neutral-100">
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">FROM</span>
-                  <div className="text-sm">
-                    <span className="font-bold text-lg text-neutral-900">£185</span> <span className="text-neutral-500">/ night</span>
-                  </div>
-                </div>
+                <Link
+                  to="/chalet-le-joyau"
+                  className="text-sm font-semibold text-neutral-900 hover:text-emerald-700 transition-colors inline-flex items-center gap-1.5"
+                >
+                  <span>View Pricing</span>
+                  <span aria-hidden="true">&rarr;</span>
+                </Link>
                 <Link to="/chalet-le-joyau" className="px-5 py-2.5 rounded-full bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-sm transition-colors shadow-md hover:shadow-lg">
                   Book Now
                 </Link>
@@ -116,12 +118,13 @@ export default function CottagePage() {
               </div>
 
               <div className="flex items-center justify-between mt-auto pt-6 border-t border-neutral-100">
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">FROM</span>
-                  <div className="text-sm">
-                    <span className="font-bold text-lg text-neutral-900">£185</span> <span className="text-neutral-500">/ night</span>
-                  </div>
-                </div>
+                <Link
+                  to="/hill-view-cottage"
+                  className="text-sm font-semibold text-neutral-900 hover:text-emerald-700 transition-colors inline-flex items-center gap-1.5"
+                >
+                  <span>View Pricing</span>
+                  <span aria-hidden="true">&rarr;</span>
+                </Link>
                 <Link to="/hill-view-cottage" className="px-5 py-2.5 rounded-full bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-sm transition-colors shadow-md hover:shadow-lg">
                   Book Now
                 </Link>
@@ -134,8 +137,8 @@ export default function CottagePage() {
         <ReviewCarousel
           shuffle
           combined
-          heading="Stories from Our Guests"
-          subline="Discover guest experiences from Hill View and Chalet Le Joyau."
+          heading="What our guests say"
+          subline="One story at a time, straight from guests who have stayed at Hill View."
         />
 
       </div>

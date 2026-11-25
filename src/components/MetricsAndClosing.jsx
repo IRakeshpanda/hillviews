@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -29,17 +30,17 @@ export default function MetricsAndClosing({ onOpenBooking }) {
 
   return (
     <section ref={containerRef} className="bg-white text-neutral-900 overflow-x-hidden">
-      
+
       {/* 4-Column Spec Metric Bar */}
       <div ref={metricsRef} className="border-t border-b border-neutral-200/60 bg-neutral-50">
         <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-neutral-200/60 max-w-7xl mx-auto">
-          
+
           <div className="metric-item p-8 md:p-12 text-center">
             <span className="text-[10px] md:text-xs font-semibold uppercase tracking-widest text-neutral-400 block mb-2">
               Bedrooms
             </span>
             <span className="text-4xl md:text-6xl font-serif-editorial font-medium text-neutral-900">
-              4
+              3
             </span>
           </div>
 
@@ -48,7 +49,7 @@ export default function MetricsAndClosing({ onOpenBooking }) {
               Sleeps
             </span>
             <span className="text-4xl md:text-6xl font-serif-editorial font-medium text-neutral-900">
-              8
+              6
             </span>
           </div>
 
@@ -57,7 +58,7 @@ export default function MetricsAndClosing({ onOpenBooking }) {
               Bathrooms
             </span>
             <span className="text-4xl md:text-6xl font-serif-editorial font-medium text-neutral-900">
-              2
+              1
             </span>
           </div>
 
@@ -83,12 +84,12 @@ export default function MetricsAndClosing({ onOpenBooking }) {
         </p>
 
         <div className="mt-10 sm:mt-12 flex justify-center">
-          <button
-            onClick={onOpenBooking}
-            className="rounded-full bg-neutral-900 hover:bg-neutral-800 text-white px-8 py-4 text-xs font-semibold uppercase tracking-widest transition-all duration-300 shadow-xl shadow-neutral-500/20 active:scale-95 min-h-[44px]"
+          <Link
+            to="/cottage"
+            className="rounded-full bg-neutral-900 hover:bg-neutral-800 text-white px-8 py-4 text-xs font-semibold uppercase tracking-widest transition-all duration-300 shadow-xl shadow-neutral-500/20 active:scale-95 min-h-[44px] inline-flex items-center justify-center"
           >
             Reserve Your Stay Direct
-          </button>
+          </Link>
         </div>
       </div>
 

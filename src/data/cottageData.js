@@ -8,7 +8,7 @@ export const cottageImages = {
   beamedDouble: "/images/bedrooms/hill-view-2026-double-bed-bed-lamp.jpg",
   cosyDouble: "/images/bedrooms/hill-view-2026-bed-and-window.jpg",
   twinRoom: "/images/bedrooms/hill-view-2026-2-single-beds.jpg",
-  bathroom: "/images/bathrooms/yorkshire-dales-wash-basin.jpg",
+  bathroom: "/images/bathrooms/hill-view-bathroom.png",
   panoramicDales: "/images/gardens/hill-view-2026-outdoor-chill.jpg"
 };
 
@@ -61,20 +61,20 @@ export const cottageRooms = [
   {
     id: "master",
     title: "Master Bedroom",
-    subtitle: "King bed with countryside views & en-suite",
+    subtitle: "King bed with countryside views",
     badge: "Sleeps 2",
     image: cottageImages.masterBedroom
   },
   {
     id: "beamed",
-    title: "Beamed Double",
+    title: "Beamed Twin",
     subtitle: "Characterful room with exposed oak timber beams",
     badge: "Sleeps 2",
     image: cottageImages.beamedDouble
   },
   {
     id: "cosy",
-    title: "Cosy Double",
+    title: "Cozy Twin",
     subtitle: "Warm and welcoming with tranquil garden views",
     badge: "Sleeps 2",
     image: cottageImages.cosyDouble
@@ -106,7 +106,7 @@ export const galleryItems = [
   { title: "Hill View stone cottage exterior", image: cottageImages.hero },
   { title: "Living room with wood-burning stove", image: cottageImages.livingRoom },
   { title: "Beamed dining room", image: cottageImages.diningRoom },
-  { title: "Farmhouse kitchen", image: cottageImages.kitchen },
+  { title: "Modern kitchen", image: cottageImages.kitchen },
   { title: "Double bedroom", image: cottageImages.cosyDouble },
   { title: "Modern bathroom with shower and bath", image: cottageImages.bathroom },
   { title: "Terrace with Yorkshire Dales views", image: cottageImages.terrace },

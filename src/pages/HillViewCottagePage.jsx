@@ -298,15 +298,6 @@ export default function HillViewCottagePage() {
                 </div>
               </section>
 
-              {/* REVIEWS OF HILL VIEW */}
-              <div className="content-section pt-10 border-t border-neutral-200/70">
-                <ReviewCarousel
-                  propertySlug="hill-view"
-                  heading="Reviews of Hill View"
-                  subline="Guest experiences from stays at Hill View."
-                />
-              </div>
-
             </div>
 
             {/* RIGHT STREAM: STICKY SMOOBU BOOKING CARD (4 COLS) */}
@@ -318,14 +309,21 @@ export default function HillViewCottagePage() {
 
           </div>
 
+          {/* GUEST REVIEWS */}
+          <ReviewCarousel
+            propertySlug="hill-view"
+            heading="What our guests say"
+            subline="One story at a time, straight from guests who have stayed at Hill View."
+          />
+
         </div>
       </main>
 
       {/* MOBILE FLOATING CTA (ONLY VISIBLE ON SM/MD SCREENS) */}
       <div className="fixed bottom-0 left-0 right-0 p-4 pb-6 bg-white border-t border-neutral-200 shadow-[0_-10px_40px_rgba(0,0,0,0.08)] z-50 lg:hidden flex items-center justify-between">
         <div>
-          <p className="text-xl font-bold text-neutral-900">£185 <span className="text-sm font-normal text-neutral-500">/ night</span></p>
-          <p className="text-[10px] uppercase tracking-wider text-emerald-600 font-semibold mt-0.5">Direct Rate</p>
+          <p className="text-base font-bold text-neutral-900">Direct Booking</p>
+          <p className="text-[10px] uppercase tracking-wider text-emerald-600 font-semibold mt-0.5">Best Rates Guaranteed</p>
         </div>
         <a
           href="#booking-form"

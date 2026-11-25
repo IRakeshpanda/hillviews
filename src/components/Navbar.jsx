@@ -79,64 +79,68 @@ export default function Navbar({ onOpenBooking }) {
 
   return (
     <>
-      {/* ── TOP BAR ───────────────────────────────────────────────────── */}
-      <header
-        className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-4xl rounded-full transition-all duration-300 ${
-          isScrolled
-            ? 'bg-white/90 backdrop-blur-xl border border-black/5 shadow-2xl py-2 px-3 md:px-5'
-            : 'bg-white/80 backdrop-blur-md border border-black/5 py-2.5 px-3 md:px-6 shadow-xl'
-        }`}
-      >
-        <div className="flex items-center justify-between">
+      {/* ── TOP BAR CENTERING WRAPPER (Preserves centering transform without animation override) ── */}
+      <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-4xl pointer-events-none">
+        <header
+          id="site-navbar"
+          className={`pointer-events-auto w-full rounded-full transition-[background-color,backdrop-filter,border-color,box-shadow,padding] duration-300 ${
+            isScrolled
+              ? 'bg-white/90 backdrop-blur-xl border border-black/5 shadow-2xl py-2 px-3 md:px-5'
+              : 'bg-white/80 backdrop-blur-md border border-black/5 py-2.5 px-3 md:px-6 shadow-xl'
+          }`}
+        >
+          <div className="flex items-center justify-between">
 
-          {/* Brand */}
-          <Link to="/" onClick={closeDrawer} className="flex items-center group">
-            <img src={logoImage} alt="Hill View logo" className="h-10 w-auto object-contain" />
-          </Link>
+            {/* Brand */}
+            <Link to="/" onClick={closeDrawer} className="flex items-center group">
+              <img src={logoImage} alt="Hill View logo" className="h-10 w-auto object-contain" />
+            </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-8">
-            {NAV_LINKS.map(({ to, label }) => (
+            {/* Desktop nav */}
+            <nav className="hidden lg:flex items-center gap-8">
+              {NAV_LINKS.map(({ to, label }) => (
+                <Link
+                  key={to}
+                  to={to}
+                  className="text-xs uppercase tracking-widest text-neutral-600 hover:text-neutral-900 transition-colors py-1 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-neutral-900 hover:after:w-full after:transition-all"
+                >
+                  {label}
+                </Link>
+              ))}
+            </nav>
+
+            {/* Desktop CTA */}
+            <div className="hidden lg:flex items-center gap-3">
               <Link
-                key={to}
-                to={to}
-                className="text-xs uppercase tracking-widest text-neutral-600 hover:text-neutral-900 transition-colors py-1 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-neutral-900 hover:after:w-full after:transition-all"
+                to="/cottage"
+                className="rounded-full bg-neutral-900 text-white hover:bg-neutral-800 px-5 py-2 text-xs font-semibold uppercase tracking-wider transition-all duration-300 shadow-md active:scale-95 min-h-[36px] inline-flex items-center justify-center"
               >
-                {label}
+                Book now
               </Link>
-            ))}
-          </nav>
+            </div>
 
-          {/* Desktop CTA */}
-          <div className="hidden lg:flex items-center gap-3">
-            <button
-              onClick={onOpenBooking}
-              className="rounded-full bg-neutral-900 text-white hover:bg-neutral-800 px-5 py-2 text-xs font-semibold uppercase tracking-wider transition-all duration-300 shadow-md active:scale-95 min-h-[36px]"
-            >
-              Book now
-            </button>
+            {/* Mobile Controls */}
+            <div className="flex items-center gap-2 lg:hidden">
+              <Link
+                to="/cottage"
+                onClick={closeDrawer}
+                className="rounded-full bg-neutral-900 text-white px-4 py-2 text-[11px] font-semibold uppercase tracking-wider min-h-[36px] active:scale-95 transition-transform inline-flex items-center justify-center"
+              >
+                Book now
+              </Link>
+              <button
+                onClick={mobileMenuOpen ? closeDrawer : openDrawer}
+                className="p-2.5 text-neutral-900 rounded-full bg-neutral-100 hover:bg-neutral-200 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+                aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+                aria-expanded={mobileMenuOpen}
+              >
+                {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+              </button>
+            </div>
+
           </div>
-
-          {/* Mobile Controls */}
-          <div className="flex items-center gap-2 lg:hidden">
-            <button
-              onClick={onOpenBooking}
-              className="rounded-full bg-neutral-900 text-white px-4 py-2 text-[11px] font-semibold uppercase tracking-wider min-h-[36px] active:scale-95 transition-transform"
-            >
-              Book now
-            </button>
-            <button
-              onClick={mobileMenuOpen ? closeDrawer : openDrawer}
-              className="p-2.5 text-neutral-900 rounded-full bg-neutral-100 hover:bg-neutral-200 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
-              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
-              aria-expanded={mobileMenuOpen}
-            >
-              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-            </button>
-          </div>
-
-        </div>
-      </header>
+        </header>
+      </div>
 
       {/* ── MOBILE DRAWER (always in DOM, CSS-transition controlled) ─────── */}
       {/*
@@ -228,12 +232,13 @@ export default function Navbar({ onOpenBooking }) {
 
         {/* Drawer Footer CTA */}
         <div ref={ctaRef} className="px-6 pb-8 pt-4 border-t border-neutral-100 flex-shrink-0">
-          <button
-            onClick={() => { closeDrawer(); onOpenBooking(); }}
-            className="w-full py-4 rounded-2xl bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-center uppercase tracking-wider text-sm shadow-lg shadow-neutral-900/20 active:scale-[0.98] transition-all min-h-[56px]"
+          <Link
+            to="/cottage"
+            onClick={closeDrawer}
+            className="w-full py-4 rounded-2xl bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-center uppercase tracking-wider text-sm shadow-lg shadow-neutral-900/20 active:scale-[0.98] transition-all min-h-[56px] inline-flex items-center justify-center"
           >
             Book Direct on Smoobu
-          </button>
+          </Link>
           <p className="text-center text-xs text-neutral-400 mt-3">
             Low Row · Swaledale · Yorkshire Dales
           </p>

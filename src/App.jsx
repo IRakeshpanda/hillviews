@@ -7,7 +7,6 @@ import { useGSAP } from '@gsap/react';
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import BookingModal from './components/BookingModal';
 import Home from './pages/Home';
 import GalleryPage from './pages/GalleryPage';
 import ContactPage from './pages/ContactPage';
@@ -36,7 +35,6 @@ function ScrollToTop() {
 }
 
 function AppContent() {
-  const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [arrivalDate, setArrivalDate] = useState('2026-09-24');
   const [departureDate, setDepartureDate] = useState('2026-09-28');
   const [guests, setGuests] = useState(4);
@@ -79,7 +77,7 @@ function AppContent() {
       <ScrollToTop />
       
       {/* Floating Pill Navigation */}
-      <Navbar onOpenBooking={() => setIsBookingOpen(true)} />
+      <Navbar />
 
       {/* Main Page Routing */}
       <Routes>
@@ -87,8 +85,6 @@ function AppContent() {
           path="/" 
           element={
             <Home 
-              isBookingOpen={isBookingOpen}
-              setIsBookingOpen={setIsBookingOpen}
               arrivalDate={arrivalDate}
               setArrivalDate={setArrivalDate}
               departureDate={departureDate}
@@ -100,11 +96,11 @@ function AppContent() {
         />
         <Route 
           path="/gallery" 
-          element={<GalleryPage onOpenBooking={() => setIsBookingOpen(true)} />} 
+          element={<GalleryPage />} 
         />
         <Route 
           path="/contact" 
-          element={<ContactPage onOpenBooking={() => setIsBookingOpen(true)} />} 
+          element={<ContactPage />} 
         />
         <Route 
           path="/privacy-policy" 
@@ -133,19 +129,7 @@ function AppContent() {
       </Routes>
 
       {/* 8. Editorial Multi-Column Footer */}
-      <Footer onOpenBooking={() => setIsBookingOpen(true)} />
-
-      {/* Interactive Booking Modal */}
-      <BookingModal
-        isOpen={isBookingOpen}
-        onClose={() => setIsBookingOpen(false)}
-        arrivalDate={arrivalDate}
-        setArrivalDate={setArrivalDate}
-        departureDate={departureDate}
-        setDepartureDate={setDepartureDate}
-        guests={guests}
-        setGuests={setGuests}
-      />
+      <Footer />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import React, { useRef, useState, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -84,13 +85,13 @@ function MobileRoomsSlider({ onOpenBooking }) {
         </div>
 
         {/* CTA strip */}
-        <div
-          className="p-4 bg-white flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-neutral-500 min-h-[52px] cursor-pointer active:bg-neutral-50 transition-colors"
-          onClick={onOpenBooking}
+        <Link
+          to="/cottage"
+          className="p-4 bg-white flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-neutral-500 min-h-[52px] active:bg-neutral-50 transition-colors"
         >
           <span>View Details & Rates</span>
           <span>→</span>
-        </div>
+        </Link>
       </div>
 
       {/* Navigation arrows + pill dots */}
@@ -203,9 +204,9 @@ export default function RoomsShowcase({ onOpenBooking }) {
         {/* ── Desktop Grid (≥lg) ── */}
         <div className="hidden lg:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {cottageRooms.map((room) => (
-            <div
+            <Link
               key={room.id}
-              onClick={onOpenBooking}
+              to="/cottage"
               className="room-card group cursor-pointer bg-white rounded-3xl overflow-hidden border border-neutral-200/60 hover:shadow-2xl hover:border-neutral-300 transition-all duration-500 shadow-md flex flex-col justify-between"
             >
               <div className="relative aspect-[3/4] overflow-hidden bg-neutral-200">
@@ -230,7 +231,7 @@ export default function RoomsShowcase({ onOpenBooking }) {
                 <span>View Details & Rates</span>
                 <span>→</span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 

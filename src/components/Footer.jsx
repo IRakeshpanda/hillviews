@@ -53,7 +53,7 @@ export default function Footer({ onOpenBooking }) {
                 <a href="#about" className="hover:text-neutral-900 transition-colors">About Us</a>
               </li>
               <li>
-                <button onClick={onOpenBooking} className="hover:text-neutral-900 transition-colors text-left">House Rules</button>
+                <Link to="/terms" className="hover:text-neutral-900 transition-colors text-left">House Rules</Link>
               </li>
               <li>
                 <Link to="/terms" className="hover:text-neutral-900 transition-colors text-left">Terms & Conditions</Link>
@@ -86,13 +86,13 @@ export default function Footer({ onOpenBooking }) {
                 <span>Low Row, Swaledale, UK</span>
               </li>
               <li className="pt-2">
-                <button
-                  onClick={onOpenBooking}
+                <Link
+                  to="/cottage"
                   className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-600 hover:text-neutral-900 uppercase tracking-wider underline underline-offset-4"
                 >
                   <span>Book Direct Now</span>
                   <ExternalLink className="w-3 h-3" />
-                </button>
+                </Link>
               </li>
             </ul>
           </div>

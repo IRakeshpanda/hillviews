@@ -116,8 +116,8 @@ export default function FeaturesPage() {
         <ReviewCarousel
           shuffle
           combined
-          heading="Stories from Our Guests"
-          subline="Discover guest experiences from Hill View and Chalet Le Joyau."
+          heading="What our guests say"
+          subline="One story at a time, straight from guests who have stayed at Hill View."
         />
       </section>
     </main>

@@ -1,34 +1,162 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { Calendar as CalendarIcon, ChevronDown, Search, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { cottageImages } from '../data/cottageData';
+import SmoobuBookingEmbed from './SmoobuBookingEmbed';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia('(min-width: 1024px)').matches : true
+  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener?.('change', update);
+    return () => mq.removeEventListener?.('change', update);
+  }, []);
+
+  return isDesktop;
+}
+
 export default function HeroSection({ onOpenBooking, arrivalDate, departureDate, guests }) {
-  const containerRef     = useRef(null);
-  // Desktop refs
-  const heroOverlayRef   = useRef(null);
-  const centerCardRef    = useRef(null);
-  const leftColRef       = useRef(null);
-  const rightColRef      = useRef(null);
+  const isDesktop = useIsDesktop();
+  const containerRef = useRef(null);
+
+  // Desktop entrance & scroll refs
+  const heroOverlayRef = useRef(null);
+  const centerCardRef = useRef(null);
+  const leftColRef = useRef(null);
+  const rightColRef = useRef(null);
   const mosaicWrapperRef = useRef(null);
-  const subtitleRef      = useRef(null);
+  const subtitleRevealRef = useRef(null);
+
+  const desktopBgRef = useRef(null);
+  const desktopBadgeRef = useRef(null);
+  const desktopHeadingRef = useRef(null);
+  const desktopSubRef = useRef(null);
+  const desktopBookingRef = useRef(null);
 
   // Mobile refs
-  const mobileLeftCardRef  = useRef(null);
+  const mobileBgRef = useRef(null);
+  const mobileBadgeRef = useRef(null);
+  const mobileHeadingRef = useRef(null);
+  const mobileSubRefText = useRef(null);
+  const mobileBookingRef = useRef(null);
+  const mobileLeftCardRef = useRef(null);
   const mobileRightCardRef = useRef(null);
-  const mobileSubRef       = useRef(null);
-  const mobileTrackRef     = useRef(null);
+  const mobileSubRef = useRef(null);
+  const mobileTrackRef = useRef(null);
 
   useGSAP(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const siteNavbar = document.getElementById('site-navbar');
+
+    // ── 1. HERO ENTRANCE ANIMATION (Calm, elegant, ~1.5–1.6s sequence) ─────
+    if (prefersReducedMotion) {
+      gsap.set(
+        [
+          desktopBgRef.current,
+          mobileBgRef.current,
+          siteNavbar,
+          desktopBadgeRef.current,
+          desktopHeadingRef.current,
+          desktopSubRef.current,
+          desktopBookingRef.current,
+          mobileBadgeRef.current,
+          mobileHeadingRef.current,
+          mobileSubRefText.current,
+          mobileBookingRef.current,
+        ].filter(Boolean),
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          clearProps: 'transform,opacity',
+        }
+      );
+    } else {
+      const entranceTl = gsap.timeline({
+        defaults: { ease: 'power2.out' },
+      });
+
+      // Background image: subtle fade-in & gentle zoom-out over 1.4s
+      const bgElements = [desktopBgRef.current, mobileBgRef.current].filter(Boolean);
+      if (bgElements.length) {
+        entranceTl.fromTo(
+          bgElements,
+          { opacity: 0, scale: 1.05 },
+          { opacity: 1, scale: 1, duration: 1.4, ease: 'power2.out' },
+          0
+        );
+      }
+
+      // Navbar: gently slides upward from a slightly lower position (+12px) while fading in
+      // Animating ONLY opacity and vertical offset, keeping its horizontal position fixed throughout
+      if (siteNavbar) {
+        entranceTl.fromTo(
+          siteNavbar,
+          { opacity: 0, y: 12 },
+          { opacity: 1, y: 0, duration: 1.0, ease: 'power2.out', clearProps: 'transform' },
+          0.15
+        );
+      }
+
+      // Location badges: gentle upward movement (+12px -> 0)
+      const badges = [desktopBadgeRef.current, mobileBadgeRef.current].filter(Boolean);
+      if (badges.length) {
+        entranceTl.fromTo(
+          badges,
+          { opacity: 0, y: 12 },
+          { opacity: 1, y: 0, duration: 0.9, ease: 'power2.out' },
+          0.30
+        );
+      }
+
+      // Main headings: gentle upward movement (+14px -> 0)
+      const headings = [desktopHeadingRef.current, mobileHeadingRef.current].filter(Boolean);
+      if (headings.length) {
+        entranceTl.fromTo(
+          headings,
+          { opacity: 0, y: 14 },
+          { opacity: 1, y: 0, duration: 0.9, ease: 'power2.out' },
+          0.45
+        );
+      }
+
+      // Subtitles: gentle upward movement (+12px -> 0)
+      const subtitles = [desktopSubRef.current, mobileSubRefText.current].filter(Boolean);
+      if (subtitles.length) {
+        entranceTl.fromTo(
+          subtitles,
+          { opacity: 0, y: 12 },
+          { opacity: 1, y: 0, duration: 0.9, ease: 'power2.out' },
+          0.60
+        );
+      }
+
+      // Booking containers: reveal last with a soft fade-up (+14px -> 0)
+      const bookingContainers = [desktopBookingRef.current, mobileBookingRef.current].filter(Boolean);
+      if (bookingContainers.length) {
+        entranceTl.fromTo(
+          bookingContainers,
+          { opacity: 0, y: 14 },
+          { opacity: 1, y: 0, duration: 0.95, ease: 'power2.out' },
+          0.75
+        );
+      }
+    }
+
     const mm = gsap.matchMedia();
 
-    // ── DESKTOP ≥1024px: Pinned 5-card mosaic expansion ──────────────────
+    // ── 2. DESKTOP ≥1024px: Pinned 5-card mosaic expansion on scroll ───────
     mm.add('(min-width: 1024px)', () => {
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (prefersReducedMotion) return;
 
       const tl = gsap.timeline({
@@ -47,18 +175,16 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
       tl.to(heroOverlayRef.current, { opacity: 0, y: -30, pointerEvents: 'none', duration: 0.35, ease: 'power2.out' }, 0);
       tl.to(mosaicWrapperRef.current, { gap: '20px', padding: '40px 24px', duration: 0.6, ease: 'power2.inOut' }, 0.1);
       tl.to(centerCardRef.current, { width: '38%', borderRadius: '24px', duration: 0.6, ease: 'power2.inOut' }, 0.1);
-      tl.to(leftColRef.current,  { width: '28%', xPercent: 0, opacity: 1, duration: 0.65, ease: 'power2.inOut' }, 0.15);
+      tl.to(leftColRef.current, { width: '28%', xPercent: 0, opacity: 1, duration: 0.65, ease: 'power2.inOut' }, 0.15);
       tl.to(rightColRef.current, { width: '28%', xPercent: 0, opacity: 1, duration: 0.65, ease: 'power2.inOut' }, 0.15);
-      tl.to(subtitleRef.current, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 0.55);
+      tl.to(subtitleRevealRef.current, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 0.55);
     });
 
-    // ── MOBILE / TABLET <1024px: Full-viewport hero + sequential slide-in ─
+    // ── 3. MOBILE / TABLET <1024px: Sequential slide-in on scroll ─────────
     mm.add('(max-width: 1023px)', () => {
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-      const leftCard  = mobileLeftCardRef.current;
+      const leftCard = mobileLeftCardRef.current;
       const rightCard = mobileRightCardRef.current;
-      const subtitle  = mobileSubRef.current;
+      const subtitle = mobileSubRef.current;
 
       if (!leftCard || !rightCard) return;
 
@@ -144,6 +270,7 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
         <div className="relative w-full h-[100dvh] min-h-[100dvh] flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0 z-0">
             <img
+              ref={mobileBgRef}
               src={cottageImages.hero}
               alt="Hill View Stone Cottage"
               className="w-full h-full object-cover brightness-[0.82]"
@@ -152,46 +279,36 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
           </div>
 
           <div className="relative z-10 w-full max-w-sm px-6 text-center text-white flex flex-col items-center justify-center">
-            <span className="text-[11px] uppercase tracking-[0.25em] text-neutral-300 font-semibold mb-2">
+            <span
+              ref={mobileBadgeRef}
+              className="text-[11px] uppercase tracking-[0.25em] text-neutral-300 font-semibold mb-2"
+            >
               Swaledale • Yorkshire Dales
             </span>
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight">
-              Spacious Yorkshire Dales Stone Cottage
+            <h1
+              ref={mobileHeadingRef}
+              className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight"
+            >
+              Charming Yorkshire Dales Stone Cottage
             </h1>
-            <p className="mt-2 text-xs sm:text-sm text-neutral-200 font-light italic text-amber-200/90">
+            <p
+              ref={mobileSubRefText}
+              className="mt-2 text-xs sm:text-sm text-neutral-200 font-light italic text-amber-200/90"
+            >
               Book direct with us and save.
             </p>
 
-            <div className="mt-6 w-full p-4 rounded-2xl bg-white/15 backdrop-blur-xl border border-white/25 shadow-2xl space-y-3 text-left">
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  onClick={onOpenBooking}
-                  className="p-2.5 rounded-xl bg-white/20 border border-white/20 text-xs text-left transition-transform active:scale-[0.98]"
-                >
-                  <span className="text-[9px] uppercase font-bold text-neutral-300 block">ARRIVAL</span>
-                  <span className="font-medium text-white text-[11px]">{arrivalDate || 'Select Date'}</span>
-                </button>
-                <button
-                  onClick={onOpenBooking}
-                  className="p-2.5 rounded-xl bg-white/20 border border-white/20 text-xs text-left transition-transform active:scale-[0.98]"
-                >
-                  <span className="text-[9px] uppercase font-bold text-neutral-300 block">DEPARTURE</span>
-                  <span className="font-medium text-white text-[11px]">{departureDate || 'Select Date'}</span>
-                </button>
-              </div>
-
-              <div className="p-2.5 rounded-xl bg-white/20 border border-white/20 text-xs flex justify-between items-center">
-                <span className="text-[9px] uppercase font-bold text-neutral-300">GUESTS</span>
-                <span className="font-medium text-white text-[11px]">Up to {guests || 6} Guests</span>
-              </div>
-
-              <button
-                onClick={onOpenBooking}
-                className="w-full py-3 rounded-xl bg-neutral-900 hover:bg-black text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-lg transition-transform active:scale-95"
-              >
-                <span>Check Availability</span>
-                <span>→</span>
-              </button>
+            {/* Smoobu Mobile Booking Form */}
+            <div
+              ref={mobileBookingRef}
+              className="mt-6 w-full max-w-sm rounded-2xl bg-transparent backdrop-blur-xl border border-white/30 shadow-2xl overflow-hidden p-3 text-neutral-900 text-left"
+            >
+              {!isDesktop && (
+                <SmoobuBookingEmbed
+                  propertySlug="all"
+                  className="w-full min-h-[140px] bg-transparent"
+                />
+              )}
             </div>
           </div>
 
@@ -218,7 +335,7 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
           >
             <img src={cottageImages.diningRoom} alt="Dining Room" className="w-full h-full object-cover" />
             <span className="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-medium">
-              Dining room with wood burner
+              Dining room
             </span>
           </div>
 
@@ -265,7 +382,12 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
               className="hero-center-card relative overflow-hidden will-change-transform shadow-2xl border border-neutral-200/60"
               style={{ width: '100%', height: '100%', flex: '0 0 auto', borderRadius: '0px' }}
             >
-              <img src={cottageImages.livingRoom} alt="Hill View living room with wood-burning stove" className="absolute inset-0 w-full h-full object-cover object-center scale-105" />
+              <img
+                ref={desktopBgRef}
+                src={cottageImages.livingRoom}
+                alt="Hill View living room with wood-burning stove"
+                className="absolute inset-0 w-full h-full object-cover object-center"
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/50" />
 
               <div
@@ -274,53 +396,44 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
               >
                 <div className="w-full max-w-5xl text-center flex flex-col items-center justify-center">
                   <div className="space-y-4">
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-medium uppercase tracking-widest shadow-lg">
+                    <div
+                      ref={desktopBadgeRef}
+                      className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-medium uppercase tracking-widest shadow-lg"
+                    >
                       <Sparkles className="w-3.5 h-3.5 text-white/90" />
                       <span>Low Row • Swaledale</span>
                     </div>
-                    <h1 className="text-5xl lg:text-6xl xl:text-7xl font-serif-editorial font-medium tracking-tight text-white drop-shadow-md leading-[1.08]">
+                    <h1
+                      ref={desktopHeadingRef}
+                      className="text-5xl lg:text-6xl xl:text-7xl font-serif-editorial font-medium tracking-tight text-white drop-shadow-md leading-[1.08]"
+                    >
                       Spacious Yorkshire Dales Stone Cottage
                     </h1>
-                    <p className="text-xl lg:text-2xl font-serif-editorial italic text-white/90 font-light drop-shadow">
+                    <p
+                      ref={desktopSubRef}
+                      className="text-xl lg:text-2xl font-serif-editorial italic text-white/90 font-light drop-shadow"
+                    >
                       Book direct with us and save!
                     </p>
                   </div>
 
-                  {/* Desktop Booking Bar */}
-                  <div className="mt-8 w-full max-w-4xl glass-panel rounded-3xl p-4 md:p-6 shadow-2xl border border-white/20 backdrop-blur-xl">
-                    <form onSubmit={(e) => { e.preventDefault(); onOpenBooking(); }} className="flex flex-col gap-3 md:flex-row md:items-end md:gap-4">
-                      <div className="flex-1 text-left">
-                        <label className="block text-[10px] font-semibold uppercase tracking-widest text-white/70 mb-2">Arrival</label>
-                        <div onClick={onOpenBooking} className="flex items-center justify-between w-full px-4 py-3 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-sm text-white cursor-pointer transition-all group min-h-[44px]">
-                          <span className="font-medium">{arrivalDate || '24 Sep 2026'}</span>
-                          <CalendarIcon className="w-4 h-4 text-white/80 group-hover:scale-110 transition-transform" />
-                        </div>
-                      </div>
-                      <div className="flex-1 text-left">
-                        <label className="block text-[10px] font-semibold uppercase tracking-widest text-white/70 mb-2">Departure</label>
-                        <div onClick={onOpenBooking} className="flex items-center justify-between w-full px-4 py-3 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-sm text-white cursor-pointer transition-all group min-h-[44px]">
-                          <span className="font-medium">{departureDate || '28 Sep 2026'}</span>
-                          <CalendarIcon className="w-4 h-4 text-white/80 group-hover:scale-110 transition-transform" />
-                        </div>
-                      </div>
-                      <div className="flex-1 text-left">
-                        <label className="block text-[10px] font-semibold uppercase tracking-widest text-white/70 mb-2">Guests</label>
-                        <div onClick={onOpenBooking} className="flex items-center justify-between w-full px-4 py-3 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-sm text-white cursor-pointer transition-all group min-h-[44px]">
-                          <span className="font-medium">{guests} {guests === 1 ? 'Guest' : 'Guests'}</span>
-                          <ChevronDown className="w-4 h-4 text-white/80 group-hover:translate-y-0.5 transition-transform" />
-                        </div>
-                      </div>
-                      <button type="submit" className="md:self-end px-8 py-3.5 rounded-full bg-white hover:bg-neutral-200 text-neutral-900 font-semibold text-xs uppercase tracking-widest transition-all duration-300 shadow-lg flex items-center justify-center gap-2 active:scale-95 min-h-[44px]">
-                        <Search className="w-4 h-4" />
-                        <span>Search</span>
-                      </button>
-                    </form>
+                  {/* Desktop Smoobu Booking Bar */}
+                  <div
+                    ref={desktopBookingRef}
+                    className="mt-8 w-full max-w-4xl rounded-3xl bg-transparent backdrop-blur-xl border border-white/30 shadow-2xl overflow-hidden p-3 md:p-5 text-neutral-900"
+                  >
+                    {isDesktop && (
+                      <SmoobuBookingEmbed
+                        propertySlug="all"
+                        className="w-full min-h-[140px] bg-transparent"
+                      />
+                    )}
                   </div>
                 </div>
               </div>
 
               <div
-                ref={subtitleRef}
+                ref={subtitleRevealRef}
                 className="hero-mosaic-reveal-text absolute bottom-8 left-1/2 -translate-x-1/2 z-20 text-center opacity-0 translate-y-6 w-full max-w-2xl px-6 pointer-events-none"
               >
                 <p className="text-2xl lg:text-3xl font-serif-editorial italic text-neutral-600 drop-shadow-sm">
@@ -347,8 +460,6 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
               </div>
             </div>
           </div>
-
-
         </div>
       </div>
 

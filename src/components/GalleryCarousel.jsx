@@ -133,13 +133,13 @@ export default function GalleryCarousel({ onOpenBooking }) {
                       {item.title}
                     </h3>
                   </div>
-                  <button
-                    onClick={onOpenBooking}
+                  <Link
+                    to="/cottage"
                     className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-md border border-black/5 flex items-center justify-center text-neutral-900 hover:bg-neutral-900 hover:text-white transition-all group-hover:scale-110 shadow-sm"
-                    aria-label="View photo details"
+                    aria-label="View cottage details"
                   >
                     <Expand className="w-4 h-4" />
-                  </button>
+                  </Link>
                 </div>
               </div>
             ))}
