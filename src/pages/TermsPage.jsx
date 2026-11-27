@@ -115,7 +115,7 @@ export default function TermsPage() {
           });
           // Highlight animation for cancellation block if targeted
           if (id === 'cancellation') {
-            gsap.fromTo(target, 
+            gsap.fromTo(target,
               { boxShadow: "0 0 0 0 rgba(16, 185, 129, 0.7)" },
               { boxShadow: "0 0 0 20px rgba(16, 185, 129, 0)", duration: 1.5, ease: "power2.out" }
             );
@@ -130,7 +130,7 @@ export default function TermsPage() {
     const target = document.getElementById(id);
     if (target) {
       window.scrollTo({
-        top: target.offsetTop - 100, 
+        top: target.offsetTop - 100,
         behavior: 'smooth'
       });
       window.history.pushState(null, '', `#${id}`);
@@ -162,7 +162,7 @@ export default function TermsPage() {
   return (
     <main ref={containerRef} className="min-h-screen bg-white pt-32 pb-24 px-6 md:px-12">
       <div className="max-w-6xl mx-auto">
-        
+
         {/* HEADER */}
         <header className="mb-16 md:mb-20 max-w-3xl">
           <div className="flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-neutral-400 font-semibold mb-3 animate-fadeIn">
@@ -182,7 +182,7 @@ export default function TermsPage() {
 
         {/* TWO-COLUMN LAYOUT */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start terms-content">
-          
+
           {/* STICKY SIDEBAR (19 Discrete Section Links) */}
           <aside className="hidden lg:block lg:col-span-4 sticky top-28 space-y-4">
             <div className="p-6 rounded-3xl bg-[#FBFBFA] border border-neutral-200/80">
@@ -200,11 +200,10 @@ export default function TermsPage() {
                         handleLinkClick(item.id);
                         scrollToSection(e, item.id);
                       }}
-                      className={`block py-1.5 px-3 rounded-lg transition-all ${
-                        isActive
-                          ? "bg-neutral-900 text-white font-semibold shadow-sm"
-                          : "text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100"
-                      }`}
+                      className={`block py-1.5 px-3 rounded-lg transition-all ${isActive
+                        ? "bg-neutral-900 text-white font-semibold shadow-sm"
+                        : "text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100"
+                        }`}
                     >
                       {item.label}
                     </a>
@@ -368,7 +367,6 @@ export default function TermsPage() {
                 <span className="text-xs font-mono font-bold uppercase tracking-widest text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">
                   Section 11 -  Cancellation Policy
                 </span>
-                <span className="text-xs font-mono text-neutral-400">Anchor: #cancellation</span>
               </div>
 
               <div>
