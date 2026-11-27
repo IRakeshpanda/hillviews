@@ -5,7 +5,6 @@ const SMOOBU_API_KEY = process.env.SMOOBU_API_KEY || '';
 const SMOOBU_API_SECRET = process.env.SMOOBU_API_SECRET || '';
 const PROPERTY_APARTMENT_IDS = {
   'hill-view': process.env.SMOOBU_HILL_VIEW_APARTMENT_ID || '',
-  'chalet-le-joyau': process.env.SMOOBU_CHALET_LE_JOJAU_APARTMENT_ID || '',
 };
 
 function isDateRangeUnavailable(bookedDates: string[], startDate: string, endDate: string): boolean {
@@ -76,7 +75,7 @@ export async function POST(request: Request) {
     const apartmentIdValue = String(apartmentId || PROPERTY_APARTMENT_IDS[propertyKey as keyof typeof PROPERTY_APARTMENT_IDS] || PROPERTY_APARTMENT_IDS['hill-view'] || '').trim();
 
     if (!SMOOBU_API_KEY || !SMOOBU_API_SECRET || !apartmentIdValue) {
-      return NextResponse.json({ error: `Smoobu booking is not configured on this server for ${propertyKey === 'chalet-le-joyau' ? 'Chalet le Joyau' : 'Hill View Stone Cottage'}.` }, { status: 500 });
+      return NextResponse.json({ error: 'Smoobu booking is not configured on this server for Hill View Stone Cottage.' }, { status: 500 });
     }
 
     const start = new Date(`${arrivalDate}T00:00:00Z`);

@@ -7,17 +7,11 @@ const env = (...names) => {
 };
 
 export const PROPERTY_SPECS = {
-  'chalet-le-joyau': {
-    slug: 'chalet-le-joyau',
-    label: 'Chalet Le Joyau',
-    apartmentIdEnv: 'SMOOBU_CHALET_LE_JOJAU_APARTMENT_ID',
-    aliases: ['chalet-le-joyau', 'chalet-le-jojau', 'chalet le joyau', 'chalet le jojau'],
-  },
   'hill-view': {
     slug: 'hill-view',
     label: 'Hill View',
     apartmentIdEnv: 'SMOOBU_HILL_VIEW_APARTMENT_ID',
-    aliases: ['hill-view', 'hill view', 'hillview'],
+    aliases: ['hill-view', 'hill view', 'hillview', 'all', 'default'],
   },
 };
 

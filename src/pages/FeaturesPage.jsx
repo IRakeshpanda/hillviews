@@ -82,17 +82,8 @@ export default function FeaturesPage() {
         <span className="text-xs uppercase tracking-widest text-neutral-400 font-semibold">Facilities & accommodation</span>
         <h1 className="mt-5 text-5xl md:text-7xl font-serif-editorial font-medium tracking-tight text-neutral-900">Features</h1>
         <p className="mt-5 max-w-2xl text-lg md:text-xl leading-relaxed text-neutral-500 font-light">
-          Explore the facilities and details of both cottages in Low Row, Swaledale.
+          Explore the facilities and handcrafted details of Hill View Cottage in Low Row, Swaledale.
         </p>
-
-        <nav aria-label="Property jump links" className="mt-10 flex flex-wrap gap-3">
-          <a href="#hill-view" className="min-h-[44px] inline-flex items-center px-5 py-2.5 rounded-full border border-neutral-200 text-sm font-semibold hover:border-neutral-900 transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-neutral-900">
-            Hill View
-          </a>
-          <a href="#chalet-le-joyau" className="min-h-[44px] inline-flex items-center px-5 py-2.5 rounded-full border border-neutral-200 text-sm font-semibold hover:border-neutral-900 transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-neutral-900">
-            Chalet Le Joyau
-          </a>
-        </nav>
 
         <div className="mt-14 space-y-16 md:space-y-20">
           <PropertyFeatures
@@ -103,19 +94,10 @@ export default function FeaturesPage() {
             description="Two generous living rooms form the heart of the cottage, with a wood-burning stove, Smart TV and high-end sound systems. A large dining area sits beside a separate modern kitchen and utility room."
             reviewKey="hill-view"
           />
-          <PropertyFeatures
-            id="chalet-le-joyau"
-            name="Chalet Le Joyau"
-            route="/chalet-le-joyau"
-            image={cottageImages.panoramicDales}
-            description="Two generous living rooms form the heart of the chalet, with a wood-burning stove, Smart TV and high-end sound systems. A large dining area sits beside a separate modern kitchen and utility room."
-            reviewKey="chalet-le-joyau"
-          />
         </div>
 
         <ReviewCarousel
-          shuffle
-          combined
+          propertySlug="hill-view"
           heading="What our guests say"
           subline="One story at a time, straight from guests who have stayed at Hill View."
         />

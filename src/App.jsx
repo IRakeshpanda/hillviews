@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -13,7 +13,6 @@ import ContactPage from './pages/ContactPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsPage from './pages/TermsPage';
 import CottagePage from './pages/CottagePage';
-import ChaletLeJoyauPage from './pages/ChaletLeJoyauPage';
 import HillViewCottagePage from './pages/HillViewCottagePage';
 import FeaturesPage from './pages/FeaturesPage';
 
@@ -115,16 +114,16 @@ function AppContent() {
           element={<CottagePage />} 
         />
         <Route 
-          path="/chalet-le-joyau" 
-          element={<ChaletLeJoyauPage />} 
-        />
-        <Route 
           path="/hill-view-cottage" 
           element={<HillViewCottagePage />} 
         />
         <Route 
           path="/features" 
           element={<FeaturesPage />} 
+        />
+        <Route 
+          path="*" 
+          element={<Navigate to="/" replace />} 
         />
       </Routes>
 

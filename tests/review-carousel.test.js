@@ -32,7 +32,7 @@ test.after(async () => {
 });
 
 test('DATA: approvedReviews contains required fields without sample flags', () => {
-  assert.equal(approvedReviews.length, 8);
+  assert.equal(approvedReviews.length, 4);
 
   for (const review of approvedReviews) {
     assert.ok(review.id, 'review must have an id');
@@ -68,15 +68,15 @@ test('COMPONENT: renders left column and right column according to target design
     'must render default subtext'
   );
 
-  // 4. Counter (01 / 08 zero-padded)
+  // 4. Counter (01 / 04 zero-padded)
   assert.ok(html.includes('review-carousel-counter'), 'must have counter class');
-  assert.ok(html.includes('01 / 08'), 'must display zero-padded counter 01 / 08');
+  assert.ok(html.includes('01 / 04'), 'must display zero-padded counter 01 / 04');
 
   // 5. Controls row (segmented progress indicator + circular prev/next buttons)
   assert.ok(html.includes('review-carousel-segments'), 'must have segments container');
   assert.ok(html.includes('review-carousel-segment is-active'), 'active segment must have is-active');
   assert.ok(html.includes('aria-label="Go to review 1"'));
-  assert.ok(html.includes('aria-label="Go to review 8"'));
+  assert.ok(html.includes('aria-label="Go to review 4"'));
   assert.ok(html.includes('aria-label="Previous review"'));
   assert.ok(html.includes('aria-label="Next review"'));
 
@@ -107,18 +107,18 @@ test('COMPONENT: renders left column and right column according to target design
 test('COMPONENT: property filtering and custom heading/subtext support', () => {
   const html = renderToStaticMarkup(
     React.createElement(ReviewCarousel, {
-      propertySlug: 'chalet-le-joyau'
+      propertySlug: 'hill-view',
+      heading: 'Guest Stories',
+      subline: 'Custom subtext for Hill View.'
     })
   );
 
-  // Counter should reflect 4 chalet reviews
-  assert.ok(html.includes('01 / 04'), 'counter must update to 01 / 04 for chalet reviews');
-  assert.ok(html.includes('CE'), 'must generate CE initials for Charlotte Evans');
-  assert.ok(html.includes('Charlotte Evans'), 'must display Charlotte Evans');
-  assert.ok(
-    html.includes('One story at a time, straight from guests who have stayed at Chalet Le Joyau.'),
-    'must display chalet subtext'
-  );
+  // Counter should reflect 4 hill-view reviews
+  assert.ok(html.includes('01 / 04'), 'counter must update to 01 / 04 for hill-view reviews');
+  assert.ok(html.includes('EC'), 'must generate EC initials for Emily Carter');
+  assert.ok(html.includes('Emily Carter'), 'must display Emily Carter');
+  assert.ok(html.includes('Guest Stories'), 'must render custom heading');
+  assert.ok(html.includes('Custom subtext for Hill View.'), 'must display custom subtext');
   assert.equal(/sample/i.test(html), false);
 });
 
@@ -157,7 +157,6 @@ test('REMOVALS: Whole codebase check for sample, fictional, layout testing in fr
     'src/index.css',
     'src/pages/CottagePage.jsx',
     'src/pages/HillViewCottagePage.jsx',
-    'src/pages/ChaletLeJoyauPage.jsx',
     'src/pages/FeaturesPage.jsx'
   ];
 

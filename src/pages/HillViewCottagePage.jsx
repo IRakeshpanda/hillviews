@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import SmoobuBookingEmbed from '../components/SmoobuBookingEmbed';
+import HillViewBookingCard from '../components/HillViewBookingCard';
 import ReviewCarousel from '../components/reviews/ReviewCarousel';
 import { cottageImages } from '../data/cottageData';
 
@@ -66,7 +67,7 @@ export default function HillViewCottagePage() {
           {/* 1. BREADCRUMB & HEADER */}
           <header className="mb-6 animate-header">
             <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-neutral-400 font-semibold mb-2">
-              <Link to="/cottage" className="hover:text-neutral-900 transition-colors">COTTAGES</Link>
+              <Link to="/cottage" className="hover:text-neutral-900 transition-colors">THE COTTAGE</Link>
               <span>- </span>
               <span>SWALEDALE</span>
               <span>- </span>
@@ -302,8 +303,8 @@ export default function HillViewCottagePage() {
 
             {/* RIGHT STREAM: STICKY SMOOBU BOOKING CARD (4 COLS) */}
             <aside className="lg:col-span-4 lg:block lg:sticky lg:top-28 space-y-4 sticky-card z-10">
-              <div id="booking-form" className="rounded-3xl bg-white border-2 border-neutral-900/10 shadow-2xl overflow-hidden scroll-mt-28">
-                <SmoobuBookingEmbed propertySlug="hill-view" />
+              <div id="booking-form" className="scroll-mt-28">
+                <HillViewBookingCard />
               </div>
             </aside>
 

@@ -50,57 +50,5 @@ export const approvedReviews = [
     source: 'Direct',
     sourceUrl: null,
     date: 'June 2026'
-  },
-  {
-    id: 'chalet-charlotte-evans',
-    propertySlug: 'chalet-le-joyau',
-    reviewerName: 'Charlotte Evans',
-    gender: 'woman',
-    rating: 5,
-    ratingScale: 5,
-    text: 'A wonderful change of pace from everyday life. We enjoyed taking each day as it came and making time for one another.',
-    meta: 'Stayed August 2026 · Direct',
-    source: 'Direct',
-    sourceUrl: null,
-    date: 'August 2026'
-  },
-  {
-    id: 'chalet-oliver-mitchell',
-    propertySlug: 'chalet-le-joyau',
-    reviewerName: 'Oliver Mitchell',
-    gender: 'man',
-    rating: 5,
-    ratingScale: 5,
-    text: 'Our stay gave us exactly what we wanted from a getaway: time to unwind, reconnect, and make some lovely memories.',
-    meta: 'Stayed October 2026 · Direct',
-    source: 'Direct',
-    sourceUrl: null,
-    date: 'October 2026'
-  },
-  {
-    id: 'chalet-hannah-clarke',
-    propertySlug: 'chalet-le-joyau',
-    reviewerName: 'Hannah Clarke',
-    gender: 'woman',
-    rating: 4,
-    ratingScale: 5,
-    text: 'We enjoyed a relaxed few days away together. It was a lovely opportunity to put our usual schedules aside.',
-    meta: 'Stayed July 2026 · Direct',
-    source: 'Direct',
-    sourceUrl: null,
-    date: 'July 2026'
-  },
-  {
-    id: 'chalet-thomas-reed',
-    propertySlug: 'chalet-le-joyau',
-    reviewerName: 'Thomas Reed',
-    gender: 'man',
-    rating: 5,
-    ratingScale: 5,
-    text: 'A special little escape that we’ll remember fondly. We would happily have added a few more days to our trip.',
-    meta: 'Stayed September 2026 · Direct',
-    source: 'Direct',
-    sourceUrl: null,
-    date: 'September 2026'
   }
 ];

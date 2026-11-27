@@ -13,12 +13,9 @@ import { fetchPropertyAvailability } from '../api/_lib/smoobuClient.js';
 
 test('resolvePropertyConfig maps each official slug to the correct server-side environment variable', () => {
   const hill = resolvePropertyConfig('hill-view');
-  const chalet = resolvePropertyConfig('chalet-le-joyau');
 
   assert.equal(hill.slug, 'hill-view');
   assert.equal(hill.apartmentIdEnv, 'SMOOBU_HILL_VIEW_APARTMENT_ID');
-  assert.equal(chalet.slug, 'chalet-le-joyau');
-  assert.equal(chalet.apartmentIdEnv, 'SMOOBU_CHALET_LE_JOJAU_APARTMENT_ID');
 });
 
 test('validateAvailabilityRequest rejects invalid dates and invalid property slugs', () => {
@@ -27,14 +24,15 @@ test('validateAvailabilityRequest rejects invalid dates and invalid property slu
   assert.throws(() => validateAvailabilityRequest('hill-view', '2026-10-02', '2026-10-01'), /before/);
 });
 
-test('resolvePropertyConfig preserves the canonical chalet-le-joyau slug while accepting the legacy spelling as an alias', () => {
-  const canonical = resolvePropertyConfig('chalet-le-joyau');
-  const legacy = resolvePropertyConfig('chalet-le-jojau');
+test('resolvePropertyConfig supports aliases for hill-view', () => {
+  const canonical = resolvePropertyConfig('hill-view');
+  const alias = resolvePropertyConfig('hillview');
+  const allAlias = resolvePropertyConfig('all');
 
-  assert.equal(canonical.slug, 'chalet-le-joyau');
-  assert.equal(canonical.apartmentIdEnv, 'SMOOBU_CHALET_LE_JOJAU_APARTMENT_ID');
-  assert.equal(legacy.slug, 'chalet-le-joyau');
-  assert.equal(legacy.apartmentIdEnv, 'SMOOBU_CHALET_LE_JOJAU_APARTMENT_ID');
+  assert.equal(canonical.slug, 'hill-view');
+  assert.equal(canonical.apartmentIdEnv, 'SMOOBU_HILL_VIEW_APARTMENT_ID');
+  assert.equal(alias.slug, 'hill-view');
+  assert.equal(allAlias.slug, 'hill-view');
 });
 
 test('dateRangeOverlaps correctly handles boundary dates', () => {

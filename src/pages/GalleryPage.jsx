@@ -6,6 +6,7 @@ import { Flip } from 'gsap/Flip';
 import { useGSAP } from '@gsap/react';
 import { Grid, Columns, Maximize2, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import SmoobuBookingEmbed from '../components/SmoobuBookingEmbed';
+import BookingSearchForm from '../components/BookingSearchForm';
 import { cottageImages } from '../data/cottageData';
 
 gsap.registerPlugin(ScrollTrigger, Flip, useGSAP);
@@ -539,7 +540,7 @@ export default function GalleryPage({ onOpenBooking }) {
           </p>
 
           <div className="bg-white rounded-3xl p-4 sm:p-6 md:p-8 shadow-xl border border-neutral-200/80 max-w-4xl mx-auto text-left">
-            <SmoobuBookingEmbed propertySlug="all" />
+            <BookingSearchForm variant="section" buttonLabel="Check Dates" />
           </div>
         </div>
       </section>

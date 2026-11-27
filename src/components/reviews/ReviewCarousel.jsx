@@ -57,9 +57,7 @@ export default function ReviewCarousel({
 
   const totalReviews = eligibleReviews.length;
 
-  const defaultSubline = propertySlug === 'chalet-le-joyau'
-    ? 'One story at a time, straight from guests who have stayed at Chalet Le Joyau.'
-    : 'One story at a time, straight from guests who have stayed at Hill View.';
+  const defaultSubline = 'One story at a time, straight from guests who have stayed at Hill View.';
   const effectiveSubline = subline || defaultSubline;
 
   // Wrap-around navigation handlers

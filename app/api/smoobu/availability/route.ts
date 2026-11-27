@@ -5,7 +5,6 @@ const SMOOBU_API_KEY = process.env.SMOOBU_API_KEY || "";
 const SMOOBU_API_SECRET = process.env.SMOOBU_API_SECRET || "";
 const PROPERTY_APARTMENT_IDS = {
   "hill-view": process.env.SMOOBU_HILL_VIEW_APARTMENT_ID || "",
-  "chalet-le-joyau": process.env.SMOOBU_CHALET_LE_JOJAU_APARTMENT_ID || "",
 };
 
 function normalizeBookedDates(data: any, apartmentId: string): string[] {
@@ -33,7 +32,7 @@ export async function GET(request: Request) {
   if (!SMOOBU_API_KEY || !SMOOBU_API_SECRET || !APARTMENT_ID) {
     return NextResponse.json({
       bookedDates: [],
-      notice: `Smoobu availability is not configured yet. Add SMOOBU_API_KEY, SMOOBU_API_SECRET, and the ${propertyKey === 'chalet-le-joyau' ? 'SMOOBU_CHALET_LE_JOJAU_APARTMENT_ID' : 'SMOOBU_HILL_VIEW_APARTMENT_ID'} Vercel environment variable.`,
+      notice: `Smoobu availability is not configured yet. Add SMOOBU_API_KEY, SMOOBU_API_SECRET, and the SMOOBU_HILL_VIEW_APARTMENT_ID Vercel environment variable.`,
     }, { status: 500 });
   }
 
@@ -63,7 +62,7 @@ export async function GET(request: Request) {
     const data = await response.json();
     const bookedDates = normalizeBookedDates(data, APARTMENT_ID);
 
-    return NextResponse.json({ bookedDates, notice: `Live availability synced for ${propertyKey === 'chalet-le-joyau' ? 'Chalet le Joyau' : 'Hill View Stone Cottage'}.` });
+    return NextResponse.json({ bookedDates, notice: "Live availability synced for Hill View Stone Cottage." });
   } catch (error) {
     console.error("Error fetching live Smoobu availability:", error);
     return NextResponse.json({ bookedDates: [], error: "Failed to fetch live availability." }, { status: 500 });

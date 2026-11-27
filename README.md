@@ -16,15 +16,11 @@ Add the following to the server environment only:
 - `SMOOBU_CUSTOMER_ID`
 - `SMOOBU_API_KEY`
 - `SMOOBU_API_SECRET`
-- `SMOOBU_CHALET_LE_JOJAU_APARTMENT_ID`
 - `SMOOBU_HILL_VIEW_APARTMENT_ID`
 
-Canonical property slugs for Phase 1:
+Property slug:
 
-- `chalet-le-joyau` (preferred / canonical)
 - `hill-view`
-
-The legacy spelling `chalet-le-jojau` is still accepted as an alias on the server for compatibility, but the canonical frontend and server mapping uses `chalet-le-joyau`.
 
 Security note:
 - Do not expose these values to browser code.

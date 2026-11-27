@@ -2,10 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 
 const SMOOBU_SCRIPT_URL = 'https://login.smoobu.com/js/Settings/BookingToolIframe.js';
 const SMOOBU_CUSTOMER_ID = '1692217';
+export const HILL_VIEW_APARTMENT_ID = '3244297';
 
 const APARTMENT_BY_SLUG = {
-  'hill-view': '3244297',
-  'chalet-le-joyau': '3341427',
+  'hill-view': HILL_VIEW_APARTMENT_ID,
+  'hillview': HILL_VIEW_APARTMENT_ID,
 };
 
 let vendorScriptPromise;
@@ -47,21 +48,24 @@ if (typeof window !== 'undefined') {
 }
 
 export default function SmoobuBookingEmbed({
-  propertySlug = null,
+  propertySlug = 'hill-view',
   targetId = null,
   className = '',
   showSkeleton = true,
+  checkIn = null,
+  checkOut = null,
+  guests = null,
 }) {
-  const isAll = !propertySlug || propertySlug === 'all';
-  const apartmentId = isAll ? null : APARTMENT_BY_SLUG[propertySlug];
-  const containerId = targetId || (isAll ? 'apartmentIframeAll' : `apartmentIframe${apartmentId}`);
+  const apartmentId = APARTMENT_BY_SLUG[propertySlug] || HILL_VIEW_APARTMENT_ID;
+  const containerId = targetId || `apartmentIframe${apartmentId}`;
   const containerRef = useRef(null);
   const [isLoaded, setIsLoaded] = useState(false);
+
+  const isCompactBar = className && className.includes('min-h-[140px]');
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return undefined;
-    if (!isAll && !apartmentId) return undefined;
 
     let cancelled = false;
 
@@ -114,9 +118,21 @@ export default function SmoobuBookingEmbed({
 
         container.replaceChildren();
 
-        const url = isAll
-          ? `https://login.smoobu.com/en/booking-tool/iframe/${SMOOBU_CUSTOMER_ID}`
-          : `https://login.smoobu.com/en/booking-tool/iframe/${SMOOBU_CUSTOMER_ID}/${apartmentId}`;
+        const queryParams = new URLSearchParams();
+        if (checkIn) {
+          queryParams.set('from', checkIn);
+          queryParams.set('checkIn', checkIn);
+        }
+        if (checkOut) {
+          queryParams.set('to', checkOut);
+          queryParams.set('checkOut', checkOut);
+        }
+        if (guests) {
+          queryParams.set('adults', String(guests));
+        }
+
+        const queryString = queryParams.toString();
+        const url = `https://login.smoobu.com/en/booking-tool/iframe/${SMOOBU_CUSTOMER_ID}/${apartmentId}${queryString ? `?${queryString}` : ''}`;
 
         window.BookingToolIframe.initialize({
           url,
@@ -138,9 +154,7 @@ export default function SmoobuBookingEmbed({
       clearTimeout(safetyTimer);
       container.replaceChildren();
     };
-  }, [apartmentId, isAll, containerId]);
-
-  if (!isAll && !apartmentId) return null;
+  }, [apartmentId, containerId, checkIn, checkOut, guests]);
 
   return (
     <div className="relative w-full">
@@ -150,7 +164,7 @@ export default function SmoobuBookingEmbed({
           className="smoobu-skeleton absolute inset-0 z-10 flex flex-col md:flex-row items-center justify-between gap-3 pointer-events-none transition-opacity duration-300"
           aria-hidden="true"
         >
-          {isAll ? (
+          {isCompactBar ? (
             <>
               <div className="w-full md:flex-1 h-11 md:h-12 rounded-2xl bg-white/10 animate-pulse border border-white/15 flex items-center px-4 gap-3">
                 <div className="w-4 h-4 rounded-full bg-white/20" />
@@ -181,7 +195,7 @@ export default function SmoobuBookingEmbed({
       <div
         id={containerId}
         ref={containerRef}
-        className={className || (isAll ? "w-full min-h-[140px] bg-transparent" : "w-full min-h-[520px] bg-white")}
+        className={className || "w-full min-h-[520px] bg-white"}
         aria-label="Smoobu booking availability"
       />
     </div>

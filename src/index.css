@@ -238,14 +238,105 @@ html.lenis, html.lenis body {
 }
 
 /* Smoobu Booking Tool iframe styles */
+#apartmentIframe3244297,
 #apartmentIframeAll {
   width: 100%;
   min-height: 140px;
   background: transparent;
 }
 
+#apartmentIframe3244297 iframe,
 #apartmentIframeAll iframe {
   width: 100% !important;
   border: none !important;
   background: transparent !important;
+}
+
+/* ── Custom Flatpickr Luxury Datepicker Styling ── */
+.flatpickr-calendar {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 24px !important;
+  padding: 12px !important;
+  font-family: inherit !important;
+  z-index: 99999 !important;
+}
+
+.flatpickr-calendar::before,
+.flatpickr-calendar::after {
+  display: none !important;
+}
+
+.flatpickr-months {
+  margin-bottom: 8px !important;
+}
+
+.flatpickr-months .flatpickr-month {
+  color: #171717 !important;
+  font-weight: 700 !important;
+}
+
+.flatpickr-current-month {
+  font-size: 14px !important;
+  padding-top: 4px !important;
+}
+
+.flatpickr-current-month .cur-month {
+  font-weight: 700 !important;
+  color: #171717 !important;
+}
+
+.flatpickr-weekdays {
+  margin-bottom: 6px !important;
+}
+
+span.flatpickr-weekday {
+  color: #a3a3a3 !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+.flatpickr-day {
+  color: #171717 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  border-radius: 12px !important;
+  height: 38px !important;
+  line-height: 38px !important;
+  margin: 1px 0 !important;
+  transition: all 0.15s ease !important;
+}
+
+.flatpickr-day:hover {
+  background: #f5f5f4 !important;
+}
+
+.flatpickr-day.today {
+  border-color: #171717 !important;
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange {
+  background: #171717 !important;
+  color: #ffffff !important;
+  border-color: #171717 !important;
+  font-weight: 700 !important;
+}
+
+.flatpickr-day.inRange {
+  background: #f5f5f4 !important;
+  border-color: transparent !important;
+  box-shadow: -5px 0 0 #f5f5f4, 5px 0 0 #f5f5f4 !important;
+  color: #171717 !important;
+}
+
+.flatpickr-day.flatpickr-disabled,
+.flatpickr-day.flatpickr-disabled:hover {
+  color: #d4d4d4 !important;
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
 }

@@ -5,6 +5,7 @@ import { useGSAP } from '@gsap/react';
 import { Sparkles } from 'lucide-react';
 import { cottageImages } from '../data/cottageData';
 import SmoobuBookingEmbed from './SmoobuBookingEmbed';
+import BookingSearchForm from './BookingSearchForm';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -298,16 +299,13 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
               Book direct with us and save.
             </p>
 
-            {/* Smoobu Mobile Booking Form */}
+            {/* Custom Mobile Booking Search Form */}
             <div
               ref={mobileBookingRef}
-              className="mt-6 w-full max-w-sm rounded-2xl bg-transparent backdrop-blur-xl border border-white/30 shadow-2xl overflow-hidden p-3 text-neutral-900 text-left"
+              className="mt-6 w-full max-w-md mx-auto rounded-2xl bg-transparent backdrop-blur-xl border border-white/30 shadow-2xl overflow-hidden p-2.5 sm:p-3 text-neutral-900 text-left"
             >
               {!isDesktop && (
-                <SmoobuBookingEmbed
-                  propertySlug="all"
-                  className="w-full min-h-[140px] bg-transparent"
-                />
+                <BookingSearchForm variant="mobile-hero" buttonLabel="Check Dates" />
               )}
             </div>
           </div>
@@ -407,7 +405,7 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
                       ref={desktopHeadingRef}
                       className="text-5xl lg:text-6xl xl:text-7xl font-serif-editorial font-medium tracking-tight text-white drop-shadow-md leading-[1.08]"
                     >
-                      Spacious Yorkshire Dales Stone Cottage
+                      Charming Yorkshire Dales Stone Cottage
                     </h1>
                     <p
                       ref={desktopSubRef}
@@ -417,16 +415,13 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
                     </p>
                   </div>
 
-                  {/* Desktop Smoobu Booking Bar */}
+                  {/* Custom Desktop Booking Search Bar */}
                   <div
                     ref={desktopBookingRef}
                     className="mt-8 w-full max-w-4xl rounded-3xl bg-transparent backdrop-blur-xl border border-white/30 shadow-2xl overflow-hidden p-3 md:p-5 text-neutral-900"
                   >
                     {isDesktop && (
-                      <SmoobuBookingEmbed
-                        propertySlug="all"
-                        className="w-full min-h-[140px] bg-transparent"
-                      />
+                      <BookingSearchForm variant="hero" buttonLabel="Check Dates" />
                     )}
                   </div>
                 </div>
@@ -436,7 +431,7 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
                 ref={subtitleRevealRef}
                 className="hero-mosaic-reveal-text absolute bottom-8 left-1/2 -translate-x-1/2 z-20 text-center opacity-0 translate-y-6 w-full max-w-2xl px-6 pointer-events-none"
               >
-                <p className="text-2xl lg:text-3xl font-serif-editorial italic text-neutral-600 drop-shadow-sm">
+                <p className="text-2xl lg:text-3xl font-serif-editorial italic text-neutral-200 drop-shadow-sm">
                   A spacious Yorkshire Dales stone cottage. Book direct with us and save.
                 </p>
               </div>
