@@ -361,7 +361,7 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
 
           <div ref={mobileSubRef} className="hero-mob-reveal-text text-center px-4 pt-4">
             <p className="text-lg font-bold tracking-tight text-neutral-900 leading-snug">
-              A spacious Yorkshire Dales stone cottage.
+              A charming & spacious Yorkshire Dales stone cottage.
             </p>
             <p className="text-sm text-neutral-600 mt-1">
               Book direct with us and save.
@@ -475,7 +475,7 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
                 className="hero-mosaic-reveal-text absolute bottom-8 left-1/2 -translate-x-1/2 z-20 text-center opacity-0 translate-y-6 w-full max-w-2xl px-6 pointer-events-none"
               >
                 <p className="text-2xl lg:text-3xl font-serif-editorial italic text-neutral-200 drop-shadow-sm">
-                  A spacious Yorkshire Dales stone cottage. Book direct with us and save.
+                  A charming & spacious Yorkshire Dales stone cottage. Book direct with us and save.
                 </p>
               </div>
             </div>
