@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { Menu, X, Phone, Mail, MessageCircle, Home, Layers, Image as ImageIcon, MapPin, FileText } from 'lucide-react';
 
-const logoImage = '/images/logo.png';
+const logoImage = '/images/logo.webp';
 
 const NAV_LINKS = [
   { to: '/cottage',    label: 'The Cottage', icon: Home,       num: '01' },
@@ -93,7 +93,7 @@ export default function Navbar({ onOpenBooking }) {
 
             {/* Brand */}
             <Link to="/" onClick={closeDrawer} className="flex items-center group">
-              <img src={logoImage} alt="Hill View logo" className="h-10 w-auto object-contain" />
+              <img src={logoImage} alt="Hill View logo" width="150" height="40" className="h-10 w-auto object-contain" decoding="async" />
             </Link>
 
             {/* Desktop nav */}
@@ -160,7 +160,7 @@ export default function Navbar({ onOpenBooking }) {
       >
         {/* Drawer Top Bar */}
         <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-neutral-100 flex-shrink-0">
-          <img src={logoImage} alt="Hill View logo" className="h-8 w-auto object-contain" />
+          <img src={logoImage} alt="Hill View logo" width="120" height="32" className="h-8 w-auto object-contain" decoding="async" />
           <button
             onClick={closeDrawer}
             className="p-2 rounded-full bg-neutral-100 hover:bg-neutral-200 transition-colors min-h-[40px] min-w-[40px] flex items-center justify-center"

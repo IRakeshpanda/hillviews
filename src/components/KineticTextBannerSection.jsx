@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { cottageImages } from '../data/cottageData';
+import { getImageSrcSet } from '../utils/imageUtils';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -61,7 +62,11 @@ export default function KineticTextBannerSection() {
       <div className="comfort-bg absolute inset-0 z-0 overflow-hidden">
         <img
           src={cottageImages.panoramicDales}
-          alt="Hill View Stone Cottage"
+          srcSet={getImageSrcSet(cottageImages.panoramicDales)}
+          sizes="100vw"
+          alt="Panoramic view across Swaledale valley from Hill View Cottage"
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover object-center brightness-[0.92]"
         />
         <div className="absolute inset-0 bg-black/25" />

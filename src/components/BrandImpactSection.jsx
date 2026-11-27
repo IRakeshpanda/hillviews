@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { MapPin, Users } from 'lucide-react';
 import { cottageImages } from '../data/cottageData';
+import { getImageSrcSet } from '../utils/imageUtils';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -136,8 +137,12 @@ export default function BrandImpactSection() {
           <div className="welcome-mobile-top-card w-full h-[38vh] rounded-2xl overflow-hidden shadow-2xl bg-neutral-900 border border-neutral-200 will-change-transform">
             <img
               src={cottageImages.hero}
-              alt="Hill View Exterior"
+              srcSet={getImageSrcSet(cottageImages.hero)}
+              sizes="100vw"
+              alt="Hill View 18th-century stone exterior in Low Row"
               className="w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/40" />
             <div className="absolute bottom-3 left-3">
@@ -152,8 +157,12 @@ export default function BrandImpactSection() {
           <div className="welcome-mobile-bottom-card w-full h-[38vh] rounded-2xl overflow-hidden shadow-2xl bg-neutral-900 border border-neutral-200 will-change-transform">
             <img
               src={cottageImages.livingRoom}
-              alt="Hill View Living Room"
+              srcSet={getImageSrcSet(cottageImages.livingRoom)}
+              sizes="100vw"
+              alt="Hill View living room with exposed timber beams"
               className="w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
             <div className="absolute top-3 left-3">
@@ -195,7 +204,15 @@ export default function BrandImpactSection() {
             ref={leftCardRef}
             className="left-reveal-card w-[32vw] aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl pointer-events-auto border border-neutral-200/60 relative group will-change-transform flex-shrink-0"
           >
-            <img src={cottageImages.hero} alt="Hill View Exterior" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
+            <img
+              src={cottageImages.hero}
+              srcSet={getImageSrcSet(cottageImages.hero)}
+              sizes="35vw"
+              alt="Hill View stone cottage exterior in Low Row"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+              loading="lazy"
+              decoding="async"
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
             <div className="absolute bottom-6 left-6">
               <span className="backdrop-blur-md px-4 py-2 text-xs font-semibold uppercase tracking-wider rounded-full bg-white/80 border border-black/5 text-neutral-900 flex items-center gap-1.5 shadow-lg">
@@ -209,7 +226,15 @@ export default function BrandImpactSection() {
             ref={rightCardRef}
             className="right-reveal-card w-[32vw] aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl pointer-events-auto border border-neutral-200/60 relative group will-change-transform flex-shrink-0"
           >
-            <img src={cottageImages.livingRoom} alt="Hill View Living Room" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
+            <img
+              src={cottageImages.livingRoom}
+              srcSet={getImageSrcSet(cottageImages.livingRoom)}
+              sizes="35vw"
+              alt="Hill View living room with cosy wood-burning stove"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+              loading="lazy"
+              decoding="async"
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
             <div className="absolute bottom-6 left-6">
               <span className="backdrop-blur-md px-4 py-2 text-xs font-semibold uppercase tracking-wider rounded-full bg-white/80 border border-black/5 text-neutral-900 flex items-center gap-1.5 shadow-lg">

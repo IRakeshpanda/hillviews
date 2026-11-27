@@ -1,0 +1,542 @@
+[
+  {
+    "file": "bathrooms/hill-view-bath-tub.png",
+    "origWidth": 3256,
+    "origHeight": 2166,
+    "beforeKb": "7482.5",
+    "afterKb": "1309.6",
+    "webpKb": "121.0",
+    "reduction": "98.4"
+  },
+  {
+    "file": "bathrooms/hill-view-bathroom.png",
+    "origWidth": 2502,
+    "origHeight": 2166,
+    "beforeKb": "6255.5",
+    "afterKb": "1496.5",
+    "webpKb": "129.9",
+    "reduction": "97.9"
+  },
+  {
+    "file": "bathrooms/yorkshire-dales-wash-basin.jpg",
+    "origWidth": 1500,
+    "origHeight": 998,
+    "beforeKb": "481.7",
+    "afterKb": "114.4",
+    "webpKb": "85.1",
+    "reduction": "82.3"
+  },
+  {
+    "file": "bedrooms/hill-view-2026-2-single-beds.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "2793.6",
+    "afterKb": "298.4",
+    "webpKb": "241.9",
+    "reduction": "91.3"
+  },
+  {
+    "file": "bedrooms/hill-view-2026-bed-and-bed-lamp.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "2983.0",
+    "afterKb": "324.7",
+    "webpKb": "268.1",
+    "reduction": "91.0"
+  },
+  {
+    "file": "bedrooms/hill-view-2026-bed-and-window.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "2912.0",
+    "afterKb": "282.6",
+    "webpKb": "191.8",
+    "reduction": "93.4"
+  },
+  {
+    "file": "bedrooms/hill-view-2026-bedroom-door-inside.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "3241.7",
+    "afterKb": "382.1",
+    "webpKb": "289.2",
+    "reduction": "91.1"
+  },
+  {
+    "file": "bedrooms/hill-view-2026-bedroom-wordrobe-ancient-look.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "2826.3",
+    "afterKb": "300.1",
+    "webpKb": "218.2",
+    "reduction": "92.3"
+  },
+  {
+    "file": "bedrooms/hill-view-2026-double-and-single-bed.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "1970.2",
+    "afterKb": "218.3",
+    "webpKb": "151.7",
+    "reduction": "92.3"
+  },
+  {
+    "file": "bedrooms/hill-view-2026-double-bed-bed-lamp.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "2956.7",
+    "afterKb": "317.1",
+    "webpKb": "249.3",
+    "reduction": "91.6"
+  },
+  {
+    "file": "bedrooms/hill-view-2026-double-bed-front-view.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "3347.4",
+    "afterKb": "382.7",
+    "webpKb": "336.2",
+    "reduction": "90.0"
+  },
+  {
+    "file": "bedrooms/hill-view-2026-double-bed-left-side-view.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "3498.2",
+    "afterKb": "390.5",
+    "webpKb": "330.6",
+    "reduction": "90.5"
+  },
+  {
+    "file": "bedrooms/hill-view-2026-glass-window-inside.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "3139.0",
+    "afterKb": "327.8",
+    "webpKb": "258.8",
+    "reduction": "91.8"
+  },
+  {
+    "file": "bedrooms/hill-view-2026-red-bed-lamp.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "2535.5",
+    "afterKb": "273.2",
+    "webpKb": "206.3",
+    "reduction": "91.9"
+  },
+  {
+    "file": "bedrooms/hill-view-2026-single-and-double-bed.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "2162.2",
+    "afterKb": "221.4",
+    "webpKb": "156.9",
+    "reduction": "92.7"
+  },
+  {
+    "file": "bedrooms/hill-view-2026-single-beds-and-window.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "3608.7",
+    "afterKb": "400.0",
+    "webpKb": "361.1",
+    "reduction": "90.0"
+  },
+  {
+    "file": "gardens/hill-view-2026-backyard-beauty.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "6345.5",
+    "afterKb": "718.8",
+    "webpKb": "743.1",
+    "reduction": "88.3"
+  },
+  {
+    "file": "gardens/hill-view-2026-backyard-grass.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "6121.5",
+    "afterKb": "799.9",
+    "webpKb": "817.9",
+    "reduction": "86.6"
+  },
+  {
+    "file": "gardens/hill-view-2026-backyard.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "6091.6",
+    "afterKb": "742.4",
+    "webpKb": "768.7",
+    "reduction": "87.4"
+  },
+  {
+    "file": "gardens/hill-view-2026-front-gate-wide-view.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "7135.9",
+    "afterKb": "882.3",
+    "webpKb": "926.2",
+    "reduction": "87.0"
+  },
+  {
+    "file": "gardens/hill-view-2026-front-gate.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "7967.0",
+    "afterKb": "939.9",
+    "webpKb": "1021.9",
+    "reduction": "87.2"
+  },
+  {
+    "file": "gardens/hill-view-2026-gate-and-door-view.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "4975.5",
+    "afterKb": "687.7",
+    "webpKb": "650.4",
+    "reduction": "86.9"
+  },
+  {
+    "file": "gardens/hill-view-2026-gate-and-door.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "5878.7",
+    "afterKb": "727.0",
+    "webpKb": "712.2",
+    "reduction": "87.9"
+  },
+  {
+    "file": "gardens/hill-view-2026-grass-field.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "5858.2",
+    "afterKb": "710.9",
+    "webpKb": "744.0",
+    "reduction": "87.3"
+  },
+  {
+    "file": "gardens/hill-view-2026-location.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "5749.0",
+    "afterKb": "666.5",
+    "webpKb": "680.3",
+    "reduction": "88.2"
+  },
+  {
+    "file": "gardens/hill-view-2026-nature.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "6655.2",
+    "afterKb": "789.8",
+    "webpKb": "830.6",
+    "reduction": "87.5"
+  },
+  {
+    "file": "gardens/hill-view-2026-outdoor-chill-view.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "5738.1",
+    "afterKb": "743.0",
+    "webpKb": "734.4",
+    "reduction": "87.2"
+  },
+  {
+    "file": "gardens/hill-view-2026-outdoor-chill.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "6676.7",
+    "afterKb": "823.6",
+    "webpKb": "846.9",
+    "reduction": "87.3"
+  },
+  {
+    "file": "gardens/hill-view-2026-sorroundings-beauty.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "5913.7",
+    "afterKb": "691.9",
+    "webpKb": "696.6",
+    "reduction": "88.2"
+  },
+  {
+    "file": "gardens/hill-view-2026-sorroundings.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "5905.8",
+    "afterKb": "724.7",
+    "webpKb": "742.7",
+    "reduction": "87.4"
+  },
+  {
+    "file": "gardens/hill-view-2026-view-of-the-backyard-and-hills.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "6361.5",
+    "afterKb": "765.6",
+    "webpKb": "782.7",
+    "reduction": "87.7"
+  },
+  {
+    "file": "gardens/hill-view-2026-view-of-the-hills-and-road.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "6635.0",
+    "afterKb": "745.9",
+    "webpKb": "793.0",
+    "reduction": "88.0"
+  },
+  {
+    "file": "gardens/hill-view-2026-view-of-the-hills-and-street.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "4839.0",
+    "afterKb": "572.0",
+    "webpKb": "558.7",
+    "reduction": "88.5"
+  },
+  {
+    "file": "gardens/hill-view-2026-view-of-the-hills-grass.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "7692.1",
+    "afterKb": "898.4",
+    "webpKb": "999.6",
+    "reduction": "87.0"
+  },
+  {
+    "file": "gardens/hill-view-2026-view-of-the-hills.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "4815.2",
+    "afterKb": "622.3",
+    "webpKb": "580.4",
+    "reduction": "87.9"
+  },
+  {
+    "file": "gardens/hill-view-2026-view-point.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "4756.2",
+    "afterKb": "597.2",
+    "webpKb": "573.2",
+    "reduction": "87.9"
+  },
+  {
+    "file": "gardens/hill-view-2026-view.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "6853.9",
+    "afterKb": "852.6",
+    "webpKb": "914.2",
+    "reduction": "86.7"
+  },
+  {
+    "file": "gardens/yorkshire-dales-hill-view-out-side.jpg",
+    "origWidth": 1500,
+    "origHeight": 998,
+    "beforeKb": "1142.8",
+    "afterKb": "310.2",
+    "webpKb": "330.2",
+    "reduction": "71.1"
+  },
+  {
+    "file": "gardens/yorkshire-dales-hill-view.jpg",
+    "origWidth": 1500,
+    "origHeight": 2254,
+    "beforeKb": "2551.2",
+    "afterKb": "738.6",
+    "webpKb": "788.7",
+    "reduction": "69.1"
+  },
+  {
+    "file": "gardens/yorkshire-dales-sorroundings.jpg",
+    "origWidth": 1500,
+    "origHeight": 998,
+    "beforeKb": "864.8",
+    "afterKb": "217.2",
+    "webpKb": "204.8",
+    "reduction": "76.3"
+  },
+  {
+    "file": "kitchen/hill-view-2026-beautiful-dine.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "3327.0",
+    "afterKb": "376.1",
+    "webpKb": "306.2",
+    "reduction": "90.8"
+  },
+  {
+    "file": "kitchen/hill-view-2026-dine-with-white-furnitures.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "3250.7",
+    "afterKb": "358.7",
+    "webpKb": "258.4",
+    "reduction": "92.1"
+  },
+  {
+    "file": "kitchen/hill-view-2026-food-dine-elegant-view.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "2626.9",
+    "afterKb": "294.9",
+    "webpKb": "191.1",
+    "reduction": "92.7"
+  },
+  {
+    "file": "kitchen/hill-view-2026-food-on-dine.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "2154.0",
+    "afterKb": "233.7",
+    "webpKb": "156.2",
+    "reduction": "92.7"
+  },
+  {
+    "file": "kitchen/hill-view-2026-sunflower-on-dine.jpg",
+    "origWidth": 2357,
+    "origHeight": 3543,
+    "beforeKb": "2169.2",
+    "afterKb": "281.5",
+    "webpKb": "182.1",
+    "reduction": "91.6"
+  },
+  {
+    "file": "kitchen/yorkshire-dales-dine.jpg",
+    "origWidth": 1500,
+    "origHeight": 998,
+    "beforeKb": "597.2",
+    "afterKb": "144.7",
+    "webpKb": "93.9",
+    "reduction": "84.3"
+  },
+  {
+    "file": "kitchen/yorkshire-dales-kitchen-and-dine.jpg",
+    "origWidth": 1500,
+    "origHeight": 998,
+    "beforeKb": "580.5",
+    "afterKb": "145.6",
+    "webpKb": "102.3",
+    "reduction": "82.4"
+  },
+  {
+    "file": "kitchen/yorkshire-dales-kitchen-kpace.jpg",
+    "origWidth": 1500,
+    "origHeight": 998,
+    "beforeKb": "354.6",
+    "afterKb": "74.4",
+    "webpKb": "47.7",
+    "reduction": "86.6"
+  },
+  {
+    "file": "kitchen/yorkshire-dales-kitchen.jpg",
+    "origWidth": 1500,
+    "origHeight": 998,
+    "beforeKb": "553.3",
+    "afterKb": "139.2",
+    "webpKb": "92.7",
+    "reduction": "83.3"
+  },
+  {
+    "file": "living/hill-view-2026-bonfire-on-focus.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "3336.3",
+    "afterKb": "398.3",
+    "webpKb": "308.8",
+    "reduction": "90.7"
+  },
+  {
+    "file": "living/hill-view-2026-indoor-bonfire-and-lamp.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "2566.6",
+    "afterKb": "284.3",
+    "webpKb": "192.1",
+    "reduction": "92.5"
+  },
+  {
+    "file": "living/hill-view-2026-living-room-bonfire.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "3704.0",
+    "afterKb": "407.7",
+    "webpKb": "320.3",
+    "reduction": "91.4"
+  },
+  {
+    "file": "living/hill-view-2026-living-room-book-shelf.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "3892.3",
+    "afterKb": "461.6",
+    "webpKb": "353.3",
+    "reduction": "90.9"
+  },
+  {
+    "file": "living/hill-view-2026-living-room-books.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "3283.0",
+    "afterKb": "351.6",
+    "webpKb": "258.3",
+    "reduction": "92.1"
+  },
+  {
+    "file": "living/hill-view-2026-living-room-cousin.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "3872.6",
+    "afterKb": "447.9",
+    "webpKb": "368.8",
+    "reduction": "90.5"
+  },
+  {
+    "file": "living/hill-view-2026-living-room-table-lamp.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "3442.1",
+    "afterKb": "368.7",
+    "webpKb": "297.5",
+    "reduction": "91.4"
+  },
+  {
+    "file": "living/hill-view-2026-table-light.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "2820.5",
+    "afterKb": "299.2",
+    "webpKb": "204.3",
+    "reduction": "92.8"
+  },
+  {
+    "file": "living/hill-view-2026-yorkshire-dales-and-cousin.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "3694.8",
+    "afterKb": "392.3",
+    "webpKb": "322.4",
+    "reduction": "91.3"
+  },
+  {
+    "file": "living/hill-view-2026wall-hangind-photos.jpg",
+    "origWidth": 4134,
+    "origHeight": 2751,
+    "beforeKb": "1919.7",
+    "afterKb": "137.9",
+    "webpKb": "69.3",
+    "reduction": "96.4"
+  },
+  {
+    "file": "logo.png",
+    "origWidth": 1536,
+    "origHeight": 1024,
+    "beforeKb": "3243.5",
+    "afterKb": "90.5",
+    "webpKb": "32.4",
+    "reduction": "99.0"
+  }
+]

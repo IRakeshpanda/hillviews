@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { Mail, Phone, MapPin, Clock, ArrowUpRight, CheckCircle2, ChevronDown, Car, Train, CarFront, Plus, Minus } from 'lucide-react';
 import { cottageImages } from '../data/cottageData';
+import { getImageSrcSet } from '../utils/imageUtils';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -374,9 +375,13 @@ export default function ContactPage({ onOpenBooking }) {
         {/* Visual Plate */}
         <div className="relative w-full h-[50vh] md:h-[60vh] rounded-3xl overflow-hidden mb-16 arrival-anim shadow-2xl">
           <img 
-            src="/images/gardens/hill-view-2026-front-gate-wide-view.jpg" 
-            alt="Hill View Stone Cottage Approach" 
+            src="/images/gardens/hill-view-2026-front-gate-wide-view.webp"
+            srcSet={getImageSrcSet('/images/gardens/hill-view-2026-front-gate-wide-view.webp')}
+            sizes="(max-width: 1024px) 100vw, 1200px"
+            alt="Hill View 18th-century stone cottage approach and drystone walls in Low Row" 
             className="w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
           />
           <div className="absolute inset-0 bg-black/10"></div>
           

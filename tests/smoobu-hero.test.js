@@ -19,7 +19,8 @@ let SmoobuBookingEmbed;
 test.before(async () => {
   vite = await createServer({
     root: rootDir,
-    server: { middlewareMode: true }
+    server: { middlewareMode: true },
+    optimizeDeps: { noDiscovery: true }
   });
   const heroMod = await vite.ssrLoadModule('./src/components/HeroSection.jsx');
   HeroSection = heroMod.default;
@@ -264,6 +265,9 @@ test('HillViewBookingCard: pre-fills from URL query params and displays Smoobu e
   assert.equal(prefillHtml.includes('Pre-filled reservation'), false, 'custom pre-fill reservation text must be removed');
   assert.equal(prefillHtml.includes('Max 6 capacity'), false, 'custom max capacity text must be removed');
   assert.ok(prefillHtml.includes('apartmentIframe3244297'), 'must render Smoobu embed');
+  assert.ok(prefillHtml.includes('adults=4'), 'Smoobu iframe src must include adults=4 to pre-select guest count in the select field');
+  assert.ok(prefillHtml.includes('arrivalDate=01%2F12%2F2026'), 'Smoobu iframe src must include formatted arrivalDate');
+  assert.ok(prefillHtml.includes('departureDate=05%2F12%2F2026'), 'Smoobu iframe src must include formatted departureDate');
 });
 
 test('Custom forms removed: only Smoobu booking forms exist', () => {

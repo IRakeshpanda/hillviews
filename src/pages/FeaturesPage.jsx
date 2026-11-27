@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Wifi, Flame, ChefHat, WashingMachine, Tv, Coffee, Bath, ParkingCircle, PawPrint } from 'lucide-react';
 import { cottageImages } from '../data/cottageData';
+import { getImageSrcSet } from '../utils/imageUtils';
 import ReviewCarousel from '../components/reviews/ReviewCarousel';
 
 const sharedFacilities = [
@@ -23,8 +24,12 @@ function PropertyFeatures({ id, name, route, description, image, reviewKey }) {
         <div className="lg:col-span-5">
           <img
             src={image}
+            srcSet={getImageSrcSet(image)}
+            sizes="(max-width: 1024px) 100vw, 500px"
             alt={`${name} interior and facilities`}
             className="w-full aspect-[4/3] object-cover rounded-3xl border border-neutral-200/70"
+            loading="lazy"
+            decoding="async"
           />
         </div>
 

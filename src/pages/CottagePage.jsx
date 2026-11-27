@@ -5,6 +5,7 @@ import { useGSAP } from '@gsap/react';
 import SmoobuBookingEmbed from '../components/SmoobuBookingEmbed';
 import BookingSearchForm from '../components/BookingSearchForm';
 import { cottageImages } from '../data/cottageData';
+import { getImageSrcSet } from '../utils/imageUtils';
 import ReviewCarousel from '../components/reviews/ReviewCarousel';
 
 export default function CottagePage() {
@@ -51,7 +52,15 @@ export default function CottagePage() {
           {/* Hill View Stone Cottage Card */}
           <div className="group rounded-3xl bg-white border border-neutral-200/80 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col">
             <Link to="/hill-view-cottage" className="block h-64 sm:h-72 overflow-hidden relative">
-              <img src={cottageImages.panoramicDales} alt="Hill View Stone Cottage" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img
+                src={cottageImages.panoramicDales}
+                srcSet={getImageSrcSet(cottageImages.panoramicDales)}
+                sizes="(max-width: 768px) 100vw, 600px"
+                alt="Hill View Stone Cottage and surrounding Swaledale valley"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                loading="lazy"
+                decoding="async"
+              />
               <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-neutral-900 shadow-sm">
                 Up to 6 Guests
               </div>

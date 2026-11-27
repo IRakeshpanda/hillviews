@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cottageRooms } from '../data/cottageData';
+import { getImageSrcSet } from '../utils/imageUtils';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -64,9 +65,12 @@ function MobileRoomsSlider({ onOpenBooking }) {
             >
               <img
                 src={r.image}
-                alt={r.title}
+                srcSet={getImageSrcSet(r.image)}
+                sizes="100vw"
+                alt={`Hill View accommodation - ${r.title}`}
                 className="w-full h-full object-cover"
                 loading={i === 0 ? 'eager' : 'lazy'}
+                decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
@@ -212,8 +216,12 @@ export default function RoomsShowcase({ onOpenBooking }) {
               <div className="relative aspect-[3/4] overflow-hidden bg-neutral-200">
                 <img
                   src={room.image}
-                  alt={room.title}
+                  srcSet={getImageSrcSet(room.image)}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  alt={`Hill View accommodation - ${room.title}`}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                  loading="lazy"
+                  decoding="async"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 

@@ -5,6 +5,7 @@ import { useGSAP } from '@gsap/react';
 import { ArrowLeft, ArrowRight, Expand } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { galleryItems } from '../data/cottageData';
+import { getImageSrcSet } from '../utils/imageUtils';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -82,8 +83,12 @@ export default function GalleryCarousel({ onOpenBooking }) {
             >
               <img
                 src={item.image}
-                alt={item.title}
+                srcSet={getImageSrcSet(item.image)}
+                sizes="(max-width: 640px) 85vw, 65vw"
+                alt={`Hill View gallery - ${item.title}`}
                 className="absolute inset-0 w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
               <div className="absolute bottom-4 left-4 right-4">
@@ -120,8 +125,12 @@ export default function GalleryCarousel({ onOpenBooking }) {
               >
                 <img
                   src={item.image}
-                  alt={item.title}
+                  srcSet={getImageSrcSet(item.image)}
+                  sizes="40vw"
+                  alt={`Hill View gallery - ${item.title}`}
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                  loading="lazy"
+                  decoding="async"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-80 group-hover:opacity-60 transition-opacity" />
                 <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between">

@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { cottageFeatures } from '../data/cottageData';
+import { getImageSrcSet } from '../utils/imageUtils';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -129,8 +130,12 @@ export default function FeaturesSection() {
               <div className="aspect-[4/3] w-full rounded-xl md:rounded-2xl overflow-hidden bg-neutral-200">
                 <img
                   src={feature.image}
-                  alt={feature.title}
+                  srcSet={getImageSrcSet(feature.image)}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  alt={`Hill View feature - ${feature.title}`}
                   className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
               <div className="mt-4 px-2 pb-2">

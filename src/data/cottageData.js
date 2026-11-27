@@ -1,15 +1,15 @@
 export const cottageImages = {
-  hero: "/images/gardens/yorkshire-dales-hill-view-out-side.jpg",
-  livingRoom: "/images/living/hill-view-2026-indoor-bonfire-and-lamp.jpg",
-  terrace: "/images/gardens/hill-view-2026-outdoor-chill-view.jpg",
-  diningRoom: "/images/kitchen/hill-view-2026-food-dine-elegant-view.jpg",
-  kitchen: "/images/kitchen/yorkshire-dales-kitchen.jpg",
-  masterBedroom: "/images/bedrooms/hill-view-2026-double-bed-front-view.jpg",
-  beamedDouble: "/images/bedrooms/hill-view-2026-double-bed-bed-lamp.jpg",
-  cosyDouble: "/images/bedrooms/hill-view-2026-bed-and-window.jpg",
-  twinRoom: "/images/bedrooms/hill-view-2026-2-single-beds.jpg",
-  bathroom: "/images/bathrooms/hill-view-bathroom.png",
-  panoramicDales: "/images/gardens/hill-view-2026-outdoor-chill.jpg"
+  hero: "/images/gardens/yorkshire-dales-hill-view-out-side.webp",
+  livingRoom: "/images/living/hill-view-2026-indoor-bonfire-and-lamp.webp",
+  terrace: "/images/gardens/hill-view-2026-outdoor-chill-view.webp",
+  diningRoom: "/images/kitchen/hill-view-2026-food-dine-elegant-view.webp",
+  kitchen: "/images/kitchen/yorkshire-dales-kitchen.webp",
+  masterBedroom: "/images/bedrooms/hill-view-2026-double-bed-front-view.webp",
+  beamedDouble: "/images/bedrooms/hill-view-2026-double-bed-bed-lamp.webp",
+  cosyDouble: "/images/bedrooms/hill-view-2026-bed-and-window.webp",
+  twinRoom: "/images/bedrooms/hill-view-2026-2-single-beds.webp",
+  bathroom: "/images/bathrooms/hill-view-bathroom.webp",
+  panoramicDales: "/images/gardens/hill-view-2026-outdoor-chill.webp"
 };
 
 export const cottageFeatures = [

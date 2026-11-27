@@ -7,6 +7,7 @@ import SmoobuBookingEmbed from '../components/SmoobuBookingEmbed';
 import HillViewBookingCard from '../components/HillViewBookingCard';
 import ReviewCarousel from '../components/reviews/ReviewCarousel';
 import { cottageImages } from '../data/cottageData';
+import { getImageSrcSet } from '../utils/imageUtils';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -98,15 +99,64 @@ export default function HillViewCottagePage() {
           {/* 2. EDITORIAL 5-PHOTO MOSAIC */}
           <section className="relative mb-12 rounded-3xl overflow-hidden grid grid-cols-1 md:grid-cols-4 gap-3 h-[420px] md:h-[520px]">
             <div className="gallery-item md:col-span-2 h-full rounded-2xl overflow-hidden group relative">
-              <img src={cottageImages.panoramicDales} alt="Hill View Stone Cottage Exterior" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img
+                src={cottageImages.panoramicDales}
+                srcSet={getImageSrcSet(cottageImages.panoramicDales)}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                alt="Hill View 18th-century stone cottage exterior in Low Row"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+              />
             </div>
             <div className="hidden md:grid md:col-span-1 grid-rows-2 gap-3 h-full">
-              <div className="gallery-item rounded-2xl overflow-hidden group relative"><img src={cottageImages.beamedDouble} alt="Beamed Living Room" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" /></div>
-              <div className="gallery-item rounded-2xl overflow-hidden group relative"><img src={cottageImages.kitchen} alt="Modern Kitchen" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" /></div>
+              <div className="gallery-item rounded-2xl overflow-hidden group relative">
+                <img
+                  src={cottageImages.beamedDouble}
+                  srcSet={getImageSrcSet(cottageImages.beamedDouble)}
+                  sizes="25vw"
+                  alt="Beamed living room with stone fireplace"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div className="gallery-item rounded-2xl overflow-hidden group relative">
+                <img
+                  src={cottageImages.kitchen}
+                  srcSet={getImageSrcSet(cottageImages.kitchen)}
+                  sizes="25vw"
+                  alt="Fully equipped modern kitchen"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
             </div>
             <div className="hidden md:grid md:col-span-1 grid-rows-2 gap-3 h-full">
-              <div className="gallery-item rounded-2xl overflow-hidden group relative"><img src={cottageImages.cosyDouble} alt="Master Bedroom" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" /></div>
-              <div className="gallery-item rounded-2xl overflow-hidden group relative"><img src={cottageImages.bathroom} alt="Valley Deck Views" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" /></div>
+              <div className="gallery-item rounded-2xl overflow-hidden group relative">
+                <img
+                  src={cottageImages.cosyDouble}
+                  srcSet={getImageSrcSet(cottageImages.cosyDouble)}
+                  sizes="25vw"
+                  alt="Master bedroom with valley views"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div className="gallery-item rounded-2xl overflow-hidden group relative">
+                <img
+                  src={cottageImages.bathroom}
+                  srcSet={getImageSrcSet(cottageImages.bathroom)}
+                  sizes="25vw"
+                  alt="Modern family bathroom with rainfall shower"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
             </div>
             <Link to="/gallery" className="absolute bottom-5 right-5 px-5 py-2.5 rounded-full bg-white/90 hover:bg-white text-neutral-900 text-xs font-semibold shadow-lg backdrop-blur-md flex items-center gap-2 transition-all">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>

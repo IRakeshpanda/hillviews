@@ -8,33 +8,34 @@ import { Grid, Columns, Maximize2, X, ChevronLeft, ChevronRight } from 'lucide-r
 import SmoobuBookingEmbed from '../components/SmoobuBookingEmbed';
 import BookingSearchForm from '../components/BookingSearchForm';
 import { cottageImages } from '../data/cottageData';
+import { getImageSrcSet } from '../utils/imageUtils';
 
 gsap.registerPlugin(ScrollTrigger, Flip, useGSAP);
 
 const GALLERY_ITEMS = [
   // Living
-  { id: 1, title: "cozy living", category: "Living Room", aspect: "aspect-[16/10]", src: "/images/living/hill-view-2026-indoor-bonfire-and-lamp.jpg", tag: "Ground Floor" },
-  { id: 2, title: "Beamed Living Snug", category: "Living Room", aspect: "aspect-[4/3]", src: "/images/living/hill-view-2026-yorkshire-dales-and-cousin.jpg", tag: "Main Lounge" },
-  { id: 3, title: "Wood Stove Detail", category: "Living Room", aspect: "aspect-square", src: "/images/living/hill-view-2026-bonfire-on-focus.jpg", tag: "Fireside" },
-  { id: 4, title: "Reading Corner", category: "Living Room", aspect: "aspect-[3/4]", src: "/images/living/hill-view-2026-living-room-books.jpg", tag: "Quiet Snug" },
+  { id: 1, title: "cozy living", category: "Living Room", aspect: "aspect-[16/10]", src: "/images/living/hill-view-2026-indoor-bonfire-and-lamp.webp", tag: "Ground Floor" },
+  { id: 2, title: "Beamed Living Snug", category: "Living Room", aspect: "aspect-[4/3]", src: "/images/living/hill-view-2026-yorkshire-dales-and-cousin.webp", tag: "Main Lounge" },
+  { id: 3, title: "Wood Stove Detail", category: "Living Room", aspect: "aspect-square", src: "/images/living/hill-view-2026-bonfire-on-focus.webp", tag: "Fireside" },
+  { id: 4, title: "Reading Corner", category: "Living Room", aspect: "aspect-[3/4]", src: "/images/living/hill-view-2026-living-room-books.webp", tag: "Quiet Snug" },
 
   // Bedrooms
-  { id: 5, title: "Master Bedroom Suite", category: "Bedrooms", aspect: "aspect-[16/10]", src: "/images/bedrooms/hill-view-2026-double-bed-front-view.jpg", tag: "Sleeps 2 - Valley Light" },
-  { id: 6, title: "Beamed Double Room", category: "Bedrooms", aspect: "aspect-[4/3]", src: "/images/bedrooms/hill-view-2026-double-bed-bed-lamp.jpg", tag: "Sleeps 2" },
-  { id: 7, title: "Twin Single Bedroom", category: "Bedrooms", aspect: "aspect-[16/10]", src: "/images/bedrooms/hill-view-2026-2-single-beds.jpg", tag: "Sleeps 2" },
+  { id: 5, title: "Master Bedroom Suite", category: "Bedrooms", aspect: "aspect-[16/10]", src: "/images/bedrooms/hill-view-2026-double-bed-front-view.webp", tag: "Sleeps 2 - Valley Light" },
+  { id: 6, title: "Beamed Double Room", category: "Bedrooms", aspect: "aspect-[4/3]", src: "/images/bedrooms/hill-view-2026-double-bed-bed-lamp.webp", tag: "Sleeps 2" },
+  { id: 7, title: "Twin Single Bedroom", category: "Bedrooms", aspect: "aspect-[16/10]", src: "/images/bedrooms/hill-view-2026-2-single-beds.webp", tag: "Sleeps 2" },
 
   // Kitchen
-  { id: 9, title: "Equipped Chef's Kitchen", category: "Kitchen & Dining", aspect: "aspect-[16/10]", src: "/images/kitchen/yorkshire-dales-kitchen.jpg", tag: "Full Kitchen" },
-  { id: 10, title: "Country Dining Table", category: "Kitchen & Dining", aspect: "aspect-[4/3]", src: "/images/kitchen/hill-view-2026-food-dine-elegant-view.jpg", tag: "Seats 8" },
+  { id: 9, title: "Equipped Chef's Kitchen", category: "Kitchen & Dining", aspect: "aspect-[16/10]", src: "/images/kitchen/yorkshire-dales-kitchen.webp", tag: "Full Kitchen" },
+  { id: 10, title: "Country Dining Table", category: "Kitchen & Dining", aspect: "aspect-[4/3]", src: "/images/kitchen/hill-view-2026-food-dine-elegant-view.webp", tag: "Seats 8" },
 
   // Bathrooms
-  { id: 11, title: "Hill View Bath Room", category: "Bathrooms", aspect: "aspect-square", src: "/images/bathrooms/hill-view-bathroom.png", tag: "Main Bathroom" },
-  { id: 12, title: "Hill View Bath Room Interior", category: "Bathrooms", aspect: "aspect-square", src: "/images/bathrooms/hill-view-bath-tub.png", tag: "Main Bathroom" },
+  { id: 11, title: "Hill View Bath Room", category: "Bathrooms", aspect: "aspect-square", src: "/images/bathrooms/hill-view-bathroom.webp", tag: "Main Bathroom" },
+  { id: 12, title: "Hill View Bath Room Interior", category: "Bathrooms", aspect: "aspect-square", src: "/images/bathrooms/hill-view-bath-tub.webp", tag: "Main Bathroom" },
 
   // Gardens
-  { id: 13, title: "Stone Cottage Exterior", category: "Gardens & Dales Views", aspect: "aspect-[16/10]", src: "/images/gardens/yorkshire-dales-hill-view-out-side.jpg", tag: "Low Row" },
-  { id: 14, title: "Private Outdoor Seating", category: "Gardens & Dales Views", aspect: "aspect-[16/9]", src: "/images/gardens/hill-view-2026-outdoor-chill-view.jpg", tag: "Valley Terrace" },
-  { id: 15, title: "Swaledale Valley Fells", category: "Gardens & Dales Views", aspect: "aspect-[16/10]", src: "/images/gardens/hill-view-2026-view-of-the-hills.jpg", tag: "Countryside" }
+  { id: 13, title: "Stone Cottage Exterior", category: "Gardens & Dales Views", aspect: "aspect-[16/10]", src: "/images/gardens/yorkshire-dales-hill-view-out-side.webp", tag: "Low Row" },
+  { id: 14, title: "Private Outdoor Seating", category: "Gardens & Dales Views", aspect: "aspect-[16/9]", src: "/images/gardens/hill-view-2026-outdoor-chill-view.webp", tag: "Valley Terrace" },
+  { id: 15, title: "Swaledale Valley Fells", category: "Gardens & Dales Views", aspect: "aspect-[16/10]", src: "/images/gardens/hill-view-2026-view-of-the-hills.webp", tag: "Countryside" }
 ];
 
 const CATEGORIES = [
@@ -378,11 +379,13 @@ export default function GalleryPage({ onOpenBooking }) {
                 >
                   <img
                     src={item.src}
-                    alt={item.title}
+                    srcSet={getImageSrcSet(item.src)}
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    alt={`Hill View Cottage - ${item.title}`}
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                     loading={index < 4 ? 'eager' : 'lazy'}
                     decoding="async"
-                    fetchPriority={index < 4 ? 'high' : 'low'}
+                    fetchpriority={index < 4 ? 'high' : 'low'}
                   />
                   <div className="absolute top-4 left-4">
                     <span className="backdrop-blur-md bg-white/90 border border-black/5 text-neutral-900 px-3 py-1.5 rounded-full text-[10px] font-semibold uppercase tracking-wider shadow-sm">
@@ -436,11 +439,13 @@ export default function GalleryPage({ onOpenBooking }) {
                   >
                     <img
                       src={item.src}
-                      alt={item.title}
+                      srcSet={getImageSrcSet(item.src)}
+                      sizes="(max-width: 768px) 80vw, 40vw"
+                      alt={`Hill View Cottage - ${item.title}`}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                       loading={index < 6 ? 'eager' : 'lazy'}
                       decoding="async"
-                      fetchPriority={index < 4 ? 'high' : 'low'}
+                      fetchpriority={index < 4 ? 'high' : 'low'}
                     />
                     <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md">
                       <Maximize2 className="w-4 h-4 text-neutral-900" />
@@ -503,8 +508,11 @@ export default function GalleryPage({ onOpenBooking }) {
           <div className="flex-1 relative overflow-hidden">
             <img
               src={filteredItems[lightboxIndex].src}
-              alt={filteredItems[lightboxIndex].title}
+              srcSet={getImageSrcSet(filteredItems[lightboxIndex].src)}
+              sizes="90vw"
+              alt={`Hill View Cottage - ${filteredItems[lightboxIndex].title}`}
               className="w-full h-full object-contain animate-scaleIn"
+              decoding="async"
             />
           </div>
 

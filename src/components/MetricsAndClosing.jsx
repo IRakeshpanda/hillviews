@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { cottageImages } from '../data/cottageData';
+import { getImageSrcSet } from '../utils/imageUtils';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -97,8 +98,12 @@ export default function MetricsAndClosing({ onOpenBooking }) {
       <div className="relative aspect-[16/9] md:aspect-[21/9] w-full overflow-hidden">
         <img
           src={cottageImages.terrace}
-          alt="Terrace overlooking the Yorkshire Dales at Hill View"
+          srcSet={getImageSrcSet(cottageImages.terrace)}
+          sizes="100vw"
+          alt="Panoramic terrace overlooking the Yorkshire Dales at Hill View"
           className="w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
       </div>

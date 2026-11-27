@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { Sparkles } from 'lucide-react';
 import { cottageImages } from '../data/cottageData';
+import { getImageSrcSet } from '../utils/imageUtils';
 import SmoobuBookingEmbed from './SmoobuBookingEmbed';
 import BookingSearchForm from './BookingSearchForm';
 
@@ -272,9 +273,14 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
           <div className="absolute inset-0 z-0">
             <img
               ref={mobileBgRef}
-              src={cottageImages.hero}
-              alt="Hill View Stone Cottage"
+              src="/images/gardens/yorkshire-dales-hill-view-out-side.webp"
+              srcSet="/images/gardens/yorkshire-dales-hill-view-out-side-640w.webp 640w, /images/gardens/yorkshire-dales-hill-view-out-side-1024w.webp 1024w, /images/gardens/yorkshire-dales-hill-view-out-side-1600w.webp 1600w, /images/gardens/yorkshire-dales-hill-view-out-side.webp 2400w"
+              sizes="100vw"
+              alt="Hill View 18th-century stone cottage exterior in Low Row, Swaledale"
               className="w-full h-full object-cover brightness-[0.82]"
+              loading="eager"
+              decoding="async"
+              fetchpriority="high"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/75" />
           </div>
@@ -321,7 +327,15 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
             ref={mobileLeftCardRef}
             className="hero-mob-card-left relative w-full aspect-[16/10] rounded-2xl overflow-hidden shadow-xl border border-neutral-200/80 bg-neutral-100"
           >
-            <img src={cottageImages.livingRoom} alt="Living Room Fireside" className="w-full h-full object-cover" />
+            <img
+              src="/images/living/hill-view-2026-indoor-bonfire-and-lamp.webp"
+              srcSet="/images/living/hill-view-2026-indoor-bonfire-and-lamp-640w.webp 640w, /images/living/hill-view-2026-indoor-bonfire-and-lamp-1024w.webp 1024w, /images/living/hill-view-2026-indoor-bonfire-and-lamp.webp 2400w"
+              sizes="100vw"
+              alt="Hill View living room with cosy wood-burning stove and stone hearth"
+              className="w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
             <span className="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-medium">
               Beamed Living Room
             </span>
@@ -331,7 +345,15 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
             ref={mobileRightCardRef}
             className="hero-mob-card-right relative w-full aspect-[16/10] rounded-2xl overflow-hidden shadow-xl border border-neutral-200/80 bg-neutral-100"
           >
-            <img src={cottageImages.diningRoom} alt="Dining Room" className="w-full h-full object-cover" />
+            <img
+              src="/images/kitchen/hill-view-2026-food-dine-elegant-view.webp"
+              srcSet="/images/kitchen/hill-view-2026-food-dine-elegant-view-640w.webp 640w, /images/kitchen/hill-view-2026-food-dine-elegant-view-1024w.webp 1024w, /images/kitchen/hill-view-2026-food-dine-elegant-view.webp 2400w"
+              sizes="100vw"
+              alt="Country dining room with farmhouse table set for a meal"
+              className="w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
             <span className="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-medium">
               Dining room
             </span>
@@ -363,12 +385,28 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
               style={{ width: '0%', transform: 'translateX(-100%)', opacity: 0 }}
             >
               <div className="relative flex-1 overflow-hidden rounded-3xl border border-neutral-200/60 shadow-2xl group">
-                <img src={cottageImages.hero} alt="Hill View stone cottage exterior" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <img
+                  src={cottageImages.hero}
+                  srcSet={getImageSrcSet(cottageImages.hero)}
+                  sizes="33vw"
+                  alt="Hill View stone cottage exterior in Low Row, Swaledale"
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 <span className="absolute bottom-4 left-4 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-md px-3 py-1 rounded-full bg-black/50 border border-white/20">Low Row Exterior</span>
               </div>
               <div className="relative flex-1 overflow-hidden rounded-3xl border border-neutral-200/60 shadow-2xl group">
-                <img src={cottageImages.terrace} alt="Terrace with Yorkshire Dales views" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <img
+                  src={cottageImages.terrace}
+                  srcSet={getImageSrcSet(cottageImages.terrace)}
+                  sizes="33vw"
+                  alt="Terrace overlooking the Yorkshire Dales fells"
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 <span className="absolute bottom-4 left-4 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-md px-3 py-1 rounded-full bg-black/50 border border-white/20">Swaledale Terrace</span>
               </div>
@@ -383,8 +421,13 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
               <img
                 ref={desktopBgRef}
                 src={cottageImages.livingRoom}
-                alt="Hill View living room with wood-burning stove"
+                srcSet={getImageSrcSet(cottageImages.livingRoom)}
+                sizes="100vw"
+                alt="Hill View living room with cosy wood-burning stove and stone hearth"
                 className="absolute inset-0 w-full h-full object-cover object-center"
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/50" />
 
@@ -444,12 +487,28 @@ export default function HeroSection({ onOpenBooking, arrivalDate, departureDate,
               style={{ width: '0%', transform: 'translateX(100%)', opacity: 0 }}
             >
               <div className="relative flex-1 overflow-hidden rounded-3xl border border-neutral-200/60 shadow-2xl group">
-                <img src={cottageImages.diningRoom} alt="Beamed dining room" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <img
+                  src={cottageImages.diningRoom}
+                  srcSet={getImageSrcSet(cottageImages.diningRoom)}
+                  sizes="33vw"
+                  alt="Country dining room with farmhouse table set for dinner"
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 <span className="absolute bottom-4 left-4 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-md px-3 py-1 rounded-full bg-black/50 border border-white/20">Beamed Dining</span>
               </div>
               <div className="relative flex-1 overflow-hidden rounded-3xl border border-neutral-200/60 shadow-2xl group">
-                <img src={cottageImages.beamedDouble} alt="Cosy double bedroom" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <img
+                  src={cottageImages.beamedDouble}
+                  srcSet={getImageSrcSet(cottageImages.beamedDouble)}
+                  sizes="33vw"
+                  alt="Cosy double bedroom with exposed oak beams"
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 <span className="absolute bottom-4 left-4 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-md px-3 py-1 rounded-full bg-black/50 border border-white/20">Double Bedroom</span>
               </div>

@@ -176,7 +176,7 @@ const Card = ({ item, round, compact }) => {
   const text = Boolean(title || description);
   return (
     <div className={`carousel-card${image ? ' has-image' : ''}${round ? ' is-round' : ''}`}>
-      {image && <img className="carousel-image" src={image} alt={alt} draggable={false} decoding="async" />}
+      {image && <img className="carousel-image" src={image} alt={alt} draggable={false} decoding="async" loading="lazy" />}
       {image && text && <span className="carousel-scrim" />}
       {mark && <span className="carousel-icon">{mark}</span>}
       {text && (

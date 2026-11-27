@@ -43,15 +43,12 @@ export default function Footer({ onOpenBooking }) {
             </ul>
           </div>
 
-          {/* About & Policies */}
+          {/* Policies */}
           <div className="space-y-4">
             <h4 className="text-xs font-semibold uppercase tracking-widest text-neutral-400">
-              About
+              Policies
             </h4>
             <ul className="space-y-2.5 text-xs text-neutral-500 font-light">
-              <li>
-                <a href="#about" className="hover:text-neutral-900 transition-colors">About Us</a>
-              </li>
               <li>
                 <Link to="/terms" className="hover:text-neutral-900 transition-colors text-left">House Rules</Link>
               </li>

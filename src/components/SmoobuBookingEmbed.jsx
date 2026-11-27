@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-const SMOOBU_SCRIPT_URL = 'https://login.smoobu.com/js/Settings/BookingToolIframe.js';
+const RESIZER_SCRIPT_URL = 'https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.16/iframeResizer.min.js';
 const SMOOBU_CUSTOMER_ID = '1692217';
 export const HILL_VIEW_APARTMENT_ID = '3244297';
 
@@ -9,20 +9,17 @@ const APARTMENT_BY_SLUG = {
   'hillview': HILL_VIEW_APARTMENT_ID,
 };
 
-let vendorScriptPromise;
+let resizerScriptPromise;
 
-export function loadSmoobuScript() {
+export function loadIframeResizerScript() {
   if (typeof window === 'undefined') return Promise.resolve();
+  if (window.iFrameResize) return Promise.resolve();
+  if (resizerScriptPromise) return resizerScriptPromise;
 
-  if (window.BookingToolIframe?.initialize) return Promise.resolve();
-
-  if (vendorScriptPromise) return vendorScriptPromise;
-
-  vendorScriptPromise = new Promise((resolve, reject) => {
-    let script = document.querySelector(`script[src="${SMOOBU_SCRIPT_URL}"]`);
-
+  resizerScriptPromise = new Promise((resolve, reject) => {
+    let script = document.querySelector(`script[src*="iframeResizer.min.js"]`);
     if (script) {
-      if (window.BookingToolIframe?.initialize) {
+      if (window.iFrameResize) {
         resolve();
         return;
       }
@@ -32,19 +29,56 @@ export function loadSmoobuScript() {
     }
 
     script = document.createElement('script');
-    script.src = SMOOBU_SCRIPT_URL;
+    script.src = RESIZER_SCRIPT_URL;
     script.async = true;
     script.addEventListener('load', resolve, { once: true });
     script.addEventListener('error', reject, { once: true });
     document.head.appendChild(script);
   });
 
-  return vendorScriptPromise;
+  return resizerScriptPromise;
+}
+
+export function loadSmoobuScript() {
+  return loadIframeResizerScript();
 }
 
 // Kick off loading immediately on script execution in browser
 if (typeof window !== 'undefined') {
-  loadSmoobuScript();
+  loadIframeResizerScript();
+}
+
+export function buildSmoobuUrl(apartmentId, { checkIn, checkOut, guests } = {}) {
+  const queryParams = new URLSearchParams();
+  queryParams.set('apartmentId', String(apartmentId || HILL_VIEW_APARTMENT_ID));
+
+  if (guests) {
+    const guestNum = Math.min(6, Math.max(1, Number(guests)));
+    queryParams.set('adults', String(guestNum));
+    queryParams.set('guests', String(guestNum));
+  }
+
+  if (checkIn) {
+    queryParams.set('from', checkIn);
+    queryParams.set('checkIn', checkIn);
+    const parts = checkIn.split('-');
+    if (parts.length === 3) {
+      const [y, m, d] = parts;
+      queryParams.set('arrivalDate', `${d}/${m}/${y}`);
+    }
+  }
+
+  if (checkOut) {
+    queryParams.set('to', checkOut);
+    queryParams.set('checkOut', checkOut);
+    const parts = checkOut.split('-');
+    if (parts.length === 3) {
+      const [y, m, d] = parts;
+      queryParams.set('departureDate', `${d}/${m}/${y}`);
+    }
+  }
+
+  return `https://booking.smoobu.com/9A1692217?${queryParams.toString()}`;
 }
 
 export default function SmoobuBookingEmbed({
@@ -62,42 +96,26 @@ export default function SmoobuBookingEmbed({
   const [isLoaded, setIsLoaded] = useState(false);
 
   const isCompactBar = className && className.includes('min-h-[140px]');
+  const iframeUrl = buildSmoobuUrl(apartmentId, { checkIn, checkOut, guests });
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return undefined;
-
     let cancelled = false;
 
-    // Observe container for the injected iframe to detect when it actually loads
-    const checkIframe = (iframe) => {
-      if (!iframe) return;
-      try {
-        if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
-          if (!cancelled) setIsLoaded(true);
-          return;
+    loadIframeResizerScript().then(() => {
+      if (cancelled) return;
+      if (typeof window !== 'undefined' && window.iFrameResize) {
+        try {
+          window.iFrameResize({
+            heightCalculationMethod: 'lowestElement',
+            tolerance: 34,
+            waitForLoad: true,
+            checkOrigin: false,
+          }, `#booking-tool-iFrame-apartment${apartmentId}`);
+        } catch {
+          // ignore re-initialization error
         }
-      } catch (e) {
-        // Cross-origin iframe may throw on contentDocument access
-      }
-      iframe.addEventListener('load', () => {
-        if (!cancelled) setIsLoaded(true);
-      }, { once: true });
-    };
-
-    const observer = new MutationObserver(() => {
-      const iframe = container.querySelector('iframe');
-      if (iframe) {
-        checkIframe(iframe);
       }
     });
-
-    observer.observe(container, { childList: true, subtree: true });
-
-    const existingIframe = container.querySelector('iframe');
-    if (existingIframe) {
-      checkIframe(existingIframe);
-    }
 
     const handleMessage = (e) => {
       if (e.origin && e.origin.includes('smoobu.com')) {
@@ -109,52 +127,14 @@ export default function SmoobuBookingEmbed({
     // Safety fallback timeout so skeleton is never permanently stuck
     const safetyTimer = setTimeout(() => {
       if (!cancelled) setIsLoaded(true);
-    }, 4500);
-
-    loadSmoobuScript()
-      .then(() => {
-        if (cancelled || !container.isConnected) return;
-        if (!window.BookingToolIframe?.initialize) return;
-
-        container.replaceChildren();
-
-        const queryParams = new URLSearchParams();
-        if (checkIn) {
-          queryParams.set('from', checkIn);
-          queryParams.set('checkIn', checkIn);
-        }
-        if (checkOut) {
-          queryParams.set('to', checkOut);
-          queryParams.set('checkOut', checkOut);
-        }
-        if (guests) {
-          queryParams.set('adults', String(guests));
-        }
-
-        const queryString = queryParams.toString();
-        const url = `https://login.smoobu.com/en/booking-tool/iframe/${SMOOBU_CUSTOMER_ID}/${apartmentId}${queryString ? `?${queryString}` : ''}`;
-
-        window.BookingToolIframe.initialize({
-          url,
-          baseUrl: 'https://login.smoobu.com',
-          target: `#${container.id}`,
-        });
-      })
-      .catch((error) => {
-        if (!cancelled) {
-          console.warn('Smoobu booking widget could not be loaded.', error);
-          setIsLoaded(true);
-        }
-      });
+    }, 3500);
 
     return () => {
       cancelled = true;
-      observer.disconnect();
       window.removeEventListener('message', handleMessage);
       clearTimeout(safetyTimer);
-      container.replaceChildren();
     };
-  }, [apartmentId, containerId, checkIn, checkOut, guests]);
+  }, [apartmentId, iframeUrl]);
 
   return (
     <div className="relative w-full">
@@ -197,7 +177,22 @@ export default function SmoobuBookingEmbed({
         ref={containerRef}
         className={className || "w-full min-h-[520px] bg-white"}
         aria-label="Smoobu booking availability"
-      />
+      >
+        <div className="smoobu-booking-tool-container w-full">
+          <style>{`.smoobu-booking-tool-container iframe { width: 100%; border: 0; }`}</style>
+          <iframe
+            id={`booking-tool-iFrame-apartment${apartmentId}`}
+            key={iframeUrl}
+            src={iframeUrl}
+            scrolling="no"
+            allowtransparency="true"
+            allowFullScreen
+            wmode="transparent"
+            style={{ width: '100%', border: 0, maxWidth: '1000px' }}
+            onLoad={() => setIsLoaded(true)}
+          />
+        </div>
+      </div>
     </div>
   );
 }
